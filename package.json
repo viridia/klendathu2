@@ -115,5 +115,13 @@
     "tslint-config-airbnb": "^5.2.1",
     "tslint-react": "^3.0.0",
     "webpack-dev-server": "^2.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/viridia/klendathu2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/viridia/klendathu2/issues"
+  },
+  "homepage": "https://github.com/viridia/klendathu2#readme"
 }
