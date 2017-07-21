@@ -1,0 +1,7 @@
+query usersQuery($token:String!) {
+  users(token: $token) {
+    username
+    fullname
+    photo
+  }
+}

@@ -1,0 +1,8 @@
+query labelSearchQuery($project:ID!, $token:String!) {
+  labels(project: $project, token: $token) {
+    project
+    id
+    name
+    color
+  }
+}

@@ -1,0 +1,13 @@
+query labelsQuery($project:ID!) {
+  labels(project: $project) {
+    project
+    id
+    name
+    color
+    creator
+    created
+  }
+  projectMembership(project: $project) {
+    labels
+  }
+}

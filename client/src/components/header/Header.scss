@@ -1,0 +1,24 @@
+@import '../defines/base';
+
+.kdt.header {
+  display: flex;
+  align-items: center;
+  background-color: $bg6;
+  padding: 5px 8px;
+
+  > .title {
+    font: $titleFont;
+    color: $bg0;
+    margin-right: .4rem;
+  }
+
+  > .subtitle {
+    color: $bg1;
+    flex: 1;
+  }
+
+  .header-link {
+    color: $bg1;
+    margin-left: 8px;
+  }
+}

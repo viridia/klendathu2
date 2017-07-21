@@ -1,0 +1,10 @@
+mutation newLabel($project: ID!, $label: LabelInput!) {
+  newLabel(project: $project, label: $label) {
+    project
+    id
+    name
+    color
+    creator
+    created
+  }
+}

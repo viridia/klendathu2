@@ -1,0 +1,14 @@
+# Information about a user.
+type User {
+  # Login name of this user.
+  username: String
+
+  # Display name of this user.
+  fullname: String!
+
+  # Profile photo (URL).
+  photo: String
+
+  # Whether this account has been verified.
+  verified: Boolean
+}

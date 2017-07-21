@@ -1,0 +1,10 @@
+@import '../defines/colors';
+
+.error-display {
+  font-size: 80%;
+
+  .stack {
+    font-size: 90%;
+    color: desaturate($bg6, 20%);
+  }
+}

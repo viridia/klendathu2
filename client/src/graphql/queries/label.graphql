@@ -1,0 +1,8 @@
+query labelQuery($project: ID!, $label: Int!) {
+  label(project: $project, id: $label) {
+    project
+    id
+    name
+    color
+  }
+}

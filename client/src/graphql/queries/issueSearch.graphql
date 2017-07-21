@@ -1,0 +1,9 @@
+query issueSearchQuery($project: ID!, $search:String!) {
+  issueSearch(project: $project, search: $search) {
+    id
+    project
+    summary
+    description
+    score
+  }
+}

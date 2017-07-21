@@ -1,0 +1,3 @@
+query profileQuery {
+  profile { username fullname photo }
+}

@@ -1,0 +1,5 @@
+mutation newIssue($project: ID!, $issue: IssueInput!) {
+  newIssue(project: $project, issue: $issue) {
+    ...issueContent
+  }
+}

@@ -1,0 +1,33 @@
+@import '../defines/base';
+
+body {
+  display: flex;
+  align-items: stretch;
+  font: $bodyFont;
+  background-color: $contentBg;
+  margin: 0;
+}
+
+#react-root {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow-x: hidden;
+}
+
+.kdt.page {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1;
+
+  > .content {
+    display: flex;
+    align-items: stretch;
+    flex: 1;
+  }
+}
+
+div.redux-toastr > .toastr.success {
+  background-color: $bg5;
+}

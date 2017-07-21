@@ -1,0 +1,3 @@
+query searchCustomFields($project: ID!, $field: String!, $search: String!) {
+  searchCustomFields(project: $project, field: $field search: $search)
+}

@@ -1,0 +1,3 @@
+mutation deleteLabel($project: ID!, $label: Int!) {
+  deleteLabel(project: $project, id: $label)
+}

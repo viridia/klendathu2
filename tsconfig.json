@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "baseUrl": "./client/src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "types": [
+      "mocha",
+      "node",
+      "webpack-env"
+    ],
+    "typeRoots": [
+      "node_modules/@types"
+    ]
+  },
+  "include": [
+    "./client/src/**/*.ts",
+    "./client/src/**/*.tsx",
+    "./common/**/*.ts",
+    "./server/src/**/*.ts",
+    "./server/tests/**/*.ts"
+  ]
+}

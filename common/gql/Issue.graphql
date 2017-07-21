@@ -1,0 +1,5 @@
+# An issue.
+type Issue {
+  # Unique id of this issue.
+  id: Int!
+}

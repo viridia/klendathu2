@@ -1,0 +1,10 @@
+mutation updateLabel($project: ID!, $id: Int!, $label: LabelInput!) {
+  updateLabel(project: $project, id: $id, label: $label) {
+    project
+    id
+    name
+    color
+    creator
+    created
+  }
+}

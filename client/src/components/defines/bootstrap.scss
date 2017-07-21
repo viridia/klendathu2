@@ -1,0 +1,85 @@
+@import 'colors';
+@import 'fonts';
+
+// Include bootstrap styles that we are using.
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_mixins.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_variables.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_utilities.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_buttons.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_button-groups.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_close.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_component-animations.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_dropdowns.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_forms.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_grid.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_input-groups.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_labels.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_modals.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_navbar.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_navs.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_normalize.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_panels.scss';
+@import '~bootstrap-sass/assets/stylesheets/bootstrap/_progress-bars.scss';
+
+.nav.nav-tabs {
+  margin-top: 4px;
+}
+
+.nav.nav-tabs > li > a {
+  text-decoration: none;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  font: $buttonFont;
+  text-decoration: none;
+  &.btn-sm {
+    font-size: 80%;
+  }
+  svg {
+    width: 19px;
+    height: 19px;
+    margin-right: 4px;
+  }
+  .caret {
+    margin-left: 6px;
+  }
+
+  // Need more transparency for disabled buttons.
+  &.disabled,
+  &[disabled],
+  fieldset[disabled] & {
+    @include opacity(.35);
+  }
+
+  &.bare {
+    border: none;
+    background: none;
+    outline: none;
+    padding: 1px;
+  }
+
+  &.light {
+    > svg {
+      fill: lighten($textDark, 40%);
+    }
+    &:hover {
+      > svg {
+        fill: $textDark;
+      }
+    }
+  }
+}
+
+.btn-primary > svg {
+  fill: $bg0;
+}
+
+a[role=menuitem] {
+  text-decoration: none;
+}
+
+.modal-dialog {
+  display: flex;
+}

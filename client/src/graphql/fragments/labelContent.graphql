@@ -1,0 +1,8 @@
+fragment labelContent on Label {
+  project
+  id
+  name
+  color
+  creator
+  created
+}

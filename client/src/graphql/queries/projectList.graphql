@@ -1,0 +1,13 @@
+query projectListQuery {
+  projects {
+    id
+    name
+    title
+    description
+    owningUser
+    owningOrg
+    role
+    created
+    updated
+  }
+}

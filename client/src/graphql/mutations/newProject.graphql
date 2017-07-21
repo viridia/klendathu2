@@ -1,0 +1,13 @@
+mutation newProject($project: ProjectInput!) {
+  newProject(project: $project) {
+    id
+    name
+    title
+    description
+    owningUser
+    owningOrg
+    role
+    created
+    updated
+  }
+}

@@ -1,0 +1,171 @@
+# Search predicates
+enum Predicate {
+  IN
+  EQUALS
+  NOT_IN
+  NOT_EQUALS
+  # REGEX: { value: 're' },
+  STARTS_WITH
+  ENDS_WITH
+  # NOT_REGEX: { value: '!re' },
+  GREATER
+  GREATER_EQUAL
+  LESS
+  LESS_EQUAL
+}
+
+# Query definitions
+type Query {
+  # Retrieve a project record by id or by name.
+  issue(
+    # Project containing the issue being queried.
+    project: ID!
+    # Id of the issue to retrieve.
+    id: Int!
+  ): Issue
+
+  # Retrieve issues which meet a set of filter criteria.
+  issues(
+    # Project containing the issues being queried.
+    project: ID!
+    # Text search string.
+    search: String
+    # Query term that restricts the issue search to a set of types.
+    type: [String]
+    # Query term that restricts the issue search to a set of states.
+    state: [String]
+    # Query term that restricts the issue search to a set of owners.
+    owner: [String]
+    # Query term that restricts the issue search to a set of reporters.
+    reporter: [String]
+    # Query term that restricts the issue search to a set of CCs.
+    cc: [String]
+    # Query term that searches the summary field.
+    summary: String
+    # Search predicate for the summary field.
+    summaryPred: Predicate
+    # Query term that searches the description field.
+    description: String
+    # Search predicate for the description field.
+    descriptionPred: Predicate
+  ): [Issue!]!
+
+  #   //     description: 'Retrieve issues which meet a set of filter criteria.',
+  #   //   issues: {
+  #   //     type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(issueType))),
+  #   //     args: {
+  #   //       labels: {
+  #   //         type: new GraphQLList(new GraphQLNonNull(GraphQLInt)),
+  #   //         description: 'Query term that restricts the issue search to a set of label ids.',
+  #   //       },
+  #   //       linked: {
+  #   //         type: new GraphQLList(new GraphQLNonNull(GraphQLInt)),
+  #   //         description: 'Specifies a list of linked issues to search for.',
+  #   //       },
+  #   //       comment: {
+  #   //         type: GraphQLString,
+  #   //         description: 'Query term that searches the issue comments.',
+  #   //       },
+  #   //       commentPred: {
+  #   //         type: predicateType,
+  #   //         description: 'Search predicate for the comments.',
+  #   //         defaultValue: 'in',
+  #   //       },
+  #   //       custom: {
+  #   //         type: new GraphQLList(new GraphQLNonNull(customSearch)),
+  #   //         description: 'Query term that searches custom fields.',
+  #   //       },
+  #   //       sort: {
+  #   //         type: new GraphQLList(GraphQLString),
+  #   //         description: 'Query term that specifies the field sort order.',
+  #   //       },
+  #   //       subtasks: {
+  #   //         type: GraphQLBoolean,
+  #   //         description: 'Whether to show issues hierarchically (subtasks).',
+  #   //       },
+  #   //     },
+  #   //   },
+  #   //   issueSearch: {
+  #   //     description: 'Search for issues by text query, sorted by relevance.',
+  #   //     type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(issueType))),
+  #   //     args: {
+  #   //       project: { type: GraphQLID },
+  #   //       search: { type: GraphQLString },
+  #   //     },
+  #   //   },
+  #   //   searchCustomFields: {
+  #   //     description: 'Search custom field text, used for auto completion.',
+  #   //     type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
+  #   //     args: {
+  #   //       project: { type: new GraphQLNonNull(GraphQLID) },
+  #   //       field: { type: new GraphQLNonNull(GraphQLString) },
+  #   //       search: { type: new GraphQLNonNull(GraphQLString) },
+  #   //     },
+  #   //   },
+
+  # Retrieve a project record by id or by name.
+  project(
+    # Id of the project to retrieve.
+    id: ID
+    # Name of the project to retreive.
+    name: String
+  ): Project
+
+  # Retrieve a list of projects.
+  projects(
+    # Name of the project to retreive. If null, retrieve all projects visible to current user.
+    name: String
+  ): [Project!]!
+
+  # /** Information about a project member, including role and settings.
+  #     @param project Identifier for the project.
+  #     @param user Username of the user. Defaults to current user.
+  # */
+  # projectMembership({ project, user }: { project?: string, user?: string }):
+  #     ProjectMembership | null;
+  #
+  # /** Information about all project members, including role and settings.
+  #     @param project Identifier for the project.
+  # */
+  # projectMemberships({ project }: { project?: string }): ProjectMembership[];
+
+  # Data for a label.
+  label(
+    # Identifier for the project containing the label.
+    project: ID!
+    # Label id.
+    id: Int!
+  ): Label
+
+  # Retrieve a list of labels.
+  labels(
+    # Identifier for the project containing the labels.
+    project: ID!
+    # Label search token.
+    token: String
+  ): [Label!]!
+
+  #   //   workflow: {
+  #   //     type: workflowType,
+  #   //     args: {
+  #   //       project: { type: new GraphQLNonNull(GraphQLString) },
+  #   //       name: { type: new GraphQLNonNull(GraphQLString) },
+  #   //     },
+  #   //   },
+  #   //   template: {
+  #   //     type: templateType,
+  #   //     args: {
+  #   //       project: { type: new GraphQLNonNull(GraphQLString) },
+  #   //       name: { type: new GraphQLNonNull(GraphQLString) },
+  #   //     },
+  #   //   },
+
+  # Profile of the current logged-in user.
+  profile: Profile
+
+  # Query information about a user.
+  user(username: String!): User
+
+  # Look up users matching a search token.
+  user(token: String!): [User!]!
+}

@@ -1,0 +1,17 @@
+@import '../defines/base';
+
+.kdt.dashboard {
+  flex: 1;
+  padding: 16px;
+
+  > header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+
+    > .title {
+      font: $headerFont;
+    }
+  }
+}

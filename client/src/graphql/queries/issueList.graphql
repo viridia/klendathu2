@@ -1,0 +1,56 @@
+query issueListQuery(
+    $project: ID!,
+    $search: String,
+    $type: [String!],
+    $state: [String!],
+    $summary: String,
+    $summaryPred: PREDICATE,
+    $description: String,
+    $descriptionPred: PREDICATE,
+    $owner: [String!],
+    $reporter: [String!],
+    $cc: [String!],
+    $labels: [Int!],
+    $comment: String,
+    $commentPred: PREDICATE,
+    $custom: [CustomSearch!],
+    $sort: [String!]) {
+  issues(
+      project: $project,
+      search: $search,
+      type: $type,
+      state: $state,
+      summary: $summary,
+      summaryPred: $summaryPred,
+      description: $description,
+      descriptionPred: $descriptionPred,
+      owner: $owner,
+      reporter: $reporter,
+      cc: $cc,
+      labels: $labels,
+      comment: $comment,
+      commentPred: $commentPred,
+      custom: $custom,
+      sort: $sort) {
+    id
+    project
+    type
+    state
+    summary
+    description
+    owner
+    cc
+    created
+    updated
+    labels
+    custom {
+      name
+      value
+    }
+    parent
+  }
+  projectMembership(project: $project) {
+    labels
+    columns
+  }
+}

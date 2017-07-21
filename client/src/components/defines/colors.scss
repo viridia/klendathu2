@@ -1,0 +1,64 @@
+$textLight: #ddd;
+$textDark: #444;
+$textDarkDisabled: #777;
+$textDarkAccent: #482848;
+
+$bg0: #f3e5f5;
+$bg1: #e1bee7;
+$bg2: #ce93d8;
+$bg3: #ba68c8;
+$bg4: #ab47bc;
+$bg5: #9c27b0;
+$bg6: #8e24aa;
+$bg7: #7b1fa2;
+$bg8: #6a1b9a;
+$bg9: #4a148c;
+
+// 'b' stands for 'background color'. b0 is the lightest, b9 the darkest.
+$b0: bg0;
+$b1: bg1;
+$b2: bg2;
+$b3: bg3;
+$b4: bg4;
+$b5: bg5;
+$b6: bg6;
+$b7: bg7;
+$b8: bg8;
+$b9: bg9;
+
+$leftNavBg: #D2BDD6;
+$leftNavFg: #482848;
+
+$contentBg: #E9DBEB;
+
+$cardBg: #fcf7fc;
+$cardBgAlt: #f6ecf8;
+$cardBorder: #C3A1C9;
+$cardHeaderBg: lighten($bg1, 10%);
+
+$massEditBg: #c7b8e6;
+
+// Bootstrap overrides
+
+// Default button
+$btn-default-color: #482848;
+$btn-default-bg: lighten($bg2, 20%);
+$btn-default-border: darken($btn-default-bg, 10%);
+
+// Primary button
+$btn-primary-color: #f3e5f5;
+$btn-primary-bg: #ab47bc;
+$btn-primary-border: darken($btn-primary-bg, 10%);
+
+// Info button
+$btn-info-color: lighten(#f3e5f5, 5%);
+$btn-info-bg: #9d8de8;
+$btn-info-border: darken($btn-info-bg, 10%);
+
+// Change appearance of tabs
+$nav-tabs-active-link-hover-border-color: $cardBorder;
+$nav-tabs-active-link-hover-bg: $cardBg;
+$nav-link-hover-bg: #f6ecf8;
+
+$dropdown-link-active-color: $textDarkAccent;
+$dropdown-link-active-bg: $bg1;

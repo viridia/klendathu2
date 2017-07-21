@@ -1,0 +1,28 @@
+fragment projectContent on Project {
+  id name title
+  description
+  owningUser
+  owningOrg
+  role
+  public
+  created updated
+  template {
+    name project
+    types {
+      id caption abstract bg extends
+      fields { id type caption align default values }
+    }
+  }
+  workflow {
+    name project extends start
+    states { id caption closed transitions }
+    actions {
+      caption
+      state
+      owner
+      require {
+        state
+      }
+    }
+  }
+}

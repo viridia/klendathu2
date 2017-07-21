@@ -1,0 +1,22 @@
+query leftNavQuery($project: ID!) {
+  projectMembership(project: $project) {
+    user
+    role
+    inheritedRole
+    labels
+    labelsData {
+      id
+      name
+      color
+    }
+    filters {
+      name
+      value
+    }
+  }
+  projects {
+    id
+    name
+    title
+  }
+}

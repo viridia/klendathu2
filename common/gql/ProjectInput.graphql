@@ -1,0 +1,26 @@
+# A project definition.
+input ProjectInput {
+  # Unique name of this project.
+  name: String
+
+  # Short description of the project.
+  title: String
+
+  # A more detailed description of the project.
+  description: String
+
+  # User that owns this project. Null if owned by an organization.
+  owningUser: ID
+
+  # Organization that owns this project. Null if owned by a user.
+  owningOrg: ID
+
+  # Issue template for this project.
+  template: String
+
+  # Workflow configuration for this project.
+  workflow: String
+
+  # If true, indicates that this project is visible to the public.
+  isPublic: Boolean
+}

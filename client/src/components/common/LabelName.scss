@@ -1,0 +1,10 @@
+@import '../defines/base';
+
+.label-name {
+  display: inline-block;
+  font-size: 80%;
+  margin: 0 3px;
+  padding: 1px 9px 2px 9px;
+  border-radius: 9px;
+  color: $textDark;
+}

@@ -1,0 +1,26 @@
+@import '../defines/base';
+
+.project-card {
+  padding: 12px;
+
+  > .project-info {
+    display: flex;
+
+    > .project-name {
+      flex: 1;
+      > .project-link {
+        font-weight: bold;
+        text-decoration: none;
+        color: $bg5;
+      }
+    }
+
+    > .project-owner {
+      flex: 1;
+
+      .title {
+        font-weight: bold;
+      }
+    }
+  }
+}

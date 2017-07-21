@@ -1,0 +1,5 @@
+mutation addComment($project: ID!, $id: Int!, $comment: String!) {
+  addComment(id: $id, project: $project, comment: $comment) {
+    ...issueContent
+  }
+}

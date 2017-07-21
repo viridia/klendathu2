@@ -1,0 +1,10 @@
+fragment projectMembershipContent on ProjectMembership {
+  user
+  role
+  labels
+  columns
+  filters {
+    name
+    value
+  }
+}

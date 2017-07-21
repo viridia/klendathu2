@@ -1,0 +1,49 @@
+fragment issueContent on Issue {
+  id
+  project
+  type
+  state
+  summary
+  description
+  reporter
+  owner
+  cc
+  created
+  updated
+  labels
+  custom {
+    name
+    value
+  }
+  ownerData {
+    username
+    fullname
+    photo
+  }
+  ccData {
+    username
+    fullname
+    photo
+  }
+  labelsData {
+    id
+    name
+    color
+  }
+  attachmentsData {
+    id
+    filename
+    url
+    thumb
+    type
+  }
+  comments {
+    author
+    body
+    created
+  }
+  linked {
+    relation
+    to
+  }
+}

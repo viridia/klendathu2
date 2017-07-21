@@ -1,0 +1,83 @@
+@import '../defines/base';
+
+.card {
+  background: lighten($bg0, 5%);
+  border: 1px solid $cardBorder;
+  box-shadow: 0px 2px 3px 0 rgba(0,0,0,0.14);
+  margin: 8px;
+
+  &.internal {
+    background: lighten($bg0, 15%);
+    border: 1px solid lighten($cardBorder, 10%);
+    box-shadow: 0px 1px 2px 0 rgba(0,0,0,0.14);
+    margin: 0 0 8px 0;
+
+    > .title {
+      margin: 0 8px;
+    }
+  }
+
+  > header {
+    background-color: $cardHeaderBg;
+    border-bottom: 1px solid darken($bg1, 5%);
+    box-shadow: 0px 2px 2px 0 rgba(0,0,0,0.14);
+    padding: 5px 7px;
+    font-weight: bold;
+  }
+
+  > footer {
+    background-color: $cardHeaderBg;
+    border-top: 1px solid darken($bg1, 5%);
+    padding: 8px;
+    align-items: center;
+  }
+
+  &.accented > header {
+    padding: 8px;
+    background-color: $bg2;
+    color: $textDarkAccent;
+  }
+
+  > .body {
+    padding: 8px;
+  }
+
+  thead {
+    background-color: $cardHeaderBg;
+    border-bottom: 1px solid darken($bg1, 5%);
+    box-shadow: 0px 3px 2px 0 rgba(0,0,0,0.14);
+  }
+}
+
+.card.report {
+  .no-issues {
+    padding: 8px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  > table {
+    width: 100%;
+
+    td, th {
+      border-right: 1px solid lighten($cardBorder, 12%);
+      border-collapse: collapse;
+      vertical-align: top;
+      &:last-child {
+        border-right: none;
+      }
+    }
+
+    th {
+      padding: 5px 7px;
+    }
+
+    tr:nth-child(even) {
+      background: lighten($bg0, 2%);
+    }
+
+    .center {
+      text-align: center;
+    }
+  }
+}

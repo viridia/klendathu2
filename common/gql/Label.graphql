@@ -1,0 +1,23 @@
+# A label which can be attached to an issue.
+type Label {
+  # Database id for this label.
+  id: String
+
+  # Text of the label.
+  name: String
+
+  # CSS color of the label.
+  color: String
+
+  # Project in which this label is defined.
+  project: String
+
+  # User that created this label.
+  creator: String
+
+  # When the label was created.
+  created: Date
+
+  # When the label was last updated.
+  updated: Date
+}
