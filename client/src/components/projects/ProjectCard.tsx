@@ -1,10 +1,9 @@
+import { Project, Role } from 'common/api';
 import * as React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import { Project } from '../../../../common/api';
-import { Role } from '../../../../common/api/Role';
 import autobind from '../../lib/autobind';
-// import { deleteProject } from '../../store/projects';
+import { deleteProject } from '../../store/reducers/project';
 import './ProjectCard.scss';
 
 interface Props {
@@ -80,7 +79,9 @@ export default class ProjectCard extends React.Component<Props, State> {
   private onConfirmDelete(ev: any) {
     ev.preventDefault();
     this.setState({ showDelete: false });
-    // TODO: implement
-    // deleteProject(this.props.project.id);
+    deleteProject(this.props.project.id).catch(error => {
+      console.error(error);
+      this.setState({ showDelete: false });
+    });
   }
 }

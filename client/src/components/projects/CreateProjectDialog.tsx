@@ -4,7 +4,7 @@ import {
   Button, Checkbox, ControlLabel, FormControl, FormGroup, HelpBlock, Modal,
 } from 'react-bootstrap';
 import autobind from '../../lib/autobind';
-import { createProject } from '../../store/project';
+import { createProject } from '../../store/reducers/project';
 import './CreateProjectDialog.scss';
 
 const AddBoxIcon = require('icons/ic_add_box_black_24px.svg');

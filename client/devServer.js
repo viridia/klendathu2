@@ -13,6 +13,7 @@ config.entry = [
   './src/index.tsx', // Your appʼs entry point
 ];
 config.plugins.push(new webpack.HotModuleReplacementPlugin());
+config.plugins.push(new webpack.NamedModulesPlugin());
 
 const compiler = webpack(config);
 const server = new WebpackDevServer(compiler, {

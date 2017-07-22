@@ -1,11 +1,11 @@
 // import ProjectQuery from '../../graphql/queries/project.graphql';
+// import { ProjectContent } from '../../store/fragments';
+import { Role } from 'common/api/Role';
 import { Location } from 'history';
 import * as React from 'react';
 // import { graphql } from 'react-apollo';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-// import { ProjectContent } from '../../store/fragments';
-import { Role } from '../../../../common/api/Role';
 import './Header.scss';
 import SignInLink from './SignInLink';
 import UserMenuButton from './UserMenuButton';

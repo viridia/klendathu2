@@ -97,7 +97,7 @@ type Mutation {
   updateProject(id: String!, project: ProjectInput!): Project!
 
   # Modify an existing project.
-  deleteProject(id: String!): ID!
+  deleteProject(project: String!): ID!
 
 #     updateProjectMembership: {
 #       description: 'Modify the role or settings for a project member.',

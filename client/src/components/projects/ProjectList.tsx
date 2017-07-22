@@ -1,6 +1,6 @@
+import { Project } from 'common/api';
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
-import { Project } from '../../../../common/api';
 import ErrorDisplay from '../debug/ErrorDisplay';
 import ProjectCard from './ProjectCard';
 

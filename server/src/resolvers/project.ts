@@ -2,21 +2,33 @@ import * as r from 'rethinkdb';
 import { Project, Role } from '../../../common/api';
 import Context from '../context/Context';
 import ProjectRecord from '../db/types/ProjectRecord';
-import { ErrorKind, InternalError, NotImplemented, ResolverError, Unauthorized } from '../errors';
+import {
+  ErrorKind,
+  Forbidden,
+  InternalError,
+  NotFound,
+  NotImplemented,
+  ResolverError,
+  Unauthorized,
+} from '../errors';
 import { logger } from '../logger';
-import { getRole } from './role';
+import { getProjectAndRole, getRole } from './role';
 
 // Queries involving projects
 export const queries = {
-  project(_: any, args: { name: string, id: string }, context: Context): Promise<Project | null> {
-    return null;
+  project(_: any, args: { id: string }, context: Context): Promise<ProjectRecord | null> {
+    return getProjectAndRole(context, args.id).then(({ project, role }) => {
+      return project;
+    });
   },
 
   projects(_: any, args: { name?: string }, context: Context): Promise<Project[]> | Project[] {
+    // TODO: Allow public projects if not logged in.
     if (!context.user || !context.user.id) {
       return [];
     }
 
+    // TODO: Include projects that user is a member of
     return r.table('projects')
         .filter({ deleted: false, owningUser: context.user.id })
         .orderBy(r.asc('created'))
@@ -44,18 +56,6 @@ export const queries = {
     //   if (pname) {
     //     query.name = pname;
     //   }
-    //   return context.db.collection('projects').find(query).sort({ created: -1 }).toArray()
-    //   .then(projects => {
-    //     const results = [];
-    //     for (const p of projects) {
-    //       // TODO: Need a specialized version of lookup role
-    //       // Use memberships defined above.
-    //       const role = getRole(context.db, p, context.user, memberships);
-    //       results.push(serialize(p, { role }));
-    //     }
-    //     return results;
-    //   });
-    // });
   },
 };
 
@@ -120,11 +120,40 @@ export const mutations = {
       return Promise.reject(new InternalError());
     });
   },
+
+  // Delete an existing project
+  deleteProject(_: any, args: { project: string }, context: Context): Promise<string> {
+    if (!context.user) {
+      return Promise.reject(new Unauthorized());
+    }
+    return getProjectAndRole(context, args.project, true).then(({ project, role }) => {
+      if (!project) {
+        logger.error('Error updating non-existent project', args.project, this.user.id);
+        return Promise.reject(new NotFound());
+      } else if (role < Role.ADMINISTRATOR) {
+        logger.error('Access denied updating project', args.project, this.user.id);
+        return Promise.reject(new Forbidden());
+      }
+      return Promise.all([
+        r.table('issues').filter({ project: args.project }).delete().run(context.conn),
+        r.table('labels').filter({ project: args.project }).delete().run(context.conn),
+        r.table('projectMemberships').filter({ project: args.project }).delete().run(context.conn),
+        r.table('projects').filter({ id: args.project }).delete().run(context.conn),
+      ]);
+    }).then(() => {
+      logger.info('Deleted project:', args.project);
+      return args.project;
+    }, error => {
+      logger.error('Error deleting project:', args.project, error);
+      return Promise.reject(new InternalError());
+    });
+  },
 };
 
 export const types = {
   Project: {
     role: (project: ProjectRecord, _: any, context: Context) => {
+      // TODO: pass in project memberships
       return getRole(project, context.user.id, []);
     },
   },

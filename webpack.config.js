@@ -29,7 +29,11 @@ module.exports = {
     modules: [
       path.resolve(__dirname, 'node_modules'),
       path.resolve(__dirname, 'client/src/media'),
+      path.resolve(__dirname, 'client'),
     ],
+    alias: {
+      common: path.resolve(__dirname, 'common/'),
+    },
     extensions: ['.ts', '.tsx', '.js'],
   },
   plugins,

@@ -1,5 +1,23 @@
 import * as r from 'rethinkdb';
 
+/* Function that takes a RethinkDB cursor, and returns a promise which resolves to either
+   the first result, or to null if there were no results. */
+export function maybe<T>(cursor: r.Cursor): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    cursor.each((err, row) => {
+      if (err) {
+        reject(err);
+        return false;
+      } else {
+        resolve(row);
+        return false;
+      }
+    }, () => {
+      return null;
+    });
+  });
+}
+
 export function ensureDbsExist (conn: r.Connection, dbNames: string[]) {
   return r.dbList().run(conn).then(existing => {
     const promises: any[] = [];

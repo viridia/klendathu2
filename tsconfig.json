@@ -7,9 +7,12 @@
     "module": "commonjs",
     "target": "es6",
     "jsx": "react",
-    "baseUrl": "./client/src",
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "baseUrl": ".",
+    "paths": {
+      "common": ["common"]
+    },
     "types": [
       "mocha",
       "node",

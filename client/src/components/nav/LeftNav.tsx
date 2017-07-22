@@ -1,9 +1,8 @@
+import { Project, ProjectMembership, Role } from 'common/api';
 import * as qs from 'qs';
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
 import { NavLink } from 'react-router-dom';
-import { Project, ProjectMembership } from '../../../../common/api';
-import { Role } from '../../../../common/api/Role';
 import LabelName from '../common/LabelName';
 import NavItem from '../common/NavItem';
 import './LeftNav.scss';

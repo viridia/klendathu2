@@ -1,3 +1,7 @@
+// TODO: add toasts
+// import ReduxToastr from 'react-redux-toastr';
+// import 'react-redux-toastr/src/less/index.less';
+import { User } from 'common/api';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { compose, DefaultChildProps, graphql } from 'react-apollo';
@@ -7,10 +11,6 @@ import {
   Switch,
   withRouter,
 } from 'react-router-dom';
-// TODO: add toasts
-// import ReduxToastr from 'react-redux-toastr';
-// import 'react-redux-toastr/src/less/index.less';
-import { User } from '../../../../common/api';
 import NotFound from '../common/NotFound';
 import DashboardView from '../dashboard/DashboardView';
 import ErrorDisplay from '../debug/ErrorDisplay';
@@ -59,7 +59,6 @@ class MainPage extends React.Component<
     //   <Header location={location} params={params} />
     //   {main}
     // </div>);
-    console.log('match', this.props.match);
     // const { path, params } = this.props.match;
     return (
       <div className="kdt page">

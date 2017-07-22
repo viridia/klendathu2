@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { ApolloProvider } from 'react-apollo';
-import { AppContainer } from 'react-hot-loader';
 import {
   BrowserRouter as Router,
   Route,
@@ -14,17 +13,15 @@ import MainPage from './main/MainPage';
 
 export default (
   <ApolloProvider store={store} client={apollo}>
-    <AppContainer>
-      <Router>
-        <Switch>
-          <Route path="/login" component={LoginPage} />
-          <Route path="/signup" component={SignUpPage} />
-          <Route path="/finishsignup" />
-          <Route path="/recoverpw" />
-          <Route path="/resetpw" />
-          <Route path="/" component={MainPage} />
-        </Switch>
-      </Router>
-    </AppContainer>
+    <Router>
+      <Switch>
+        <Route path="/login" component={LoginPage} />
+        <Route path="/signup" component={SignUpPage} />
+        <Route path="/finishsignup" />
+        <Route path="/recoverpw" />
+        <Route path="/resetpw" />
+        <Route path="/" component={MainPage} />
+      </Switch>
+    </Router>
   </ApolloProvider>
 );

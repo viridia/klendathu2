@@ -1,6 +1,7 @@
 // import Perf from 'react-addons-perf';
 // import 'react-redux-toastr/src/less/index.less';
 // import * as Immutable from 'immutable';
+import { Project } from 'common/api';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { compose, DefaultChildProps, graphql } from 'react-apollo';
@@ -11,7 +12,6 @@ import {
   RouteComponentProps,
   Switch,
 } from 'react-router-dom';
-import { Project } from '../../../../common/api';
 import ErrorDisplay from '../debug/ErrorDisplay';
 import LeftNav from '../nav/LeftNav';
 // import { ProjectContent } from '../store/fragments';
