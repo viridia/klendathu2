@@ -16,8 +16,9 @@ import { getProjectAndRole, getRole } from './role';
 
 // Queries involving projects
 export const queries = {
-  project(_: any, args: { id: string }, context: Context): Promise<ProjectRecord | null> {
-    return getProjectAndRole(context, args.id).then(({ project, role }) => {
+  project(_: any, args: { id: string, name: string }, context: Context):
+      Promise<ProjectRecord | null> {
+    return getProjectAndRole(context, args.id, args.name).then(({ project, role }) => {
       return project;
     });
   },
@@ -126,7 +127,7 @@ export const mutations = {
     if (!context.user) {
       return Promise.reject(new Unauthorized());
     }
-    return getProjectAndRole(context, args.project, true).then(({ project, role }) => {
+    return getProjectAndRole(context, args.project, undefined, true).then(({ project, role }) => {
       if (!project) {
         logger.error('Error updating non-existent project', args.project, this.user.id);
         return Promise.reject(new NotFound());

@@ -1,0 +1,230 @@
+{
+  "name": "bugtrack",
+  "project": "std",
+  "extends": null,
+  "start": [
+    "new",
+    "assigned",
+    "in_progress"
+  ],
+  "states": [
+    {
+      "id": "new",
+      "caption": "New",
+      "closed": false,
+      "transitions": [
+        "assigned",
+        "in_progress",
+        "duplicate",
+        "working_as_intended"
+      ]
+    },
+    {
+      "id": "assigned",
+      "caption": "Assigned",
+      "closed": false,
+      "transitions": [
+        "new",
+        "in_progress",
+        "needs_more_info",
+        "review",
+        "qa",
+        "verified",
+        "duplicate",
+        "working_as_intended",
+        "deferred"
+      ]
+    },
+    {
+      "id": "in_progress",
+      "caption": "In Progress",
+      "closed": false,
+      "transitions": [
+        "new",
+        "assigned",
+        "needs_more_info",
+        "review",
+        "qa",
+        "verified",
+        "duplicate",
+        "working_as_intended",
+        "deferred",
+        "cannot_reproduce"
+      ]
+    },
+    {
+      "id": "needs_more_info",
+      "caption": "Needs More Information",
+      "closed": false,
+      "transitions": [
+        "assigned",
+        "verified",
+        "duplicate",
+        "working_as_intended",
+        "deferred",
+        "cannot_reproduce"
+      ]
+    },
+    {
+      "id": "review",
+      "caption": "In Review",
+      "closed": false,
+      "transitions": [
+        "assigned",
+        "in_progress",
+        "qa",
+        "verified"
+      ]
+    },
+    {
+      "id": "qa",
+      "caption": "In QA",
+      "closed": false,
+      "transitions": [
+        "assigned",
+        "in_progress",
+        "verified"
+      ]
+    },
+    {
+      "id": "verified",
+      "caption": "Verified",
+      "closed": true,
+      "transitions": [
+        "assigned",
+        "in_progress"
+      ]
+    },
+    {
+      "id": "duplicate",
+      "caption": "Duplicate",
+      "closed": true,
+      "transitions": [
+        "assigned",
+        "in_progress"
+      ]
+    },
+    {
+      "id": "working_as_intended",
+      "caption": "Working As Intended",
+      "closed": true,
+      "transitions": [
+        "assigned",
+        "in_progress"
+      ]
+    },
+    {
+      "id": "deferred",
+      "caption": "Deferred",
+      "closed": true,
+      "transitions": [
+        "assigned",
+        "in_progress"
+      ]
+    },
+    {
+      "id": "cannot_reproduce",
+      "caption": "Cannot Reproduce",
+      "closed": true,
+      "transitions": [
+        "assigned",
+        "in_progress"
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "caption": "Assign to me",
+      "owner": "{me}"
+    },
+    {
+      "caption": "Begin Work",
+      "state": "in_progress",
+      "owner": "{me}"
+    },
+    {
+      "require": {
+        "state": [
+          "new",
+          "assigned",
+          "in_progress",
+          "qa"
+        ]
+      },
+      "caption": "Close: Working As Intended",
+      "state": "working_as_intended",
+      "owner": "{reporter}"
+    },
+    {
+      "require": {
+        "state": [
+          "new",
+          "assigned",
+          "in_progress",
+          "qa"
+        ]
+      },
+      "caption": "Close: Cannot Reproduce",
+      "state": "cannot_reproduce",
+      "owner": "{reporter}"
+    },
+    {
+      "require": {
+        "state": [
+          "new",
+          "assigned",
+          "in_progress",
+          "qa"
+        ]
+      },
+      "caption": "Close: Duplicate",
+      "state": "duplicate",
+      "owner": "{reporter}",
+      "ask": [
+        {
+          "id": "dup_of",
+          "caption": "Duplicates:",
+          "type": "issue"
+        }
+      ],
+      "linked": { "relation": "duplicate", "to": "{dup_of}" }
+    },
+    {
+      "caption": "Finish: In Review",
+      "state": "review",
+      "ask": [
+        {
+          "id": "reviewer",
+          "caption": "Reviewer:",
+          "type": "user"
+        }
+      ]
+    },
+    {
+      "caption": "Finish: QA",
+      "state": "qa",
+      "owner": "{reporter}"
+    },
+    {
+      "caption": "Not Fixed",
+      "state": "assigned",
+      "owner": "{previous}",
+      "require": {
+        "state": [
+          "qa",
+          "review",
+          "working_as_intended"
+        ]
+      }
+    },
+    {
+      "caption": "Verify",
+      "state": "verified",
+      "owner": null
+    },
+    {
+      "caption": "Unassign",
+      "owner": "{none}"
+    }
+  ]
+}

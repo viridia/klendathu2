@@ -1,4 +1,6 @@
-query projectQuery($project: String!) {
+#import "../fragments/projectContent.graphql"
+
+query projectQuery($project: ID!) {
   project(name: $project) {
     ...projectContent
   }

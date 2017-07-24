@@ -4,11 +4,11 @@ query leftNavQuery($project: ID!) {
     role
     inheritedRole
     labels
-    labelsData {
-      id
-      name
-      color
-    }
+    # labelsData {
+    #   id
+    #   name
+    #   color
+    # }
     filters {
       name
       value

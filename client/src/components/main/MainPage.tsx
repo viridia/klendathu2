@@ -21,12 +21,16 @@ import './MainPage.scss';
 
 const ProfileQuery = require('../../graphql/queries/profile.graphql');
 
+interface RouteParams {
+  project: string;
+}
+
 interface Data {
   profile: User;
 }
 
 class MainPage extends React.Component<
-    DefaultChildProps<RouteComponentProps<{}>, Data>,
+    DefaultChildProps<RouteComponentProps<RouteParams>, Data>,
     undefined> {
   public static childContextTypes = {
     profile: PropTypes.shape({
@@ -43,7 +47,7 @@ class MainPage extends React.Component<
   }
 
   public componentWillReceiveProps(
-      nextProps: DefaultChildProps<RouteComponentProps<{}>, Data>) {
+      nextProps: DefaultChildProps<RouteComponentProps<RouteParams>, Data>) {
     this.checkAuth(nextProps);
   }
 
@@ -53,13 +57,10 @@ class MainPage extends React.Component<
     if (error) {
       return <ErrorDisplay error={error} />;
     }
+    // TODO: finish
     // const main = React.cloneElement(child, { params, profile });
-    // return (<div className="kdt page">
     //   <ReduxToastr position="bottom-left" />
-    //   <Header location={location} params={params} />
-    //   {main}
-    // </div>);
-    // const { path, params } = this.props.match;
+    // const { params } = this.props.match;
     return (
       <div className="kdt page">
         <Header location={location} />
@@ -76,11 +77,9 @@ class MainPage extends React.Component<
 
   private checkAuth(props: DefaultChildProps<RouteComponentProps<{}>, Data>) {
     const { location, history, data: { loading, error, profile } } = props;
-    // console.log('checkAuth:', loading, error, profile);
     if (!profile && !loading && !error) {
       history.replace({ pathname: '/login', state: { next: location } });
     } else if (profile && !profile.username) {
-      // console.log(profile);
       this.props.history.replace({ pathname: '/finishSignup', state: { next: location } });
     }
   }

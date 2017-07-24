@@ -1,5 +1,5 @@
-mutation newProject($project: ProjectInput!) {
-  newProject(project: $project) {
+mutation newProject($input: ProjectInput!) {
+  newProject(input: $input) {
     id
     name
     title

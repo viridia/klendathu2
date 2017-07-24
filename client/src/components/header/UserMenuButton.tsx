@@ -8,14 +8,14 @@ import { LinkContainer } from 'react-router-bootstrap';
 import autobind from '../../lib/autobind';
 
 // TODO: implement
-interface Props {
-  data?: {};
-  // client: React.PropTypes.instanceOf(ApolloClient).isRequired,
-  // client?: any;
+// interface Props {
+//   data?: {};
+//   // client: React.PropTypes.instanceOf(ApolloClient).isRequired,
+//   // client?: any;
+//
+// }
 
-}
-
-class UserMenuButton extends React.Component<Props, undefined> {
+class UserMenuButton extends React.Component<undefined, undefined> {
   public static contextTypes = {
     profile: PropTypes.shape({}),
   };

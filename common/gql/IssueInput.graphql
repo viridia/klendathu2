@@ -1,49 +1,34 @@
-# const linkedIssueInputType = new GraphQLInputObjectType({
-#   name: 'LinkedIssueInput',
-#   fields: {
-#     to: {
-#       type: new GraphQLNonNull(GraphQLInt),
-#       description: 'ID of issue to which this is linked.',
-#     },
-#     relation: {
-#       type: new GraphQLNonNull(relationType),
-#       description: 'Type of the relation.',
-#     },
-#   },
-# });
-#
-# const commentInputType = new GraphQLInputObjectType({
-#   name: 'CommentInput',
-#   fields: {
-#     id: {
-#       type: GraphQLInt,
-#       description: 'Numeric id of this comment.',
-#     },
-#     author: {
-#       type: GraphQLString,
-#       description: 'Current owner of this issue.',
-#     },
-#     body: {
-#       type: new GraphQLNonNull(GraphQLString),
-#       description: 'Body of the comment.',
-#     },
-#   },
-# });
-#
-# const customFieldInputType = new GraphQLInputObjectType({
-#   name: 'CustomFieldInput',
-#   fields: {
-#     name: {
-#       type: new GraphQLNonNull(GraphQLString),
-#       description: 'Name of the custom field.',
-#     },
-#     value: {
-#       type: new GraphQLNonNull(GraphQLString),
-#       description: 'Value of the custom field.',
-#     },
-#   },
-# });
+# Input type for creating and editing linked issues.
+input LinkedIssueInput {
+  # ID of issue to which this is linked
+  to: Int!
 
+  # How the issues are related
+  relation: IssueRelation!
+}
+
+# Input type for creating and editing issue comments.
+input CommentInput {
+  # Id of this comment
+  id: ID
+
+  # Author of the comment
+  author: String
+
+  # Text of the comment
+  body: String!
+}
+
+# Input type for creating and editing custom field values.
+input CustomFieldInput {
+  # Name of the custom field
+  name: String!
+
+  # Value of the custom field
+  value: String!
+}
+
+# Input type for creating and editing issues.
 input IssueInput {
   # Type of issue (bug, feature, task, etc.) - types defined in project template
   type: String
@@ -66,22 +51,18 @@ input IssueInput {
   # Labels associated with this issue.
   labels: [Int!]
 
-      # linked: {
-      #   type: new GraphQLList(new GraphQLNonNull(linkedIssueInputType)),
-      #   description: 'List of issues linked to this one.',
-      # },
-      # custom: {
-      #   type: new GraphQLList(new GraphQLNonNull(customFieldInputType)),
-      #   description: 'List of custom fields for this issue.',
-      # },
-      # comments: {
-      #   type: new GraphQLList(new GraphQLNonNull(commentInputType)),
-      #   description: 'List of comments on this issue.',
-      # },
-      # attachments: {
-      #   type: new GraphQLList(new GraphQLNonNull(GraphQLString)),
-      #   description: 'List of attachments for this issue, as URLs.',
-      # },
+  # List of issues linked to this one
+  linked: [LinkedIssueInput!]
+
+  # List of custom fields for this issue
+  custom: [CustomFieldInput!]!
+
+  # List of comments on this issue
+  comments: [CommentInput!]!
+
+  # List of attachments for this issue
+  attachments: [AttachmentInput!]!
+
   # Whether this issue should be visible to non-members of the project.
   public: Boolean
 }

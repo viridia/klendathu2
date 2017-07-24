@@ -1,0 +1,98 @@
+# Represents a change to a scalar field
+type ScalarChange {
+  # Value of the field before the change.
+  before: String
+
+  # Value of the field after the change.
+  after: String
+}
+
+# Represents a change to a string list field
+type StringListChange {
+  # List of entries that were added to the field.
+  added: [String!]
+
+  # List of entries that were removed from the field.
+  removed: [String!]
+}
+
+# Represents a change to an int list field
+type IntListChange {
+  # List of entries that were added to the field.
+  added: [Int!]
+
+  # List of entries that were removed from the field.
+  removed: [Int!]
+}
+
+# Represents a change to the list of attachments
+type AttachmentsChange {
+  # List of attachments that were added.
+  added: [Attachment!]
+
+  # List of attachments that were removed.
+  removed: [Attachment!]
+}
+
+# Represents a change to a custom field
+type CustomFieldChange {
+  # Field name.
+  name: String!
+
+  # Value of the field before the change.
+  before: String
+
+  # Value of the field after the change.
+  after: String
+}
+
+# Represents a change to a linked issue
+type LinkedIssueChange {
+  # issue id.
+  to: Int!
+
+  # Relation before the change.
+  before: IssueRelation
+
+  # Relation after the change.
+  after: IssueRelation
+}
+
+# Summarizes all of the changes to an issue
+type Change {
+  # ID of the user making this change.
+  by: String!
+
+  # Date and time when the changes were made.
+  at: Date!
+
+  # Change to the issue type.
+  type: ScalarChange
+
+  # Change to the issue state.
+  state: ScalarChange
+
+  # Change to the issue summary.
+  summary: ScalarChange
+
+  # Change to the issue description.
+  description: ScalarChange
+
+  # Change to the issue owner.
+  owner: ScalarChange
+
+  # Change to the issue cc list.
+  cc: StringListChange
+
+  # Change to the list of issue labels.
+  labels: IntListChange
+
+  # Change to the list of attachments.
+  attachments: AttachmentsChange
+
+  # Changes to custom fields
+  custom: [CustomFieldChange!]
+
+  # Change to the list of linked issues.
+  linked: [LinkedIssueChange!]
+}

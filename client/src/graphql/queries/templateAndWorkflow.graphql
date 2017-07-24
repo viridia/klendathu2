@@ -1,0 +1,41 @@
+query templateAndWorkflowQuery($template: String!, $workflow: String!) {
+  template(name: $template) {
+    name
+    types {
+      id
+      caption
+      abstract
+      extends
+      bg
+      fields {
+        id
+        caption
+        type
+        alignment
+        position
+        suggest
+        values
+        default
+      }
+    }
+  }
+  workflow(name: $workflow) {
+    name
+    start
+    extends
+    states {
+      id
+      caption
+      closed
+      transitions
+    }
+    actions {
+      caption
+      state
+      owner
+      requirements {
+        state
+      }
+    }
+  }
+}

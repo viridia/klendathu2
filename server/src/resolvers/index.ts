@@ -2,6 +2,8 @@ import * as date from './date';
 import * as issue from './issue';
 import * as profile from './profile';
 import * as project from './project';
+import * as template from './template';
+import * as workflow from './workflow';
 
 /** Root resolver map. Because the map is large, we've split it over many source files and then
     combined them into a single data structure here.
@@ -11,6 +13,8 @@ export const resolverMap = {
     ...issue.queries,
     ...profile.queries,
     ...project.queries,
+    ...template.queries,
+    ...workflow.queries,
   },
 
   // // Merge definitions for all mutation resolvers

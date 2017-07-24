@@ -1,0 +1,17 @@
+# A file attached to an issue
+type Attachment {
+  # Unique id of this attachment
+  id: ID!
+
+  # Filename of the attachment
+  filename: String!
+
+  # URL to download the attachment.
+  url: String!
+
+  # URL of the thumbnail for the attachment, if the type is an image.
+  thumbnail: String
+
+  # MIME type for the attachment.
+  type: String!
+}

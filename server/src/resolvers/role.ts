@@ -33,13 +33,23 @@ export interface ProjectAndRole {
 export function getProjectAndRole(
     context: Context,
     id: string,
+    name: string,
     mutation = false): Promise<ProjectAndRole> {
   // If this is a mutation and the user is not logged in, then don't even bother doing a
   // database lookup for the project, since they won't be able to do anything.
   if (mutation && !context.user) {
     return Promise.resolve({ role: Role.NONE });
   }
-  return r.table('projects').filter({ id, deleted: false }).run(context.conn)
+  const query: any = {
+    deleted: false,
+  };
+  if (id) {
+    query.id = id;
+  }
+  if (name) {
+    query.name = name;
+  }
+  return r.table('projects').filter(query).run(context.conn)
   .then(maybe)
   .then((project: ProjectRecord) => {
     // No such project

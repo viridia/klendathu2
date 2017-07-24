@@ -1,0 +1,29 @@
+# One of the user's saved filters.
+type Filter {
+  # Name of this filter.
+  name: String!
+
+  # JSON-encoded filter expression.
+  value: String!
+}
+
+# A user's membership within a project.
+type ProjectMembership {
+  # User name of project member.
+  user: String!
+
+  # Access level for the this user (direct as project member).
+  role: Int!
+
+  # Access level for the this user (indirect as organization member).
+  inheritedRole: Int
+
+  # List of columns to display in the issue list.
+  columns: [String!]
+
+  # List of label names to display in the issue summary list.
+  labels: [Int!]!
+
+  # List of saved queries.
+  filters: [Filter!]!
+}

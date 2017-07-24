@@ -1,0 +1,48 @@
+# Issue states (assigned, in progress, verified, etc.)
+type State {
+  # Unique id of this workflow state.
+  id: String!
+  # Human-readable name of this workflow state.
+  caption: String!
+  # Whether this state is closed or open.
+  closed: Boolean
+  # List of states which can follow this state.
+  transitions: [String!]
+}
+
+# Requiments for an action
+type Requirements {
+  # If present, action is only shown for these states.
+  state: [String!]
+}
+
+# Shortcut action for a workflow
+type Action {
+  # Human-readable name of this action.
+  caption: String!
+  # State to transition (null if no transition)
+  state: String
+  # Owner expression (null if no change)
+  owner: String
+  # Prerequisites for this action
+  requirements: Requirements
+}
+
+# Issue workflow.
+# A workflow is essentially a state transition graph.
+type Workflow {
+  # Name of this workflow.
+  name: String!
+  # Project where this template is defined.
+  # project: String
+  # Workflow that this is an extension of.
+  extends: String
+  # Complete copy of the workflow this inherits from
+  extendsData: Workflow
+  # List of possible starting states
+  start: [String!]
+  # List of workflow states
+  states: [State!]!
+  # Shortcut actions for this workflow
+  actions: [Action!]!
+}

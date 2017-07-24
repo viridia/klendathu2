@@ -1,0 +1,79 @@
+{
+  "name": "software",
+  "project": "std",
+  "types": [
+    {
+      "id": "issue",
+      "abstract": true,
+      "fields": [
+        {
+          "id": "priority",
+          "caption": "Priority",
+          "type": "ENUM",
+          "default": "P2",
+          "values": [ "P0", "P1", "P2", "P3", "P4" ],
+          "position": "top",
+          "align": "center"
+        }
+      ]
+    },
+    {
+      "id": "bug",
+      "caption": "Bug",
+      "extends": "./issue",
+      "bg": "#ffccf3",
+      "fields": [
+        {
+          "id": "severity",
+          "caption": "Severity",
+          "type": "ENUM",
+          "default": "S2",
+          "values": [ "S0", "S1", "S2", "S3", "S4" ],
+          "position": "top",
+          "align": "center"
+        },
+        {
+          "id": "hardware_os",
+          "caption": "Hardware/OS",
+          "type": "TEXT",
+          "max_length": 128,
+          "position": "top",
+          "suggest": true
+        },
+        {
+          "id": "version",
+          "caption": "Product Version",
+          "type": "TEXT",
+          "max_length": 64,
+          "position": "top",
+          "suggest": true
+        }
+      ]
+    },
+    {
+      "id": "feature",
+      "caption": "Feature",
+      "extends": "./issue",
+      "bg": "#e8d1ff"
+    },
+    {
+      "id": "task",
+      "caption": "Task",
+      "contains": [ "task" ],
+      "extends": "./issue",
+      "bg": "#ffd3c2"
+    },
+    {
+      "id": "documentation",
+      "caption": "Docs",
+      "extends": "./issue",
+      "bg": "#addcff"
+    },
+    {
+      "id": "internal_cleanup",
+      "caption": "Internal Cleanup",
+      "extends": "./issue",
+      "bg": "#c9e79c"
+    }
+  ]
+}

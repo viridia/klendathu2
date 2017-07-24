@@ -1,5 +1,114 @@
+# Relation between linked issues
+enum IssueRelation {
+  BLOCKED_BY
+  BLOCKS
+  DUPLICATE
+  RELATES_TO
+  PART_OF
+  HAS_PART
+}
+
+# Link to another issue.
+type LinkedIssue {
+  # ID of issue to which this is linked
+  to: Int!
+
+  # How the issues are related
+  relation: IssueRelation!
+}
+
+# Comment on an issue.
+type Comment {
+  # Id of this comment
+  id: ID!
+
+  # Author of the comment
+  author: String!
+
+  # Text of the comment
+  body: String!
+
+  # Date and time when the comment was created.
+  created: Date!
+
+  # Date and time when the comment was last edited.
+  updated: Date!
+}
+
+# Custom field value.
+type CustomFieldValue {
+  # Name of the custom field
+  name: String!
+
+  # Value of the custom field
+  value: String!
+}
+
 # An issue.
 type Issue {
   # Unique id of this issue.
   id: Int!
+
+  # ID of the project this issue belongs to.
+  project: ID!
+
+  # Type of issue (bug, feature, task, etc.) - types defined in project template
+  type: String!
+
+  # Current issue state (in progress, done) - states defined in project workflow
+  state: String!
+
+  # 'One-line summary of the issue.',
+  summary: String!
+
+  # Detailed description of the issue.
+  description: String!
+
+  # User that originally reported this issue.
+  reporter: String!
+
+  # Current owner of this issue.
+  owner: String
+
+  # Users who wish to be informed when this issue is updated.
+  cc: [String!]!
+
+  # Date and time when the issue was created.
+  created: Date!
+
+  # Date and time when the issue was last changed.
+  updated: Date!
+
+  # Labels associated with this issue.
+  labels: [Int!]!
+
+  # Labels associated with this issue (expanded).
+  labelsData: [Label!]!
+
+  # List of issues linked to this one.
+  linked: [LinkedIssue!]!
+
+  # Linked issue that includes this one, for convenience.
+  parent: Int
+
+  # List of custom field values for this issue.
+  custom: [CustomFieldValue!]!
+
+  # List of comments on this issue.
+  comments: [Comment!]!
+
+  # List of attachments for this issue
+  attachments: [Attachment!]!
+
+  # Whether this issue should be visible to non-members of the project.
+  public: Boolean
+
+  # History of changes to this issue
+  changes: [Change!]!
+
+  #   score: {
+  #     type: GraphQLInt,
+  #     description: 'Relevance score for text searches.',
+  #   },
+  # },
 }

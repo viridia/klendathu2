@@ -13,6 +13,7 @@ export function maybe<T>(cursor: r.Cursor): Promise<T> {
         return false;
       }
     }, () => {
+      resolve(null);
       return null;
     });
   });

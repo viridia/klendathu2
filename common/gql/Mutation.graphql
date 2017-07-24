@@ -2,7 +2,7 @@ type Mutation {
   # Create a new issue record.
   newIssue(
     # Id of the project the new issue is being added to.
-    project: String!,
+    project: ID!,
     # Contents of the issue to be created.
     issue: IssueInput!
   ): Issue!
@@ -10,7 +10,7 @@ type Mutation {
   # Update an existing issue record.
   newIssue(
     # Project containing the issue.
-    project: String!,
+    project: ID!,
     # Id of the issue to update.
     id: Int!,
     # Updated contents of the issue
@@ -20,7 +20,7 @@ type Mutation {
   # Delete an issue record.
   deleteIssue(
     # Project containing the issue.
-    project: String!,
+    project: ID!,
     # Id of the issue to delete.
     id: Int!
   ): Int!
@@ -91,13 +91,13 @@ type Mutation {
 #     },
 
   # Create a new project.
-  newProject(project: ProjectInput!): Project!
+  newProject(input: ProjectInput!): Project!
 
   # Modify an existing project.
-  updateProject(id: String!, project: ProjectInput!): Project!
+  updateProject(project: ID!, input: ProjectInput!): Project!
 
   # Modify an existing project.
-  deleteProject(project: String!): ID!
+  deleteProject(project: ID!): ID!
 
 #     updateProjectMembership: {
 #       description: 'Modify the role or settings for a project member.',

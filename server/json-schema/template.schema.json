@@ -1,0 +1,123 @@
+{
+  "id": "http://klendathu.viridia.org/schemas/template.schema.json",
+  "type": "object",
+  "title": "Template",
+  "description": "Issue template.",
+  "additionalProperties": false,
+  "properties": {
+    "name": {
+      "description": "Name of the template.",
+      "type": "string"
+    },
+    "project": {
+      "description": "Project that this template belongs to.",
+      "type": "string"
+    },
+    "types": {
+      "description": "Array of possible issue types.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "title": "IssueType",
+        "description": "List of possible issue types.",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "description": "Name of the issue type.",
+            "type": "string"
+          },
+          "caption": {
+            "description": "Human-readable name of this field.",
+            "type": "string"
+          },
+          "abstract": {
+            "description": "If true, issues of this type can not be instantiated.",
+            "type": "boolean"
+          },
+          "extends": {
+            "description": "Indicates that this type is an extension of another type.",
+            "type": ["string", "null"]
+          },
+          "contains": {
+            "description": "List of issue types that this issue can contain.",
+            "type": "array",
+            "items": {
+              "type": "string",
+            }
+          },
+          "bg": {
+            "description": "Background color used when displaying type badge.",
+            "type": "string",
+            "pattern": "#[0-9A-Fa-f]{6}"
+          },
+          "fields": {
+            "description": "List of custom fields for this type.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "title": "CustomField",
+              "description": "Defines a custom field for an issue.",
+              "additionalProperties": false,
+              "properties": {
+                "id": {
+                  "description": "ID of of this field.",
+                  "type": "string"
+                },
+                "caption": {
+                  "description": "Human-readable name of this field.",
+                  "type": "string"
+                },
+                "type": {
+                  "description": "Data type of the field.",
+                  "type": "string",
+                  "enum": ["text", "enum", "issue", "user"]
+                },
+                "default": {
+                  "description": "Default value for field.",
+                  "type": "string"
+                },
+                "values": {
+                  "description": "If field is enum type, list of enum values.",
+                  "type": "array",
+                  "item": "string"
+                },
+                "position": {
+                  "description": "How field should be positioned vertically.",
+                  "type": "string",
+                  "enum": ["top", "bottom"]
+                },
+                "align": {
+                  "description": "Horizontally alignment of field value in issue list column.",
+                  "type": "string",
+                  "enum": ["left", "right", "center"]
+                },
+                "max_length": {
+                  "description": "Maximum length of field in characters.",
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "suggest": {
+                  "description": "Whether the input control should show suggestions.",
+                  "type": "boolean"
+                },
+              },
+              "required": [
+                "id",
+                "caption",
+                "type"
+              ]
+            }
+          },
+        },
+        "required": [
+          "id"
+        ]
+      }
+    },
+  },
+  "required": [
+    "name",
+    "project",
+    "types"
+  ]
+}

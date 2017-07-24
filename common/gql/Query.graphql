@@ -18,7 +18,7 @@ enum Predicate {
 type Query {
   # Retrieve a project record by id or by name.
   issue(
-    # Project containing the issue being queried.
+    # Id of the project containing the issue being queried.
     project: ID!
     # Id of the issue to retrieve.
     id: Int!
@@ -26,7 +26,7 @@ type Query {
 
   # Retrieve issues which meet a set of filter criteria.
   issues(
-    # Project containing the issues being queried.
+    # ID of the project containing the issues being queried.
     project: ID!
     # Text search string.
     search: String
@@ -48,16 +48,14 @@ type Query {
     description: String
     # Search predicate for the description field.
     descriptionPred: Predicate
+    # Query term that restricts the issue search to a set of label ids.
+    labels: [Int!]
   ): [Issue!]!
 
   #   //     description: 'Retrieve issues which meet a set of filter criteria.',
   #   //   issues: {
   #   //     type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(issueType))),
   #   //     args: {
-  #   //       labels: {
-  #   //         type: new GraphQLList(new GraphQLNonNull(GraphQLInt)),
-  #   //         description: 'Query term that restricts the issue search to a set of label ids.',
-  #   //       },
   #   //       linked: {
   #   //         type: new GraphQLList(new GraphQLNonNull(GraphQLInt)),
   #   //         description: 'Specifies a list of linked issues to search for.',
@@ -108,26 +106,25 @@ type Query {
     # Id of the project to retrieve.
     id: ID
     # Name of the project to retreive.
-    name: String
+    name: ID
   ): Project
 
   # Retrieve a list of projects.
   projects(
-    # Name of the project to retreive. If null, retrieve all projects visible to current user.
-    name: String
+    # ID of the project to retreive. If null, retrieve all projects visible to current user.
+    name: ID
   ): [Project!]!
 
-  # /** Information about a project member, including role and settings.
-  #     @param project Identifier for the project.
-  #     @param user Username of the user. Defaults to current user.
-  # */
-  # projectMembership({ project, user }: { project?: string, user?: string }):
-  #     ProjectMembership | null;
-  #
-  # /** Information about all project members, including role and settings.
-  #     @param project Identifier for the project.
-  # */
-  # projectMemberships({ project }: { project?: string }): ProjectMembership[];
+  # Information about a project member, including role and settings.
+  projectMembership(
+    # Id of the project.
+    project: ID!
+    # Username of the user. Defaults to current user.
+    user: String
+  ): ProjectMembership
+
+  # Information about all project members, including role and settings.
+  projectMemberships(project: ID!): [ProjectMembership!]!
 
   # Data for a label.
   label(
@@ -145,20 +142,11 @@ type Query {
     token: String
   ): [Label!]!
 
-  #   //   workflow: {
-  #   //     type: workflowType,
-  #   //     args: {
-  #   //       project: { type: new GraphQLNonNull(GraphQLString) },
-  #   //       name: { type: new GraphQLNonNull(GraphQLString) },
-  #   //     },
-  #   //   },
-  #   //   template: {
-  #   //     type: templateType,
-  #   //     args: {
-  #   //       project: { type: new GraphQLNonNull(GraphQLString) },
-  #   //       name: { type: new GraphQLNonNull(GraphQLString) },
-  #   //     },
-  #   //   },
+  # Fetch a template by qualified name
+  template(name: String!): Template
+
+  # Fetch a workflow by qualified name
+  workflow(name: String!): Workflow
 
   # Profile of the current logged-in user.
   profile: Profile

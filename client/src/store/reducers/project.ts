@@ -7,10 +7,10 @@ const UpdateProjectMutation = require('../../graphql/mutations/updateProject.gra
 const DeleteProjectMutation = require('../../graphql/mutations/deleteProject.graphql');
 const ProjectListQuery = require('../../graphql/queries/projectList.graphql');
 
-export function createProject(project: Partial<Project>) {
+export function createProject(input: Partial<Project>) {
   return apollo.mutate<{ newProject: Project }>({
     mutation: NewProjectMutation,
-    variables: { project },
+    variables: { input },
     update: (store, { data: { newProject } }) => {
       const data: { projects: Project[] } = store.readQuery({ query: ProjectListQuery });
       data.projects.push(newProject);
@@ -19,10 +19,10 @@ export function createProject(project: Partial<Project>) {
   });
 }
 
-export function deleteProject(id: string) {
+export function deleteProject(project: string) {
   return apollo.mutate<{ deleteProject: string }>({
     mutation: DeleteProjectMutation,
-    variables: { id },
+    variables: { project },
     update: (store, { data: { deleteProject: deletedId } }) => {
       const data: { projects: Project[] } = store.readQuery({ query: ProjectListQuery });
       data.projects = data.projects.filter(p => p.id !== deletedId);
@@ -31,10 +31,10 @@ export function deleteProject(id: string) {
   });
 }
 
-export function updateProject(id: string, project: Partial<Project>) {
+export function updateProject(project: string, input: Partial<Project>) {
   return apollo.mutate({
     mutation: UpdateProjectMutation,
-    variables: { id, project },
+    variables: { input, project },
     // fragments: ProjectContent,
   });
 }
