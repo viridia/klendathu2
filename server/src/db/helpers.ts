@@ -63,3 +63,7 @@ export function ensureIndicesExist (
   }
   return Promise.all(promises);
 }
+
+export function escapeRegExp(str: string) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+}

@@ -1,47 +1,30 @@
 // tslint:disable:jsx-no-lambda
 import { LinkedIssue, Project, Relation, Template, User, Workflow } from 'common/api';
 import * as Immutable from 'immutable';
+import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import { Button, Checkbox, ControlLabel } from 'react-bootstrap';
+import { Button, Checkbox, ControlLabel, FormControl } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
   RouteComponentProps,
 } from 'react-router-dom';
 // import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-// import FormControl from 'react-bootstrap/lib/FormControl';
 // import MenuItem from 'react-bootstrap/lib/MenuItem';
 // import IssueAutoComplete from './issueAutocomplete.jsx';
 // import UserAutoComplete from '../common/userAutoComplete.jsx';
 // import LabelSelector from './labelSelector.jsx';
-// import StateSelector from './stateSelector.jsx';
 // import CustomEnumField from './customEnumField.jsx';
 // import CustomSuggestField from './customSuggestField.jsx';
 // import CommentEdit from './commentEdit.jsx';
 // import LinkedIssues from './linkedIssues.jsx';
 // import UploadAttachments from '../files/uploadAttachments.jsx';
-// import Relation from '../../lib/relation';
 import autobind from '../../lib/autobind';
 import '../common/card.scss';
 import '../common/form.scss';
+import UserAutocomplete from '../common/UserAutocomplete';
+import StateSelector from './input/StateSelector';
 import TypeSelector from './input/TypeSelector';
 import './IssueCompose.scss';
-
-// IssueCompose.propTypes = {
-//   issue: PropTypes.shape({
-//     id: PropTypes.number.isRequired,
-//   }),
-//   project: PropTypes.shape({
-//     id: PropTypes.string.isRequired,
-//     workflow: PropTypes.shape({}),
-//     template: PropTypes.shape({}),
-//   }).isRequired,
-// };
-//
-// IssueCompose.contextTypes = {
-//   profile: PropTypes.shape({
-//     username: PropTypes.string.isRequired,
-//   }),
-// };
 
 interface Props extends RouteComponentProps<{}> {
   issue?: { id: number; };
@@ -74,13 +57,17 @@ interface State {
 }
 
 export default class IssueCompose extends React.Component<Props, State> {
+  public static contextTypes = {
+    profile: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+    }),
+  };
+
   private form: HTMLFormElement;
 
   constructor(props: Props, context: any) {
     super(props, context);
-  //   this.onChangeType = this.onChangeType.bind(this);
   //   this.onChangeState = this.onChangeState.bind(this);
-  //   this.onChangeSummary = this.onChangeSummary.bind(this);
   //   this.onChangeDescription = this.onChangeDescription.bind(this);
   //   this.onChangeReporter = this.onChangeReporter.bind(this);
   //   this.onChangeOwner = this.onChangeOwner.bind(this);
@@ -95,8 +82,6 @@ export default class IssueCompose extends React.Component<Props, State> {
   //   this.onAddLinkedIssue = this.onAddLinkedIssue.bind(this);
   //   this.onRemoveLinkedIssue = this.onRemoveLinkedIssue.bind(this);
   //   this.onInputKeyDown = this.onInputKeyDown.bind(this);
-  //   this.onFocusNext = this.onFocusNext.bind(this);
-  //   this.onFocusPrev = this.onFocusPrev.bind(this);
   //   this.onCreate = this.onCreate.bind(this);
   //   this.me = { id: context.profile.username, label: context.profile.username };
     this.state = {
@@ -135,67 +120,13 @@ export default class IssueCompose extends React.Component<Props, State> {
   //   }
   //   this.buildLinkedIssueList(nextState.linkedIssueMap);
   // }
+
   public render() {
     const { project, issue, location } = this.props;
     console.log(project, issue, location);
     const backLink = (location.state && location.state.back) || { pathname: '..' };
     const canSave = this.state.summary && !this.state.linkedIssue;
     // return (<section className="kdt issue-compose">
-    //     <section className="content create-issue">
-    //       <div className="left">
-    //         <form ref={el => { this.form = el; }} name="lastpass-disable-search">
-    //           <table className="create-issue-table form-table">
-    //             <tbody>
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Issue Type:</ControlLabel></th>
-    //                 <td>
-    //                   <TypeSelector
-    //                       value={this.state.type}
-    //                       template={project.template}
-    //                       onChange={this.onChangeType} />
-    //                 </td>
-    //               </tr>
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Summary:</ControlLabel></th>
-    //                 <td>
-    //                   <FormControl
-    //                       className="summary"
-    //                       type="text"
-    //                       value={this.state.summary}
-    //                       placeholder="one-line summary of this issue"
-    //                       onChange={this.onChangeSummary}
-    //                       onKeyDown={this.onInputKeyDown} />
-    //                 </td>
-    //               </tr>
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Description:</ControlLabel></th>
-    //                 <td>
-    //                   <FormControl
-    //                       className="description"
-    //                       componentClass="textarea"
-    //                       value={this.state.description}
-    //                       placeholder="description of this issue (markdown format supported)"
-    //                       onChange={this.onChangeDescription} />
-    //                 </td>
-    //               </tr>
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Reporter:</ControlLabel></th>
-    //                 <td className="reporter single-static">
-    //                   <span>{this.context.profile.username}</span>
-    //                 </td>
-    //               </tr>
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Assign to:</ControlLabel></th>
-    //                 <td>
-    //                   <UserAutoComplete
-    //                       className="assignee ac-single"
-    //                       project={project}
-    //                       placeholder="(unassigned)"
-    //                       selection={this.state.owner}
-    //                       onSelectionChange={this.onChangeOwner}
-    //                       onEnter={this.onFocusNext} />
-    //                 </td>
-    //               </tr>
     //               <tr>
     //                 <th className="header"><ControlLabel>CC:</ControlLabel></th>
     //                 <td>
@@ -278,18 +209,6 @@ export default class IssueCompose extends React.Component<Props, State> {
     //           </table>
     //         </form>
     //       </div>
-    //       <aside className="right">
-    //         <StateSelector
-    //             project={project}
-    //             workflow={project.workflow}
-    //             state={this.state.issueState}
-    //             prevState={this.state.prevState}
-    //             onStateChanged={this.onChangeState} />
-    //         {project.public && <ControlLabel>Visbility</ControlLabel>}
-//         {project.public && <Checkbox checked={this.state.public} onChange={this.onChangePublic}>
-    //           Public
-    //         </Checkbox>}
-    //       </aside>
     //     </section>
     //   </div>
     // </section>);
@@ -316,11 +235,62 @@ export default class IssueCompose extends React.Component<Props, State> {
                         />
                       </td>
                     </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>Summary:</ControlLabel></th>
+                      <td>
+                        <FormControl
+                            className="summary"
+                            type="text"
+                            value={this.state.summary}
+                            placeholder="one-line summary of this issue"
+                            onChange={this.onChangeSummary}
+                            onKeyDown={this.onInputKeyDown}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>Description:</ControlLabel></th>
+                      <td>
+                        <FormControl
+                            className="description"
+                            componentClass="textarea"
+                            value={this.state.description}
+                            placeholder="description of this issue (markdown format supported)"
+                            onChange={this.onChangeDescription}
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>Reporter:</ControlLabel></th>
+                      <td className="reporter single-static">
+                        <span>{this.context.profile.username}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>Assign to:</ControlLabel></th>
+                      <td>
+                        <UserAutocomplete
+                            className="assignee ac-single"
+                            project={project}
+                            placeholder="(unassigned)"
+                            selection={this.state.owner}
+                            onSelectionChange={this.onChangeOwner}
+                            onEnter={this.onFocusNext}
+                        />
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </form>
             </div>
             <aside className="right">
+              <StateSelector
+                  project={project}
+                  workflow={this.props.workflow}
+                  state={this.state.issueState}
+                  prevState={this.state.prevState}
+                  onStateChanged={this.onChangeState}
+              />
               {project.isPublic && <ControlLabel>Visbility</ControlLabel>}
               {project.isPublic &&
                 (<Checkbox checked={this.state.public} onChange={this.onChangePublic}>
@@ -349,19 +319,20 @@ export default class IssueCompose extends React.Component<Props, State> {
       </section>
     );
   }
-  //
-  // onInputKeyDown(e) {
-  //   if (e.keyCode === 13) { // ENTER
-  //     e.preventDefault();
-  //     this.onFocusNext();
-  //   }
-  // }
-  //
-  // private onFocusNext() {
-  //   this.navigate(1);
-  // }
-  //
-  // onFocusPrev() {
+
+  @autobind
+  private onInputKeyDown(e: any) {
+    if (e.keyCode === 13) { // ENTER
+      e.preventDefault();
+      this.onFocusNext();
+    }
+  }
+
+  private onFocusNext() {
+    this.navigate(1);
+  }
+
+  // private onFocusPrev() {
   //   this.navigate(-1);
   // }
 
@@ -370,28 +341,32 @@ export default class IssueCompose extends React.Component<Props, State> {
     this.setState({ type: value });
   }
 
-  // onChangeState(st) {
-  //   this.setState({ issueState: st });
-  // }
-  //
-  // onChangeSummary(e) {
-  //   // TODO: validate length
-  //   this.setState({ summary: e.target.value });
-  // }
-  //
-  // onChangeDescription(e) {
-  //   // TODO: validate length
-  //   this.setState({ description: e.target.value });
-  // }
-  //
+  @autobind
+  private onChangeState(st: string) {
+    this.setState({ issueState: st });
+  }
+
+  @autobind
+  private onChangeSummary(e: any) {
+    // TODO: validate length
+    this.setState({ summary: e.target.value });
+  }
+
+  @autobind
+  private onChangeDescription(e: any) {
+    // TODO: validate length
+    this.setState({ description: e.target.value });
+  }
+
   // onChangeReporter(e) {
   //   this.setState({ reporter: e });
   // }
-  //
-  // onChangeOwner(selection) {
-  //   this.setState({ owner: selection });
-  // }
-  //
+
+  @autobind
+  private onChangeOwner(selection: User) {
+    this.setState({ owner: selection });
+  }
+
   // onChangeCC(selection) {
   //   this.setState({ cc: selection });
   // }
@@ -552,28 +527,28 @@ export default class IssueCompose extends React.Component<Props, State> {
   //   this.linkedIssueList = linkedIssueMap.map((relation, to) =>
   //       ({ relation, to })).toArray();
   // }
-  //
-  // navigate(dir) {
-  //   const activeEl = document.activeElement;
-  //   let activeIndex = -1;
-  //   for (let i = 0; i < this.form.elements.length; i += 1) {
-  //     if (this.form.elements[i] === activeEl) {
-  //       activeIndex = i;
-  //       break;
-  //     }
-  //   }
-  //   activeIndex += dir;
-  //   if (activeIndex < 0) {
-  //     activeIndex = this.form.elements.length - 1;
-  //   } else if (activeIndex >= this.form.elements.length) {
-  //     activeIndex = 0;
-  //   }
-  //   const nextActive = this.form.elements[activeIndex];
-  //   if (nextActive) {
-  //     nextActive.focus();
-  //   }
-  // }
-  //
+
+  private navigate(dir: number) {
+    const activeEl = document.activeElement;
+    let activeIndex = -1;
+    for (let i = 0; i < this.form.elements.length; i += 1) {
+      if (this.form.elements[i] === activeEl) {
+        activeIndex = i;
+        break;
+      }
+    }
+    activeIndex += dir;
+    if (activeIndex < 0) {
+      activeIndex = this.form.elements.length - 1;
+    } else if (activeIndex >= this.form.elements.length) {
+      activeIndex = 0;
+    }
+    const nextActive = this.form.elements[activeIndex] as HTMLFormElement;
+    if (nextActive) {
+      nextActive.focus();
+    }
+  }
+
   // customFieldList(issueType) {
   //   let fields = [];
   //   const { project } = this.props;

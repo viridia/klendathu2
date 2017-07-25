@@ -1,6 +1,7 @@
 import { Template } from 'common/api';
 import * as React from 'react';
 import { Radio } from 'react-bootstrap';
+import autobind from '../../../lib/autobind';
 
 interface Props {
   value: string;
@@ -31,6 +32,7 @@ export default class TypeSelector extends React.Component<Props> {
     </div>);
   }
 
+  @autobind
   private onChange(e: any) {
     this.props.onChange(e.target.dataset.type);
   }

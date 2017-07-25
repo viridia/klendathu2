@@ -3,6 +3,7 @@ import * as issue from './issue';
 import * as profile from './profile';
 import * as project from './project';
 import * as template from './template';
+import * as user from './user';
 import * as workflow from './workflow';
 
 /** Root resolver map. Because the map is large, we've split it over many source files and then
@@ -14,6 +15,7 @@ export const resolverMap = {
     ...profile.queries,
     ...project.queries,
     ...template.queries,
+    ...user.queries,
     ...workflow.queries,
   },
 
@@ -31,4 +33,5 @@ export const resolverMap = {
   ...date.types,
   ...profile.types,
   ...project.types,
+  ...user.types,
 };

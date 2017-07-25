@@ -16,9 +16,6 @@ export const queries = {
 };
 
 export const types = {
-  User: {
-    username(user: UserRecord) { return user.id; },
-  },
   Profile: {
     username(user: UserRecord) { return user.id; },
   },

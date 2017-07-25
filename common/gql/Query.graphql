@@ -155,5 +155,10 @@ type Query {
   user(username: String!): User
 
   # Look up users matching a search token.
-  user(token: String!): [User!]!
+  users(
+    # Search token for user
+    token: String!
+    # If present. means limit search to members of this project.
+    project: String
+  ): [User!]!
 }
