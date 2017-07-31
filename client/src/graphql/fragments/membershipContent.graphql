@@ -1,0 +1,5 @@
+fragment membershipContent on Membership {
+  user
+  project
+  role
+}

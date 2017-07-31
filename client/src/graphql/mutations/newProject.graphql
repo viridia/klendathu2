@@ -4,7 +4,6 @@ mutation newProject($input: ProjectInput!) {
     name
     title
     description
-    owningUser
     owningOrg
     role
     created

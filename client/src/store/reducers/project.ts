@@ -1,6 +1,5 @@
 import { Project } from 'common/api';
 import apollo from '../apollo';
-// import { ProjectContent } from './fragments';
 
 const NewProjectMutation = require('../../graphql/mutations/newProject.graphql');
 const UpdateProjectMutation = require('../../graphql/mutations/updateProject.graphql');

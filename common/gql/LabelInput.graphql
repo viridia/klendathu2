@@ -1,0 +1,8 @@
+# Type used to create or update a label.
+input LabelInput {
+  # Text of the label.
+  name: String
+
+  # CSS color of the label.
+  color: String
+}

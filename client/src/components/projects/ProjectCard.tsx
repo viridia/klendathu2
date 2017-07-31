@@ -46,10 +46,6 @@ export default class ProjectCard extends React.Component<Props, State> {
             <div className="description">{project.title}</div>
           </div>
           <div className="project-owner">
-            <div className="owned-by">
-              <span className="title">Owned by: </span>
-              {project.owningUser}
-            </div>
             <div className="role">
               <span className="title">Role: </span>
               {Role[project.role].toLowerCase()}

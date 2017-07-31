@@ -268,6 +268,8 @@ export default function (apiRouter: express.Router, conn: r.Connection) {
       res.send({ err: 'username-too-short' });
     } else if (username.toLowerCase() !== username) {
       res.send({ err: 'username-lower-case' });
+    } else if (!username.match(/^[a-z][a-z0-9_\-]+$/)) {
+      res.send({ err: 'username-invalid-chars' });
     } else if (password.length < 5) {
       res.send({ err: 'password-too-short' });
     } else if (password !== password2) {
@@ -299,8 +301,9 @@ export default function (apiRouter: express.Router, conn: r.Connection) {
                 logger.info('User creation successful:', username);
                 // console.log('insertion result:', u);
                 return req.logIn(ur, () => {
-                  return res.end();
-                  // return res.json(serializers.profile(u));
+                  const expires = new Date(Date.now() + TOKEN_EXPIRATION);
+                  const token = jwt.encode({ username: ur.id, expires }, jwtOpts.secretOrKey);
+                  res.json({ token, expires });
                 });
               }, reason => {
                 console.log('reason:', reason);

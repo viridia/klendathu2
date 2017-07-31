@@ -1,4 +1,4 @@
-query UserQuery($user: String!) {
+query UserQuery($user: ID!) {
   user(username: $user) {
     username
     fullname

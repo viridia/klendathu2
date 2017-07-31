@@ -4,6 +4,7 @@
     "align": [true, "parameters", "statements", "members", "elements"],
     "arrow-parens": false,
     "forin": true,
+    "import-name": false,
     "interface-name": [true, "never-prefix"],
     "jsdoc-format": false,
     "jsx-no-multiline-js": false,

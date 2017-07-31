@@ -1,10 +1,9 @@
-// TODO: add toasts
-// import ReduxToastr from 'react-redux-toastr';
-// import 'react-redux-toastr/src/less/index.less';
 import { User } from 'common/api';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { compose, DefaultChildProps, graphql } from 'react-apollo';
+import ReduxToastr from 'react-redux-toastr';
+import 'react-redux-toastr/src/styles/index.scss';
 import {
   Route,
   RouteComponentProps,
@@ -53,16 +52,12 @@ class MainPage extends React.Component<
 
   public render(): any {
     const { location, data: { error } } = this.props;
-    // const { params, data: { error, profile } } = this.props;
     if (error) {
       return <ErrorDisplay error={error} />;
     }
-    // TODO: finish
-    // const main = React.cloneElement(child, { params, profile });
-    //   <ReduxToastr position="bottom-left" />
-    // const { params } = this.props.match;
     return (
       <div className="kdt page">
+        <ReduxToastr position="bottom-left" />
         <Header location={location} />
         <Switch>
           <Route path="/gql" component={GraphiQLPage} />

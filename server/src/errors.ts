@@ -10,6 +10,8 @@ export enum ErrorKind {
   NAME_TOO_SHORT = 'name-too-short',
   INVALID_NAME = 'invalid-name',
   NAME_EXISTS = 'name-exists',
+  MISSING_FIELD = 'missing-field',
+  NO_ADMINS = 'no-admins',
   // MISSING_PASSWORD = 'missing-password',
   // INVALID_PASSWORD = 'invalid-password',
   // INCORRECT_PASSWORD = 'incorrect-password',

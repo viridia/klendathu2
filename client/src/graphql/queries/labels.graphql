@@ -1,4 +1,4 @@
-query labelsQuery($project:ID!) {
+query labelsQuery($project: ID!) {
   labels(project: $project) {
     project
     id
@@ -7,7 +7,7 @@ query labelsQuery($project:ID!) {
     creator
     created
   }
-  projectMembership(project: $project) {
+  projectPrefs(project: $project) {
     labels
   }
 }

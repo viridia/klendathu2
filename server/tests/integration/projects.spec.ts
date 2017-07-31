@@ -1,9 +1,9 @@
-// import { ensure } from 'certainty';
+import { ensure } from 'certainty';
 import * as dotenv from 'dotenv';
-import * as r from 'rethinkdb';
 import * as request from 'supertest';
-import App from '../../src/App';
+import { Role } from '../../../common/api';
 import { logger } from '../../src/logger';
+import { clearTables, createApp, createTestAccount } from './fixtures';
 
 dotenv.config();
 
@@ -11,67 +11,191 @@ dotenv.config();
 logger.level = 'warn';
 
 const newProjectMutation = `mutation NewProject($input: ProjectInput!) {
-  newProject(project: $input) {
+  newProject(input: $input) {
     id
     name
+    title
+    description
+    created
+    updated
+    role
+    template
+    workflow
+    isPublic
   }
 }`;
 
+// const updateProjectMutation = `mutation UpdateProject($project: ID!, $input: ProjectInput!) {
+//   newProject(project: $project, input: $input) {
+//     id
+//     name
+//     title
+//     description
+//     created
+//     updated
+//     role
+//     template
+//     workflow
+//     isPublic
+//   }
+// }`;
+
+const deleteProjectMutation = `mutation DeleteProject($project: ID!) {
+  deleteProject(project: $project)
+}`;
+
 describe('Projects', function () {
-//   this.slow(300);
+  this.slow(300);
 
-  before(function () {
-    process.env.DB_NAME = 'klendathu_test';
-    process.env.SERVER_PORT = '7171';
-    this.app = new App();
-    return this.app.start();
-  });
-
-  before(function () {
-    return r.table('users').delete({}).run(this.app.conn);
-  });
-
-  before(function () {
-    return request(this.app.httpServer)
-      .post('/api/signup')
-      // .set('authorization', this.authHeader)
-      .send({
-        email: 'test@testing.org',
-        username: 'test-user',
-        fullname: 'Test User',
-        password: 'abc123',
-        password2: 'abc123',
-      })
-      .expect(200)
-      .then(resp => {
-        console.log('response', resp.body);
-      });
-  // apiRouter.post('/signup', (req, res) => {
-  //   const { email, username, fullname, password, password2 } = req.body;
-  });
+  before(createApp);
+  before(clearTables('users', 'issues', 'projects', 'memberships'));
+  before(createTestAccount);
 
   beforeEach(function () {
-    return Promise.all([
-      r.table('issues').delete({}).run(this.app.conn),
-      r.table('projects').delete({}).run(this.app.conn),
-      r.table('projectMemberships').delete({}).run(this.app.conn),
-    ]);
+    this.consoleError = console.error;
+    this.app.logErrors = true;
   });
 
   after(function () {
     this.app.stop();
   });
 
-  it('mutation.newProject', function () {
-    return request(this.app.httpServer)
-      .post('/api/graphql')
-      // .set('authorization', this.authHeader)
-      .send({
-        query: newProjectMutation,
-        variables: {
-          input: {},
-        },
-      })
-      .expect(200);
+  afterEach(function () {
+    console.error = this.consoleError;
+  });
+
+  describe('mutation', function () {
+    afterEach(clearTables('projects'));
+
+    it('newProject', function () {
+      return request(this.app.httpServer)
+        .post('/api/graphql')
+        .set('authorization', `JWT ${this.token}`)
+        .send({
+          query: newProjectMutation,
+          variables: {
+            input: {
+              name: 'test-project',
+            },
+          },
+        })
+        .expect(200)
+        .then(resp => {
+          ensure(resp.body.data.newProject).exists();
+          ensure(resp.body.data.newProject.name).equals('test-project');
+          ensure(resp.body.data.newProject.title).equals('');
+          ensure(resp.body.data.newProject.isPublic).isFalse();
+          // ensure(resp.body.data.newProject.owningUser).equals('test-user');
+          ensure(resp.body.data.newProject.role).equals(Role.ADMINISTRATOR);
+          // this.token = resp.body.token;
+        });
+    });
+
+    it('newProject (duplicate name)', async function () {
+      await request(this.app.httpServer)
+        .post('/api/graphql')
+        .set('authorization', `JWT ${this.token}`)
+        .send({
+          query: newProjectMutation,
+          variables: {
+            input: {
+              name: 'test-project',
+            },
+          },
+        })
+        .expect(200);
+
+      this.app.logErrors = false;
+      console.error = () => '';
+      await request(this.app.httpServer)
+        .post('/api/graphql')
+        .set('authorization', `JWT ${this.token}`)
+        .send({
+          query: newProjectMutation,
+          variables: {
+            input: {
+              name: 'test-project',
+            },
+          },
+        })
+        .expect(200)
+        .then(resp => {
+          ensure(resp.body.errors).exists();
+          ensure(resp.body.errors[0].id).equals('name-exists');
+          // this.token = resp.body.token;
+        });
+    });
+
+    // it('updateProject', async function () {
+    //   let projectId;
+    //   await request(this.app.httpServer)
+    //     .post('/api/graphql')
+    //     .set('authorization', `JWT ${this.token}`)
+    //     .send({
+    //       query: newProjectMutation,
+    //       variables: {
+    //         input: {
+    //           name: 'test-project',
+    //           description: 'a test project',
+    //         },
+    //       },
+    //     })
+    //     .expect(200)
+    //     .then(resp => {
+    //       projectId = resp.body.data.newProject.id;
+    //     });
+    //
+    //   await request(this.app.httpServer)
+    //     .post('/api/graphql')
+    //     .set('authorization', `JWT ${this.token}`)
+    //     .send({
+    //       query: updateProjectMutation,
+    //       variables: {
+    //         project: projectId,
+    //         input: {
+    //           name: 'test-project',
+    //         },
+    //       },
+    //     })
+    //     .expect(200)
+    //     .then(resp => {
+    //       // ensure(resp.body.errors).exists();
+    //       // ensure(resp.body.errors[0].id).equals('name-exists');
+    //       // this.token = resp.body.token;
+    //     });
+    // });
+
+    it('deleteProject', async function () {
+      let projectId: string;
+      await request(this.app.httpServer)
+        .post('/api/graphql')
+        .set('authorization', `JWT ${this.token}`)
+        .send({
+          query: newProjectMutation,
+          variables: {
+            input: {
+              name: 'test-project',
+            },
+          },
+        })
+        .expect(200)
+        .then(resp => {
+          projectId = resp.body.data.newProject.id;
+        });
+
+      await request(this.app.httpServer)
+        .post('/api/graphql')
+        .set('authorization', `JWT ${this.token}`)
+        .send({
+          query: deleteProjectMutation,
+          variables: {
+            project: projectId,
+          },
+        })
+        .expect(200)
+        .then(resp => {
+          ensure(resp.body.data.deleteProject).equals(projectId);
+        });
+    });
   });
 });

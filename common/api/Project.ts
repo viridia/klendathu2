@@ -12,9 +12,6 @@ export interface Project {
   /** A more detailed description of the project. */
   description: string;
 
-  /** User that owns this project. Null if owned by an organization. */
-  owningUser?: string;
-
   /** Organization that owns this project. Null if owned by a user. */
   owningOrg?: string;
 

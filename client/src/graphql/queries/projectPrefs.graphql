@@ -1,0 +1,15 @@
+query projectPrefsQuery($project: ID!) {
+  projectPrefs(project: $project) {
+    columns
+    labels
+    # labelsData {
+    #   id
+    #   name
+    #   color
+    # }
+    filters {
+      name
+      value
+    }
+  }
+}

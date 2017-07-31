@@ -1,7 +1,7 @@
 # Detailed Information about the current user.
 type Profile {
   # Login name of this user.
-  username: String
+  username: ID
 
   # Display name of this user.
   fullname: String!

@@ -13,12 +13,12 @@ interface Props<S> {
   autoFocus?: boolean;
   maxLength?: number;
   multiple?: boolean;
-  onSearch: (search: string, callback: (suggestion: S[], suffixActions?: S[]) => void) => void;
+  onSearch: (search: string, callback: (suggestion: S[], suffixActions?: any[]) => void) => void;
   onChooseSuggestion?: (suggestion: S, callback: (suggestion: S) => void) => boolean;
   onRenderSuggestion?: (suggestion: S) => JSX.Element;
   onRenderSelection?: (suggestion: S) => JSX.Element;
-  onGetValue?: (suggestion: S) => string;
-  onGetSortKey?: (suggestion: S) => string;
+  onGetValue?: (suggestion: S) => string | number;
+  onGetSortKey?: (suggestion: S) => string | number;
   onEnter?: () => void;
   onSelectionChange: (selection: S | S[] | null) => void;
 }
@@ -69,6 +69,25 @@ export default class AutoCompleteChips<S> extends React.Component<Props<S>, Stat
 
   public componentWillUnmount() {
     clearTimeout(this.timer);
+  }
+
+  public addToSelection(item: S) {
+    let selection = this.selection();
+    for (const s of selection) {
+      // Value is already in the list.
+      if (this.props.onGetValue(item) === this.props.onGetValue(s)) {
+        return;
+      }
+    }
+    selection = selection.concat([item]);
+    selection.sort((a, b) => {
+      const aKey = this.props.onGetSortKey(a);
+      const bKey = this.props.onGetSortKey(b);
+      if (aKey < bKey) { return -1; }
+      if (aKey < bKey) { return 1; }
+      return 0;
+    });
+    this.updateSelection(selection);
   }
 
   public render() {
@@ -325,25 +344,6 @@ export default class AutoCompleteChips<S> extends React.Component<Props<S>, Stat
     if (!done) {
       this.addToSelection(suggestion);
     }
-  }
-
-  private addToSelection(item: S) {
-    let selection = this.selection();
-    for (const s of selection) {
-      // Value is already in the list.
-      if (this.props.onGetValue(item) === this.props.onGetValue(s)) {
-        return;
-      }
-    }
-    selection = selection.concat([item]);
-    selection.sort((a, b) => {
-      const aKey = this.props.onGetSortKey(a);
-      const bKey = this.props.onGetSortKey(b);
-      if (aKey < bKey) { return -1; }
-      if (aKey < bKey) { return 1; }
-      return 0;
-    });
-    this.updateSelection(selection);
   }
 
   private updateSelection(selection: S[]) {

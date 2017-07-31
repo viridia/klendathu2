@@ -8,7 +8,7 @@ interface Props {
   children: React.ReactNode;
   className?: string;
   onClose?: () => void;
-  style?: React.HTMLAttributes<HTMLSpanElement>;
+  style?: React.CSSProperties;
 }
 
 export default function Chip({ children, className, onClose, style }: Props) {

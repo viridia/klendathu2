@@ -9,9 +9,6 @@ input ProjectInput {
   # A more detailed description of the project.
   description: String
 
-  # User that owns this project. Null if owned by an organization.
-  owningUser: ID
-
   # Organization that owns this project. Null if owned by a user.
   owningOrg: ID
 

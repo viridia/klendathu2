@@ -1,0 +1,8 @@
+fragment projectPrefsContent on ProjectPrefs {
+  labels
+  columns
+  filters {
+    name
+    value
+  }
+}

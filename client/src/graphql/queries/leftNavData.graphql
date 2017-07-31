@@ -1,8 +1,11 @@
 query leftNavQuery($project: ID!) {
   projectMembership(project: $project) {
     user
+    project
     role
-    inheritedRole
+    # inheritedRole
+  }
+  projectPrefs(project: $project) {
     labels
     # labelsData {
     #   id

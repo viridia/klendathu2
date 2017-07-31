@@ -11,7 +11,6 @@ import {
 // import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 // import MenuItem from 'react-bootstrap/lib/MenuItem';
 // import IssueAutoComplete from './issueAutocomplete.jsx';
-// import UserAutoComplete from '../common/userAutoComplete.jsx';
 // import LabelSelector from './labelSelector.jsx';
 // import CustomEnumField from './customEnumField.jsx';
 // import CustomSuggestField from './customSuggestField.jsx';
@@ -22,6 +21,7 @@ import autobind from '../../lib/autobind';
 import '../common/card.scss';
 import '../common/form.scss';
 import UserAutocomplete from '../common/UserAutocomplete';
+import LabelSelector from './input/LabelSelector';
 import StateSelector from './input/StateSelector';
 import TypeSelector from './input/TypeSelector';
 import './IssueCompose.scss';
@@ -67,22 +67,6 @@ export default class IssueCompose extends React.Component<Props, State> {
 
   constructor(props: Props, context: any) {
     super(props, context);
-  //   this.onChangeState = this.onChangeState.bind(this);
-  //   this.onChangeDescription = this.onChangeDescription.bind(this);
-  //   this.onChangeReporter = this.onChangeReporter.bind(this);
-  //   this.onChangeOwner = this.onChangeOwner.bind(this);
-  //   this.onChangeCC = this.onChangeCC.bind(this);
-  //   this.onChangeLabels = this.onChangeLabels.bind(this);
-  //   this.onChangeLinkedIssue = this.onChangeLinkedIssue.bind(this);
-  //   this.onChangeRelation = this.onChangeRelation.bind(this);
-  //   this.onChangeCustomField = this.onChangeCustomField.bind(this);
-  //   this.onChangeAnother = this.onChangeAnother.bind(this);
-  //   this.onChangeCommentText = this.onChangeCommentText.bind(this);
-  //   this.onAddComment = this.onAddComment.bind(this);
-  //   this.onAddLinkedIssue = this.onAddLinkedIssue.bind(this);
-  //   this.onRemoveLinkedIssue = this.onRemoveLinkedIssue.bind(this);
-  //   this.onInputKeyDown = this.onInputKeyDown.bind(this);
-  //   this.onCreate = this.onCreate.bind(this);
   //   this.me = { id: context.profile.username, label: context.profile.username };
     this.state = {
       prevState: null,
@@ -123,39 +107,10 @@ export default class IssueCompose extends React.Component<Props, State> {
 
   public render() {
     const { project, issue, location } = this.props;
-    console.log(project, issue, location);
+    // console.log(project, issue, location);
     const backLink = (location.state && location.state.back) || { pathname: '..' };
     const canSave = this.state.summary && !this.state.linkedIssue;
     // return (<section className="kdt issue-compose">
-    //               <tr>
-    //                 <th className="header"><ControlLabel>CC:</ControlLabel></th>
-    //                 <td>
-    //                   <div className="ac-multi-group">
-    //                     <UserAutoComplete
-    //                         className="assignee ac-multi"
-    //                         project={project}
-    //                         multiple
-    //                         selection={this.state.cc}
-    //                         onSelectionChange={this.onChangeCC}
-    //                         onEnter={this.onFocusNext} />
-    //                   </div>
-    //                 </td>
-    //               </tr>
-    //               {this.renderTemplateFields()}
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Labels:</ControlLabel></th>
-    //                 <td>
-    //                   <div className="ac-multi-group">
-    //                     <LabelSelector
-    //                         id="labels"
-    //                         className="labels ac-multi"
-    //                         project={project}
-    //                         selection={this.state.labels}
-    //                         onSelectionChange={this.onChangeLabels}
-    //                         onEnter={this.onFocusNext} />
-    //                   </div>
-    //                 </td>
-    //               </tr>
     //               <tr>
     //                 <th className="header"><ControlLabel>Attach files:</ControlLabel></th>
     //                 <td>
@@ -279,6 +234,37 @@ export default class IssueCompose extends React.Component<Props, State> {
                         />
                       </td>
                     </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>CC:</ControlLabel></th>
+                      <td>
+                        <div className="ac-multi-group">
+                          <UserAutocomplete
+                              className="assignee ac-multi"
+                              project={project}
+                              multiple={true}
+                              selection={this.state.cc}
+                              onSelectionChange={this.onChangeCC}
+                              onEnter={this.onFocusNext}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                    {this.renderTemplateFields()}
+                    <tr>
+                      <th className="header"><ControlLabel>Labels:</ControlLabel></th>
+                      <td>
+                        <div className="ac-multi-group">
+                          <LabelSelector
+                              id="labels"
+                              className="labels ac-multi"
+                              project={project}
+                              selection={this.state.labels}
+                              onSelectionChange={this.onChangeLabels}
+                              onEnter={this.onFocusNext}
+                          />
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </form>
@@ -319,6 +305,67 @@ export default class IssueCompose extends React.Component<Props, State> {
       </section>
     );
   }
+
+  private renderTemplateFields(): JSX.Element[] {
+    // const { project } = this.props;
+    // const issueType = project.template.typesById.get(this.state.type);
+    // const result = [];
+    // if (issueType) {
+    //   return this.renderCustomFields(issueType, result);
+    // }
+    // return result;
+    return [];
+  }
+
+  // renderCustomFields(issueType, result) {
+  //   const { project } = this.props;
+  //   const fields = this.customFieldList(issueType);
+  //   for (const field of fields) {
+  //     let component = null;
+  //     const value = this.state.custom.get(field.id) || field.default || '';
+  //     switch (field.type) {
+  //       case 'TEXT':
+  //         component = (<CustomSuggestField
+  //             value={value}
+  //             field={field}
+  //             project={project}
+  //             onChange={this.onChangeCustomField}
+  //             onEnter={this.onFocusNext} />);
+  //         break;
+  //       case 'ENUM':
+  //         component = (<CustomEnumField
+  //             value={value}
+  //             field={field}
+  //             onChange={this.onChangeCustomField} />);
+  //         break;
+  //       default:
+  //         console.error('invalid field type:', field.type);
+  //         break;
+  //     }
+  //     if (component) {
+  //       result.push(<tr key={field.id}>
+  //         <th>{field.caption}:</th>
+  //         <td>{component}</td>
+  //       </tr>);
+  //     }
+  //   }
+  //   return result;
+  // }
+  //
+  // customFieldList(issueType) {
+  //   let fields = [];
+  //   const { project } = this.props;
+  //   if (issueType.extends && issueType.extends.startsWith('./')) {
+  //     const parentType = project.template.typesById.get(issueType.extends.slice(2));
+  //     if (parentType) {
+  //       fields = this.customFieldList(parentType);
+  //     }
+  //   }
+  //   if (issueType.fields) {
+  //     fields = fields.concat(issueType.fields);
+  //   }
+  //   return fields;
+  // }
 
   @autobind
   private onInputKeyDown(e: any) {
@@ -367,14 +414,16 @@ export default class IssueCompose extends React.Component<Props, State> {
     this.setState({ owner: selection });
   }
 
-  // onChangeCC(selection) {
-  //   this.setState({ cc: selection });
-  // }
-  //
-  // onChangeLabels(selection) {
-  //   this.setState({ labels: selection });
-  // }
-  //
+  @autobind
+  private onChangeCC(selection: User[]) {
+    this.setState({ cc: selection });
+  }
+
+  @autobind
+  private onChangeLabels(selection: number[]) {
+    this.setState({ labels: selection });
+  }
+
   // onChangeLinkedIssue(selection) {
   //   this.setState({ linkedIssue: selection });
   // }
@@ -548,64 +597,4 @@ export default class IssueCompose extends React.Component<Props, State> {
       nextActive.focus();
     }
   }
-
-  // customFieldList(issueType) {
-  //   let fields = [];
-  //   const { project } = this.props;
-  //   if (issueType.extends && issueType.extends.startsWith('./')) {
-  //     const parentType = project.template.typesById.get(issueType.extends.slice(2));
-  //     if (parentType) {
-  //       fields = this.customFieldList(parentType);
-  //     }
-  //   }
-  //   if (issueType.fields) {
-  //     fields = fields.concat(issueType.fields);
-  //   }
-  //   return fields;
-  // }
-  //
-  // renderCustomFields(issueType, result) {
-  //   const { project } = this.props;
-  //   const fields = this.customFieldList(issueType);
-  //   for (const field of fields) {
-  //     let component = null;
-  //     const value = this.state.custom.get(field.id) || field.default || '';
-  //     switch (field.type) {
-  //       case 'TEXT':
-  //         component = (<CustomSuggestField
-  //             value={value}
-  //             field={field}
-  //             project={project}
-  //             onChange={this.onChangeCustomField}
-  //             onEnter={this.onFocusNext} />);
-  //         break;
-  //       case 'ENUM':
-  //         component = (<CustomEnumField
-  //             value={value}
-  //             field={field}
-  //             onChange={this.onChangeCustomField} />);
-  //         break;
-  //       default:
-  //         console.error('invalid field type:', field.type);
-  //         break;
-  //     }
-  //     if (component) {
-  //       result.push(<tr key={field.id}>
-  //         <th>{field.caption}:</th>
-  //         <td>{component}</td>
-  //       </tr>);
-  //     }
-  //   }
-  //   return result;
-  // }
-  //
-  // renderTemplateFields() {
-  //   const { project } = this.props;
-  //   const issueType = project.template.typesById.get(this.state.type);
-  //   const result = [];
-  //   if (issueType) {
-  //     return this.renderCustomFields(issueType, result);
-  //   }
-  //   return result;
-  // }
 }

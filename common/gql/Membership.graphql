@@ -1,0 +1,23 @@
+# A user's membership within a project.
+type Membership {
+  # Username of member.
+  user: ID!
+
+  # Project (if this membership has project scope).
+  project: ID
+
+  # Organization (if this membership has organization scope).
+  organization: ID
+
+  # Access level for the this user (direct as project member).
+  role: Int!
+
+  # When the member was added to the project.
+  created: Date!
+
+  # When the membership was last changed.
+  updated: Date!
+
+  # Access level for the this user (indirect as organization member).
+  # inheritedRole: Int
+}

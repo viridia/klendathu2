@@ -7,19 +7,22 @@ import {
   Forbidden,
   InternalError,
   NotFound,
-  NotImplemented,
+  // NotImplemented,
   ResolverError,
   Unauthorized,
 } from '../errors';
 import { logger } from '../logger';
-import { getProjectAndRole, getRole } from './role';
+import { getProjectAndRole } from './role';
 
 // Queries involving projects
 export const queries = {
   project(_: any, args: { id: string, name: string }, context: Context):
       Promise<ProjectRecord | null> {
     return getProjectAndRole(context, args.id, args.name).then(({ project, role }) => {
-      return project;
+      return {
+        ...project,
+        role,
+      };
     });
   },
 
@@ -30,6 +33,7 @@ export const queries = {
     }
 
     // TODO: Include projects that user is a member of
+    // TODO: Include including via orgs
     return r.table('projects')
         .filter({ deleted: false, owningUser: context.user.id })
         .orderBy(r.asc('created'))
@@ -61,65 +65,58 @@ export const queries = {
 };
 
 export const mutations = {
-  newProject(_: any, args: { project: Project }, context: Context): Promise<ProjectRecord> {
-    const { project } = args;
+  async newProject(_: any, args: { input: Project }, context: Context): Promise<ProjectRecord> {
+    const { input } = args;
     if (!context.user) {
       return Promise.reject(new Unauthorized());
     }
     //   const { name, owner } = req.body;
-    if (project.name.length < 6) {
+    if (!input.name || input.name.length < 6) {
       return Promise.reject(new ResolverError(ErrorKind.NAME_TOO_SHORT));
-    } else if (!project.name.match(/^[a-z0-9\-]+$/)) {
+    } else if (!input.name.match(/^[a-z0-9\-]+$/)) {
       // Special characters not allowed
       return Promise.reject(new ResolverError(ErrorKind.INVALID_NAME));
     }
     const projects = r.table('projects');
-    return projects.filter({ name: project.name }).run(context.conn)
-    .then(cursor => cursor.toArray())
-    .then(p => {
-      // Check if project exists
-      if (p.length > 0) {
-        return Promise.reject(new ResolverError(ErrorKind.NAME_EXISTS));
-      } else {
-        const now = new Date();
-        const newProject: ProjectRecord = {
-          name: project.name,
-          description: project.description || '',
-          title: project.title || '',
-          created: now,
-          updated: now,
-          issueIdCounter: 0,
-          labelIdCounter: 0,
-          deleted: false,
-          isPublic: !!project.isPublic,
-        };
-        if (!project.owningUser) {
-          newProject.owningUser = context.user.id;
-          newProject.owningOrg = null;
-        } else {
-          // TODO: Make the user an administrator
-          // TODO: Make sure the org exists.
-          logger.error('Custom owners not supported.');
-          return Promise.reject(new NotImplemented());
-        }
+    const p = await projects.filter({ name: input.name }).run(context.conn)
+        .then(cursor => cursor.toArray());
 
-        return projects.insert(newProject, { returnChanges: true })
-        .run(context.conn).then(result => {
-          const np: ProjectRecord = (result as any).changes[0].new_val;
-          logger.info('Created project', project.name, np.id);
-          return {
-            ...np,
-            role: Role.OWNER,
-          };
-        }, error => {
-          logger.error('Error creating project', error);
-          return Promise.reject(new InternalError());
-        });
-      }
-    }, err => {
-      logger.error('Database error checking for project existence', err);
-      return Promise.reject(new InternalError());
-    });
+    // Check if project exists
+    if (p.length > 0) {
+      return Promise.reject(new ResolverError(ErrorKind.NAME_EXISTS));
+    } else {
+      const now = new Date();
+      const newProject: ProjectRecord = {
+        name: input.name,
+        description: input.description || '',
+        title: input.title || '',
+        created: now,
+        updated: now,
+        issueIdCounter: 0,
+        labelIdCounter: 0,
+        deleted: false,
+        isPublic: !!input.isPublic,
+      };
+
+      // Create the new project record.
+      const result = await projects.insert(newProject, { returnChanges: true }).run(context.conn);
+      const np: ProjectRecord = (result as any).changes[0].new_val;
+      logger.info('Created project', input.name, np.id);
+
+      // Make current user an administrator of the new project.
+      await r.table('memberships').insert({
+        user: context.user.id,
+        project: np.id,
+        role: Role.ADMINISTRATOR,
+        created: now,
+        updated: now,
+      }).run(context.conn);
+
+      return {
+        ...np,
+        role: Role.ADMINISTRATOR,
+      };
+    }
   },
 
   // Delete an existing project
@@ -138,7 +135,8 @@ export const mutations = {
       return Promise.all([
         r.table('issues').filter({ project: args.project }).delete().run(context.conn),
         r.table('labels').filter({ project: args.project }).delete().run(context.conn),
-        r.table('projectMemberships').filter({ project: args.project }).delete().run(context.conn),
+        r.table('memberships').filter({ project: args.project }).delete().run(context.conn),
+        r.table('projectPrefs').filter({ project: args.project }).delete().run(context.conn),
         r.table('projects').filter({ id: args.project }).delete().run(context.conn),
       ]);
     }).then(() => {
@@ -155,7 +153,8 @@ export const types = {
   Project: {
     role: (project: ProjectRecord, _: any, context: Context) => {
       // TODO: pass in project memberships
-      return getRole(project, context.user.id, []);
+      return project.role;
+      // return getRole(project, context.user.id, []);
     },
   },
 };

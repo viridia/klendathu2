@@ -1,4 +1,4 @@
-import { Project, ProjectMembership, Role } from 'common/api';
+import { Membership, Project, ProjectPrefs, Role } from 'common/api';
 import * as qs from 'qs';
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
@@ -21,7 +21,8 @@ interface Props {
 }
 
 interface Data {
-  projectMembership: ProjectMembership;
+  projectMembership: Membership;
+  projectPrefs: ProjectPrefs;
   projects: Project[];
 }
 
@@ -35,9 +36,9 @@ class LeftNav extends React.Component<DefaultChildProps<Props, Data>, undefined>
 
   public render() {
     const { project } = this.props;
-    const { projectMembership, projects } = this.props.data;
-    const filters = projectMembership ? projectMembership.filters : [];
-    const labels = projectMembership ? projectMembership.labelsData : [];
+    const { projectMembership, projects, projectPrefs } = this.props.data;
+    const filters = projectMembership ? projectPrefs.filters : [];
+    const labels = projectMembership ? projectPrefs.labelsData : [];
     const isProjectMember = project.role >= Role.VIEWER;
     return (
       <nav className="kdt left-nav">

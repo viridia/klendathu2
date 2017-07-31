@@ -1,0 +1,17 @@
+mutation SetProjectPrefs(
+    $project: ID!,
+    $labels: [Int!],
+    $labelsToAdd: [Int!],
+    $labelsToRemove: [Int!],
+    $columns: [String!]) {
+  setProjectPrefs(
+      project: $project,
+      labels: $labels,
+      labelsToAdd: $labelsToAdd,
+      labelsToRemove: $labelsToRemove,
+      columns: $columns) {
+    labels
+    columns
+    filters { name value }
+  }
+}

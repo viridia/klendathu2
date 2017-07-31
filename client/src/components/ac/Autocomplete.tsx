@@ -1,32 +1,35 @@
 // tslint:disable:jsx-no-lambda
+import autobind from 'bind-decorator';
 import * as classNames from 'classnames';
 import * as React from 'react';
 import { FormControl } from 'react-bootstrap';
 import './AutocompleteChips.scss';
 
-interface Props<S> {
+interface Props {
   value: string;
   className?: string;
   placeholder?: string;
   autoFocus?: boolean;
   maxLength?: number;
-  onSearch: () => void;
-  onChooseSuggestion?: () => void;
-  onRenderSuggestion?: (suggestion: S) => any;
-  onGetValue?: (suggestion: S) => any;
+  onSearch: (search: string, callback: (suggestion: string[]) => void) => void;
+  onChooseSuggestion?: (suggestion: string, callback: (suggestion: string) => void) => boolean;
+  onRenderSuggestion?: (suggestion: string) => JSX.Element;
+  onGetValue?: (suggestion: string) => any;
   onEnter?: () => void;
-  onChange: () => void;
+  onChange: (value: string) => void;
 }
 
-interface State<S> {
+interface State {
   open: boolean;
   valid: boolean;
   focused: boolean;
-  suggestions: S[];
+  suggestions: string[];
   suggestionIndex: number;
+  value: string;
 }
 
-export default class AutoComplete<S> extends React.Component<Props<S>, State<S>> {
+/** An autocomplete component that presents suggestions for completing the typed text. */
+export default class Autocomplete extends React.Component<Props, State> {
   public static defaultProps = {
     onChooseSuggestion: () => false,
     onRenderSuggestion: (suggestion: any) => suggestion,
@@ -34,30 +37,25 @@ export default class AutoComplete<S> extends React.Component<Props<S>, State<S>>
   };
 
   private searchValue: string;
-  private timer: Timer;
+  private timer: any;
   private input: React.Component;
+  private menu: HTMLUListElement;
 
-  constructor(props: Props<S>) {
+  constructor(props: Props) {
     super(props);
-    // this.onValueChange = this.onValueChange.bind(this);
-    // this.onFocus = this.onFocus.bind(this);
-    // this.onBlur = this.onBlur.bind(this);
-    // this.onReceiveSuggestions = this.onReceiveSuggestions.bind(this);
-    // this.onKeyDown = this.onKeyDown.bind(this);
-    // this.onClickSuggestion = this.onClickSuggestion.bind(this);
     this.state = {
       open: false,
       valid: false,
       focused: false,
       suggestions: [],
       suggestionIndex: -1,
+      value: '',
     };
-    this.suggestionMap = new Map();
     this.searchValue = null;
     this.timer = null;
   }
 
-  public componentDidUpdate(prevProps: Props<S>, prevState: State<S>) {
+  public componentDidUpdate(prevProps: Props, prevState: State) {
     if (this.menu && !prevState.open && this.state.open) {
       this.menu.scrollIntoView(false);
     }
@@ -93,14 +91,15 @@ export default class AutoComplete<S> extends React.Component<Props<S>, State<S>>
             role="menu"
             ref={el => { this.menu = el; }}
             className="ac-menu dropdown-menu"
-            aria-labelledby="labels">
+            aria-labelledby="labels"
+        >
           {this.renderSuggestions()}
         </ul>
       </div>
     );
   }
 
-  private chooseSuggestion(suggestion) {
+  private chooseSuggestion(suggestion: string) {
     if (!suggestion) {
       throw new Error('Invalid suggestion.');
     }
@@ -115,24 +114,29 @@ export default class AutoComplete<S> extends React.Component<Props<S>, State<S>>
     const menu = suggestions.map((s, index) => {
       const value = onGetValue(s);
       const active = index === suggestionIndex;
-      return (<li
-          className={classNames({ active })}
-          key={value}
-          role="presentation">
-        <a
-            role="menuitem"
-            tabIndex="-1"
-            href=""
-            data-index={index}
-            onClick={e => { this.onClickSuggestion(e, s); }}>
-          {onRenderSuggestion(s)}
-        </a>
-      </li>);
+      return (
+        <li
+            className={classNames({ active })}
+            key={value}
+            role="presentation"
+        >
+          <a
+              role="menuitem"
+              tabIndex={-1}
+              href=""
+              data-index={index}
+              onClick={e => { this.onClickSuggestion(e, s); }}
+          >
+            {onRenderSuggestion(s)}
+          </a>
+        </li>
+      );
     });
     return menu;
   }
 
-  private onValueChange(e) {
+  @autobind
+  private onValueChange(e: any) {
     const value = e.target.value;
     this.props.onChange(value);
     clearTimeout(this.timer);
@@ -144,10 +148,12 @@ export default class AutoComplete<S> extends React.Component<Props<S>, State<S>>
     }, 30);
   }
 
+  @autobind
   private onFocus() {
     this.setState({ focused: true });
   }
 
+  @autobind
   private onBlur() {
     // Wait until we've had a chance to process click events before obliterating the menu dom.
     setTimeout(() => {
@@ -155,14 +161,16 @@ export default class AutoComplete<S> extends React.Component<Props<S>, State<S>>
     }, 1);
   }
 
-  private onClickSuggestion(e, item) {
+  @autobind
+  private onClickSuggestion(e: any, item: string) {
     e.preventDefault();
     e.stopPropagation();
     this.searchValue = '';
     this.chooseSuggestion(item);
   }
 
-  private onReceiveSuggestions(suggestions) {
+  @autobind
+  private onReceiveSuggestions(suggestions: string[]) {
     this.setState({
       suggestions,
       open: suggestions.length > 0,
@@ -174,7 +182,8 @@ export default class AutoComplete<S> extends React.Component<Props<S>, State<S>>
     }
   }
 
-  private onKeyDown(e) {
+  @autobind
+  private onKeyDown(e: any) {
     const { suggestions, suggestionIndex } = this.state;
     const suggestionCount = suggestions.length;
     switch (e.keyCode) {

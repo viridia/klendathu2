@@ -4,7 +4,6 @@ query projectListQuery {
     name
     title
     description
-    owningUser
     owningOrg
     role
     created

@@ -5,8 +5,7 @@ export enum Role {
   UPDATER = 40,
   DEVELOPER = 55,
   MANAGER = 70,
-  ADMINISTRATOR = 90,
-  OWNER = 100,
+  ADMINISTRATOR = 100,
 }
 
 /** Return the list of [level, name] pairs in sorted order. */

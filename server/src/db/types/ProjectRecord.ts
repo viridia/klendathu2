@@ -4,7 +4,6 @@ interface ProjectRecord {
   name: string;
   title: string;
   description: string;
-  owningUser?: string;
   owningOrg?: string;
   created: Date;
   updated: Date;

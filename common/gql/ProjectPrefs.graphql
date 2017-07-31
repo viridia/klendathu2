@@ -7,17 +7,8 @@ type Filter {
   value: String!
 }
 
-# A user's membership within a project.
-type ProjectMembership {
-  # User name of project member.
-  user: String!
-
-  # Access level for the this user (direct as project member).
-  role: Int!
-
-  # Access level for the this user (indirect as organization member).
-  inheritedRole: Int
-
+# A user's project-specific preferences.
+type ProjectPrefs {
   # List of columns to display in the issue list.
   columns: [String!]
 

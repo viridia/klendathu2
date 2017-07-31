@@ -41,6 +41,7 @@ export default class App {
 
   private async init() {
     const dbUrl = url.parse(process.env.RETHINKDB_URL);
+    logger.info(`Connecting to RethinkDB at host: ${dbUrl.hostname}, port: ${dbUrl.port}`);
     this.conn = await r.connect({
       host: dbUrl.hostname,
       port: parseInt(dbUrl.port, 10),
@@ -49,14 +50,16 @@ export default class App {
     await ensureTablesExist(this.conn, process.env.DB_NAME, [
       'issues',
       'labels',
+      'memberships',
       'projects',
-      'projectMemberships',
+      'projectPrefs',
       'templates',
       'users',
       'workflows',
     ]);
     await ensureIndicesExist(this.conn, process.env.DB_NAME, {
       projects: ['name'],
+      memberships: ['project', 'user'],
     });
     this.conn.use(process.env.DB_NAME);
     this.middleware();
@@ -115,7 +118,9 @@ export default class App {
             };
           } else {
             // I think this already gets logged elsewhere.
-            logger.error(JSON.stringify(error, null, 2));
+            if (this.logErrors) {
+              logger.error(JSON.stringify(error, null, 2));
+            }
             return {
               message: error.message,
               locations: error.locations,

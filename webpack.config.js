@@ -37,8 +37,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js'],
   },
   plugins,
-  // devtool: debug ? 'cheap-eval-source-map' : 'hidden-source-map',
-  devtool: debug ? 'inline-source-map' : 'hidden-source-map',
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -71,11 +70,6 @@ module.exports = {
         test: /\.(eot|woff|woff2|ttf)/,
         loader: 'file-loader?name=fonts/[name]-[hash].[ext]',
       },
-      // {
-      //   // SVG Fonts
-      //   test: /redux-toastr\.svg$/,
-      //   loader: 'file-loader?name=fonts/[name]-[hash].[ext]',
-      // },
       {
         // Inline SVG icons
         include: path.join(__dirname, 'client/src/media/icons'),

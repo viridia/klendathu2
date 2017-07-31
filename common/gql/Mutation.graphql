@@ -43,52 +43,32 @@ type Mutation {
 #         },
 #       },
 #     },
-#     newLabel: {
-#       description: 'Create a new label.',
-#       type: new GraphQLNonNull(labelType),
-#       args: {
-#         project: {
-#           type: new GraphQLNonNull(GraphQLID),
-#           description: 'Id of the project the new label is being added to.',
-#         },
-#         label: {
-#           type: labelInputType,
-#           description: 'Contents of the label to be created.',
-#         },
-#       },
-#     },
-#     updateLabel: {
-#       description: 'Modify an existing label.',
-#       type: new GraphQLNonNull(labelType),
-#       args: {
-#         project: {
-#           type: new GraphQLNonNull(GraphQLID),
-#           description: 'Id of the project containing the label to update.',
-#         },
-#         id: {
-#           type: new GraphQLNonNull(GraphQLInt),
-#           description: 'Id of the label to update.',
-#         },
-#         label: {
-#           type: labelInputType,
-#           description: 'Contents of the label to be updated.',
-#         },
-#       },
-#     },
-#     deleteLabel: {
-#       description: 'Delete a label.',
-#       type: new GraphQLNonNull(GraphQLInt),
-#       args: {
-#         project: {
-#           type: new GraphQLNonNull(GraphQLID),
-#           description: 'Project containing the label.',
-#         },
-#         id: {
-#           type: new GraphQLNonNull(GraphQLInt),
-#           description: 'Id of the label to delete.',
-#         },
-#       },
-#     },
+
+  # Create a new label.
+  newLabel(
+    # Project which will contain the new label.
+    project: ID!
+    # Contents of the label to be created.
+    input: LabelInput!
+  ): Label!
+
+  # Modify an existing label.
+  updateLabel(
+    # Id of the project containing the label to update.
+    project: ID!
+    # Id of the label to update.
+    id: ID!
+    # Contents of the label to be updated.
+    input: LabelInput!
+  ): Label!
+
+  # Delete a label.
+  deleteLabel(
+    # Id of the project containing the label to update.
+    project: ID!
+    # Id of the label to update.
+    id: ID!
+  ): Int!
 
   # Create a new project.
   newProject(input: ProjectInput!): Project!
@@ -99,26 +79,21 @@ type Mutation {
   # Modify an existing project.
   deleteProject(project: ID!): ID!
 
-#     updateProjectMembership: {
-#       description: 'Modify the role or settings for a project member.',
-#       type: new GraphQLNonNull(projectMembershipType),
-#       args: {
-#         project: {
-#           type: new GraphQLNonNull(GraphQLID),
-#           description: 'Reference to project.',
-#         },
-#         user: {
-#           type: new GraphQLNonNull(GraphQLString),
-#           description: 'Reference to user member of project.',
-#         },
-#         membership: {
-#           type: new GraphQLNonNull(projectMembershipInputType),
-#           description: 'Membership data to update.',
-#         },
-#       },
-#     },
-#   },
-# }),
-# });
+  # Set a user's role with respect to a project.
+  setProjectRole(project: ID!, user: ID!, role: Int!): Membership
 
+  # Set project preferences for the current user
+  setProjectPrefs(
+    project: ID!
+    labels: [Int!]
+    labelsToAdd: [Int!]
+    labelsToRemove: [Int!]
+    columns: [String!]
+  ): ProjectPrefs
+
+  # Project preferences: add a saved filter for the current user
+  addFilter(project: ID!, name: String!, value: String!): ProjectPrefs
+
+  # Project preferences: remove a saved filter for the current user
+  removeFilter(project: ID!, name: String!): ProjectPrefs
 }

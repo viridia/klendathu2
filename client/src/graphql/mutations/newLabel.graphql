@@ -1,5 +1,5 @@
-mutation newLabel($project: ID!, $label: LabelInput!) {
-  newLabel(project: $project, label: $label) {
+mutation newLabel($project: ID!, $input: LabelInput!) {
+  newLabel(project: $project, input: $input) {
     project
     id
     name

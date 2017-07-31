@@ -10,6 +10,9 @@ export const queries = {
       return null;
     }
     return r.table('users').get(context.user.id).run(context.conn).then((user: any) => {
+      if (!user) {
+        return null;
+      }
       return { ...user, expiration: context.user.expiration };
     });
   },

@@ -1,7 +1,10 @@
 import * as date from './date';
 import * as issue from './issue';
+import * as label from './label';
+import * as membership from './membership';
 import * as profile from './profile';
 import * as project from './project';
+import * as projectPrefs from './projectPrefs';
 import * as template from './template';
 import * as user from './user';
 import * as workflow from './workflow';
@@ -12,8 +15,11 @@ import * as workflow from './workflow';
 export const resolverMap = {
   Query: {
     ...issue.queries,
+    ...label.queries,
+    ...membership.queries,
     ...profile.queries,
     ...project.queries,
+    ...projectPrefs.queries,
     ...template.queries,
     ...user.queries,
     ...workflow.queries,
@@ -21,7 +27,10 @@ export const resolverMap = {
 
   // // Merge definitions for all mutation resolvers
   Mutation: {
+    ...label.mutations,
+    ...membership.mutations,
     ...project.mutations,
+    ...projectPrefs.mutations,
   },
 
   // Merge definitions for all subscription resolvers
@@ -31,7 +40,9 @@ export const resolverMap = {
 
   // Merge definitions for all type resolvers
   ...date.types,
+  ...label.types,
   ...profile.types,
   ...project.types,
+  ...projectPrefs.types,
   ...user.types,
 };

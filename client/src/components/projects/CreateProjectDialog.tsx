@@ -14,7 +14,6 @@ interface Props {
 }
 
 interface State {
-  owner: string;
   projectName: string;
   projectNameError?: string;
   projectTitle: string;
@@ -31,7 +30,6 @@ export default class CreateProjectDialog extends React.Component<Props, State> {
   constructor(props: Props, context: any) {
     super(props, context);
     this.state = {
-      owner: '',
       projectName: '',
       projectNameError: null,
       projectTitle: '',
@@ -42,7 +40,6 @@ export default class CreateProjectDialog extends React.Component<Props, State> {
   }
 
   public render() {
-    const { profile } = this.context;
     return (
       <Modal
           show={true}
@@ -81,18 +78,6 @@ export default class CreateProjectDialog extends React.Component<Props, State> {
               />
             </FormGroup>
             <HelpBlock>{this.state.projectTitleError}</HelpBlock>
-            <FormGroup controlId="project_owner">
-              <ControlLabel>Owner</ControlLabel>
-              <FormControl
-                  componentClass="select"
-                  label="Owner"
-                  value={this.state.owner}
-                  onChange={this.onChangeOwner}
-              >
-                <option value="">{profile.username}</option>
-                <option value="org">organization</option>
-              </FormControl>
-            </FormGroup>
             <Checkbox checked={this.state.public} onChange={this.onChangePublic}>
               Public
             </Checkbox>
@@ -122,14 +107,12 @@ export default class CreateProjectDialog extends React.Component<Props, State> {
     };
     this.setState({ busy: true });
     createProject({
-      owningUser: this.state.owner,
       name: this.state.projectName,
       title: this.state.projectTitle,
       isPublic: this.state.public,
     }).then(() => {
       newState.projectName = '';
       newState.projectTitle = '';
-      newState.owner = '';
       this.setState(newState as State);
       this.props.onHide();
     }, error => {
@@ -167,11 +150,6 @@ export default class CreateProjectDialog extends React.Component<Props, State> {
       }
       this.setState(newState as State);
     });
-  }
-
-  @autobind
-  private onChangeOwner(e: any) {
-    this.setState({ owner: e.target.value });
   }
 
   @autobind

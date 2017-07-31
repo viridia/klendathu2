@@ -4,10 +4,10 @@ enum Predicate {
   EQUALS
   NOT_IN
   NOT_EQUALS
-  # REGEX: { value: 're' },
+  MATCH
+  NOT_MATCH
   STARTS_WITH
   ENDS_WITH
-  # NOT_REGEX: { value: '!re' },
   GREATER
   GREATER_EQUAL
   LESS
@@ -83,25 +83,14 @@ type Query {
   #   //       },
   #   //     },
   #   //   },
-  #   //   issueSearch: {
-  #   //     description: 'Search for issues by text query, sorted by relevance.',
-  #   //     type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(issueType))),
-  #   //     args: {
-  #   //       project: { type: GraphQLID },
-  #   //       search: { type: GraphQLString },
-  #   //     },
-  #   //   },
-  #   //   searchCustomFields: {
-  #   //     description: 'Search custom field text, used for auto completion.',
-  #   //     type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLString))),
-  #   //     args: {
-  #   //       project: { type: new GraphQLNonNull(GraphQLID) },
-  #   //       field: { type: new GraphQLNonNull(GraphQLString) },
-  #   //       search: { type: new GraphQLNonNull(GraphQLString) },
-  #   //     },
-  #   //   },
 
-  # Retrieve a project record by id or by name.
+  # Search for issues by text query, sorted by relevance.
+  issueSearch(project: ID!, search: String!): [Issue!]!
+
+  # Search custom field text, used for auto completion.
+  searchCustomFields(project: ID!, field: String!, search: String!): [String!]!
+
+  # Retrieve a project record either by id or by name.
   project(
     # Id of the project to retrieve.
     id: ID
@@ -120,11 +109,14 @@ type Query {
     # Id of the project.
     project: ID!
     # Username of the user. Defaults to current user.
-    user: String
-  ): ProjectMembership
+    user: ID
+  ): Membership
 
   # Information about all project members, including role and settings.
-  projectMemberships(project: ID!): [ProjectMembership!]!
+  projectMemberships(project: ID!): [Membership!]!
+
+  # Current user's project-specific preferences.
+  projectPrefs(project: ID!): ProjectPrefs!
 
   # Data for a label.
   label(
@@ -138,7 +130,7 @@ type Query {
   labels(
     # Identifier for the project containing the labels.
     project: ID!
-    # Label search token.
+    # Label search token. Returns all labels if not present.
     token: String
   ): [Label!]!
 
@@ -152,7 +144,7 @@ type Query {
   profile: Profile
 
   # Query information about a user.
-  user(username: String!): User
+  user(username: ID!): User
 
   # Look up users matching a search token.
   users(
