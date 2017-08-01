@@ -120,11 +120,11 @@ export const mutations = {
     }
 
     const resp = await r.table('labels')
-      .filter({ project: args.project, labelId: args.id })
-      .update(record)
+      .get([args.project, args.id] as any)
+      .update(record, { returnChanges: true })
       .run(context.conn);
     if (resp.replaced === 1) {
-      return args.id;
+      return (resp as any).changes[0].new_val;
     } else {
       logger.error('Error updating non-existent label', args.id, args.project, context.user);
       return Promise.reject(new NotFound());
@@ -148,9 +148,14 @@ export const mutations = {
       labels: (r.row('labels') as any).filter((id: number) => id !== args.id),
     }).run(context.conn);
 
+    // Delete all instances of that label from project prefs
+    await r.table('projectPrefs').filter({ project: project.id }).update({
+      labels: (r.row('labels') as any).filter((id: number) => id !== args.id),
+    }).run(context.conn);
+
     // Delete the label record
     const resp = await r.table('labels')
-        .filter({ project: args.project, labelId: args.id })
+        .get([args.project, args.id] as any)
         .delete()
         .run(context.conn);
     if (resp.deleted !== 1) {

@@ -20,7 +20,4 @@ export interface Label {
 
   /** When the label was last updated. */
   updated: Date;
-
-  /** Whether the label should be shown in the user's hot list. */
-  visible?: boolean;
 }

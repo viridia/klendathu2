@@ -166,13 +166,9 @@ class LabelDialog extends React.Component<Props, State> {
         return resp.data.newLabel;
       });
     }
-    // const result = label ?
-    //   updateLabel(this.props.project.id, label.id, { name, color }) :
-    //   createLabel(this.props.project.id, { name, color });
 
     result.then(updatedLabel => {
-      // const updatedLabel = resp.data.updateLabel || resp.data.newLabel;
-      if (!label || label.visible !== visible) {
+      if (!label || this.props.visible !== visible) {
         const update: { labelsToAdd?: number[]; labelsToRemove?: number[]; } = {};
         if (visible) {
           update.labelsToAdd = [updatedLabel.id];

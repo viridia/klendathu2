@@ -1,0 +1,42 @@
+@import '../defines/base';
+
+.kdt.label-list {
+  flex: 1;
+  overflow-y: auto;
+
+  > header {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 8px;
+    > .title {
+      font: $headerFont;
+    }
+  }
+
+  table {
+    .visible {
+      padding: 9px 8px 0 8px;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    .name {
+      padding: 8px;
+    }
+
+    .actions {
+      width: 1%;
+      white-space: nowrap;
+      button {
+        margin: 6px 8px;
+        &:first-child {
+          margin-right: 0;
+        }
+      }
+    }
+  }
+}

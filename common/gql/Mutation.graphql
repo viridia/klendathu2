@@ -57,7 +57,7 @@ type Mutation {
     # Id of the project containing the label to update.
     project: ID!
     # Id of the label to update.
-    id: ID!
+    id: Int!
     # Contents of the label to be updated.
     input: LabelInput!
   ): Label!
@@ -67,7 +67,7 @@ type Mutation {
     # Id of the project containing the label to update.
     project: ID!
     # Id of the label to update.
-    id: ID!
+    id: Int!
   ): Int!
 
   # Create a new project.

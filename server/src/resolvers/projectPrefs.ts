@@ -79,7 +79,10 @@ export const mutations = {
         .filter({ project: args.project, user: context.user.id })
         .update(update, { returnChanges: true })
         .run(context.conn);
-      return (result as any).changes[0].new_val;
+      if ((result as any).changes.length > 0) {
+        return (result as any).changes[0].new_val;
+      }
+      return prefs;
     }
   },
 

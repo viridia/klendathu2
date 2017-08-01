@@ -15,6 +15,7 @@ import ErrorDisplay from '../debug/ErrorDisplay';
 import IssueCreate from '../issues/IssueCreate';
 import IssueDetails from '../issues/IssueDetails';
 import IssueSummaryView from '../issues/IssueSummaryView';
+import LabelList from '../labels/LabelList';
 import LeftNav from '../nav/LeftNav';
 
 const ProjectQuery = require('../../graphql/queries/project.graphql');
@@ -65,7 +66,7 @@ class ProjectView extends React.Component<DataProps, undefined> {
           <Route path="/project/:project/edit/:id" />
           <Route path="/project/:project/issues/:id" render={this.renderIssueDetails} />
           <Route path="/project/:project/issues" exact={true} render={this.renderIssueList} />
-          <Route path="/project/:project/labels" />
+          <Route path="/project/:project/labels" render={this.renderLabelList} />
           <Route path="/project/:project/settings" />
           <Route path="/project/:project" />
         </Switch>
@@ -89,6 +90,12 @@ class ProjectView extends React.Component<DataProps, undefined> {
   private renderIssueList(props: RouteComponentProps<{}>) {
     const { data: { project } } = this.props;
     return (<IssueSummaryView {...props} project={project} />);
+  }
+
+  @autobind
+  private renderLabelList(props: RouteComponentProps<{}>) {
+    const { data: { project } } = this.props;
+    return (<LabelList {...props} project={project} />);
   }
 }
 
