@@ -83,7 +83,7 @@ type Issue {
   labels: [Int!]!
 
   # Labels associated with this issue (expanded).
-  labelsData: [Label!]!
+  labelProps: [Label!]!
 
   # List of issues linked to this one.
   linked: [LinkedIssue!]!

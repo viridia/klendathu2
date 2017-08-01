@@ -1,7 +1,7 @@
 import * as r from 'rethinkdb';
 import Context from '../context/Context';
 import { escapeRegExp } from '../db/helpers';
-import UserRecord from '../db/types/UserRecord';
+import { UserRecord } from '../db/types';
 
 // User profile query
 export const queries = {

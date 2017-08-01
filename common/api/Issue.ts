@@ -91,7 +91,7 @@ export interface Issue {
   labels: number[];
 
   /** Labels associated with this issue (expanded). */
-  labelsData: Label[];
+  labelProps: Label[];
 
       // resolve(issue, args, context, options) {
       //   if (issue.labels.length === 0) {

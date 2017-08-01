@@ -1,7 +1,7 @@
 import * as r from 'rethinkdb';
 import { Project, Role } from '../../../common/api';
 import Context from '../context/Context';
-import ProjectRecord from '../db/types/ProjectRecord';
+import { ProjectRecord } from '../db/types';
 import {
   ErrorKind,
   Forbidden,

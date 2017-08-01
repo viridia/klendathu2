@@ -2,7 +2,7 @@ import * as r from 'rethinkdb';
 import { Role } from '../../../common/api';
 import Context from '../context/Context';
 import { optional } from '../db/helpers';
-import MembershipRecord from '../db/types/MembershipRecord';
+import { MembershipRecord } from '../db/types';
 import {
   ErrorKind,
   Forbidden,

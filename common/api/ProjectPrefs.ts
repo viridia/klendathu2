@@ -18,7 +18,7 @@ export interface ProjectPrefs {
   labels?: number[];
 
   /** List of labels to display in the issue summary list. */
-  labelsData: Label[];
+  labelProps: Label[];
 
   /** List of saved queries. */
   filters: Filter[];

@@ -1,5 +1,4 @@
 import * as rethinkdb from 'rethinkdb';
-// import UserRecord from '../db/types/UserRecord';
 
 export interface Token {
   id: string;

@@ -14,22 +14,7 @@ export function createLabel(project: string, input: Partial<Label>) {
       project,
       input,
     },
-    update: (store, { data: { newLabel } }) => {
-      try {
-        const data: { labels: Label[] } = store.readQuery({
-          query: LabelsQuery,
-          variables: { project },
-        });
-        data.labels.push(newLabel);
-        store.writeQuery({
-          query: LabelsQuery,
-          variables: { project },
-          data,
-        });
-      } catch (e) {
-        console.warn('Labels not loaded yet:', e);
-      }
-    },
+    // refetchQueries: ['labels'],
   });
 }
 
@@ -44,7 +29,7 @@ export function deleteLabel(project: string, id: number) {
   return apollo.mutate<{ deleteLabel: number }>({
     mutation: DeleteLabelMutation,
     variables: { project, label: id },
-    refetchQueries: ['projectMembershipQuery'],
+    refetchQueries: ['labels', 'projectPrefsQuery', 'leftNavQuery'],
     update: (store, { data: { deleteLabel: deletedId } }) => {
       const data: { labels: Label[] } = store.readQuery({ query: LabelsQuery });
       data.labels = data.labels.filter(p => p.id !== deletedId);

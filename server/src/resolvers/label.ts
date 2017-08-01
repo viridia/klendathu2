@@ -1,8 +1,8 @@
 import * as r from 'rethinkdb';
 import { Role } from '../../../common/api';
 import Context from '../context/Context';
-import { escapeRegExp, optional } from '../db/helpers';
-import LabelRecord from '../db/types/LabelRecord';
+import { escapeRegExp } from '../db/helpers';
+import { LabelRecord } from '../db/types';
 import {
   ErrorKind,
   Forbidden,
@@ -23,21 +23,17 @@ interface LabelInput {
 export const queries = {
   label(_: any, args: { project: string, id: number }, context: Context):
       Promise<LabelRecord | null> {
-    return r.table('labels').filter({ project: args.project, labelId: args.id }).run(context.conn)
-        .then(optional<LabelRecord>());
+    return r.table('labels').get([args.project, args.id] as any).run(context.conn) as any;
   },
 
   labels(_: any, args: { project: string, token: string }, context: Context):
       Promise<LabelRecord[]> {
-    const query: any = {};
+    let query = r.table('labels').filter((r.row('id') as any).nth(0).eq(args.project));
     if (args.token) {
       const pattern = `\\b${escapeRegExp(args.token)}`;
-      query.name = { $regex: pattern, $options: 'i' };
+      query = query.filter({ name: { $regex: pattern, $options: 'i' } });
     }
-    if (args.project) {
-      query.project = args.project;
-    }
-    return r.table('labels').filter(query).run(context.conn).then(cursor => cursor.toArray());
+    return query.run(context.conn).then(cursor => cursor.toArray());
   },
 };
 
@@ -77,8 +73,7 @@ export const mutations = {
 
     const now = new Date();
     const record = {
-      project: args.project,
-      labelId: resp.changes[0].new_val.labelIdCounter,
+      id: [args.project, resp.changes[0].new_val.labelIdCounter],
       name: args.input.name,
       color: args.input.color,
       creator: context.user.id,
@@ -89,7 +84,7 @@ export const mutations = {
     return r.table('labels').insert(record, { returnChanges: true })
     .run(context.conn).then(result => {
       const nl: LabelRecord = (result as any).changes[0].new_val;
-      logger.info('Created label', nl.name, nl.labelId);
+      logger.info('Created label', nl.name, nl.id);
       return nl;
     }, error => {
       logger.error('Error creating project', error);
@@ -169,6 +164,7 @@ export const mutations = {
 
 export const types = {
   Label: {
-    id(label: LabelRecord) { return label.labelId; },
+    id(label: LabelRecord) { return label.id[1]; },
+    project(label: LabelRecord) { return label.id[0]; },
   },
 };

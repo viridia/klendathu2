@@ -539,7 +539,7 @@ export default class IssueCompose extends React.Component<Props, State> {
   //       custom: issue.custom
   //           ? new Immutable.Map(issue.custom.map(custom => [custom.name, custom.value]))
   //           : Immutable.Map.of(),
-  //       labels: issue.labelsData,
+  //       labels: issue.labelProps,
   //       linkedIssue: null,
 //       linkedIssueMap: new Immutable.OrderedMap(linked.map(({ relation, to }) => [to, relation])),
   //       relation: Relation.BLOCKED_BY,

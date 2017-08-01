@@ -1,5 +1,5 @@
 // See Project in common/api
-interface ProjectRecord {
+export interface ProjectRecord {
   id?: string;
   name: string;
   title: string;
@@ -15,5 +15,3 @@ interface ProjectRecord {
   labelIdCounter: number;
   deleted?: boolean;
 }
-
-export default ProjectRecord;

@@ -12,8 +12,11 @@ type ProjectPrefs {
   # List of columns to display in the issue list.
   columns: [String!]
 
-  # List of label names to display in the issue summary list.
+  # List of label ids to display in the issue summary list.
   labels: [Int!]!
+
+  # List of label objects to display in the issue summary list.
+  labelProps: [Label!]!
 
   # List of saved queries.
   filters: [Filter!]!

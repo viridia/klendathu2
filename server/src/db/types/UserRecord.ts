@@ -1,4 +1,4 @@
-interface UserRecord {
+export interface UserRecord {
   id: string; // username
   email: string;
   fullname: string;
@@ -7,5 +7,3 @@ interface UserRecord {
   photo: string;
   organizations: string[];
 }
-
-export default UserRecord;

@@ -2,8 +2,7 @@ import * as r from 'rethinkdb';
 import { Role } from '../../../common/api';
 import Context from '../context/Context';
 import { optional } from '../db/helpers';
-import MembershipRecord from '../db/types/MembershipRecord';
-import ProjectRecord from '../db/types/ProjectRecord';
+import { MembershipRecord, ProjectRecord } from '../db/types';
 
 export function getRole(
     project: ProjectRecord,

@@ -12,7 +12,7 @@ import * as jwt from 'jwt-simple';
 import * as passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import * as r from 'rethinkdb';
-import UserRecord from '../db/types/UserRecord';
+import { UserRecord } from '../db/types';
 import { logger } from '../logger';
 
 // TODO: finish session expiration (enforce and detect and renew)

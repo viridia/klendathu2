@@ -3,16 +3,5 @@ query projectMembershipQuery($project: ID!) {
     user
     role
     inheritedRole
-    columns
-    labels
-    labelsData {
-      id
-      name
-      color
-    }
-    filters {
-      name
-      value
-    }
   }
 }

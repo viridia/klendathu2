@@ -2,7 +2,7 @@ query projectPrefsQuery($project: ID!) {
   projectPrefs(project: $project) {
     columns
     labels
-    # labelsData {
+    # labelProps {
     #   id
     #   name
     #   color

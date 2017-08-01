@@ -1,4 +1,4 @@
-interface MembershipRecord {
+export interface MembershipRecord {
   user: string;
   project?: string;
   organization?: string;
@@ -6,5 +6,3 @@ interface MembershipRecord {
   created: Date;
   updated: Date;
 }
-
-export default MembershipRecord;

@@ -1,12 +1,9 @@
 import * as r from 'rethinkdb';
 import Context from '../context/Context';
 import { optional } from '../db/helpers';
-import ProjectPrefsRecord from '../db/types/ProjectPrefsRecord';
+import { LabelRecord, ProjectPrefsRecord } from '../db/types';
 import {
-  // ErrorKind,
-  // Forbidden,
   NotFound,
-  // ResolverError,
   Unauthorized,
 } from '../errors';
 import { getProjectAndRole } from './role';
@@ -97,6 +94,19 @@ export const types = {
   ProjectPrefs: {
     labels: (prefs: ProjectPrefsRecord, _: any, context: Context) => {
       return prefs.labels ? prefs.labels : [];
+    },
+    labelProps: (
+        prefs: ProjectPrefsRecord,
+        _: any,
+        context: Context): Promise<LabelRecord[]> | LabelRecord[] => {
+      if (!prefs.labels) {
+        return [];
+      }
+      return r.table('labels')
+          .getAll(...prefs.labels.map(l => [prefs.project, l]) as any)
+          .orderBy(r.asc('name'))
+          .run(context.conn)
+          .then(cursor => cursor.toArray());
     },
     filters: (prefs: ProjectPrefsRecord, _: any, context: Context) => {
       return prefs.filters ? prefs.filters : [];
