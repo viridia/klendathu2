@@ -1,10 +1,10 @@
+import autobind from 'bind-decorator';
 import { Project, Template, Workflow } from 'common/api';
 import * as React from 'react';
 import {
   RouteComponentProps,
 } from 'react-router-dom';
 // import { toastr } from 'react-redux-toastr';
-import autobind from '../../lib/autobind';
 import IssueCompose from './IssueCompose';
 // import { createIssue } from 'src/store/reducers/issue';
 

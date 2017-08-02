@@ -1,4 +1,3 @@
-// tslint:disable:jsx-no-lambda
 import autobind from 'bind-decorator';
 import { Label, Project, ProjectPrefs, Role } from 'common/api';
 import * as dateFormat from 'dateformat';

@@ -1,3 +1,4 @@
+import autobind from 'bind-decorator';
 // import 'react-redux-toastr/src/less/index.less';
 import { Project, Template, Workflow } from 'common/api';
 import * as PropTypes from 'prop-types';
@@ -10,7 +11,6 @@ import {
   RouteComponentProps,
   Switch,
 } from 'react-router-dom';
-import autobind from '../../lib/autobind';
 import ErrorDisplay from '../debug/ErrorDisplay';
 import IssueCreate from '../issues/IssueCreate';
 import IssueDetails from '../issues/IssueDetails';

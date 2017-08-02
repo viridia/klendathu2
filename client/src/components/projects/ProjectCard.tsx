@@ -1,8 +1,8 @@
+import autobind from 'bind-decorator';
 import { Project, Role } from 'common/api';
 import * as React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import autobind from '../../lib/autobind';
 import { deleteProject } from '../../store/reducers/project';
 import './ProjectCard.scss';
 

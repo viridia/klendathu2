@@ -1,7 +1,7 @@
 import * as r from 'rethinkdb';
 import { Project, Role } from '../../../common/api';
 import Context from '../context/Context';
-import { ProjectRecord } from '../db/types';
+import { MembershipRecord, ProjectRecord } from '../db/types';
 import {
   ErrorKind,
   Forbidden,
@@ -26,41 +26,27 @@ export const queries = {
     });
   },
 
-  projects(_: any, args: { name?: string }, context: Context): Promise<Project[]> | Project[] {
-    // TODO: Allow public projects if not logged in.
+  async projects(
+      _: any,
+      args: { name?: string },
+      context: Context): Promise<ProjectRecord[]> {
     if (!context.user || !context.user.id) {
       return [];
     }
 
-    // TODO: Include projects that user is a member of
-    // TODO: Include including via orgs
-    return r.table('projects')
-        .filter({ deleted: false, owningUser: context.user.id })
-        .orderBy(r.asc('created'))
-        .run(context.conn).then(cursor => cursor.toArray());
-
-    // Get this user's list of project memberships.
-    // return r.table('projectsMemberships')
-    //     .filter({ user: context.user.id })
-    //     .run(context.conn).then(cursor => {
-    //       console.log('projects', cursor);
-    //       return [];
-    //     });
-
-    // this.db.collection('projectMemberships').find({ user: this.user.id }).toArray()
-    // .then(memberships => {
-    //   // Query all projects for which this user is an owner or a member.
-    //   const projectIdList = memberships.map(m => m.project);
-    //   const query = {
-    //     deleted: false,
-    //     $or: [
-    //       { owningUser: this.user.id },
-    //       { _id: { $in: projectIdList } },
-    //     ],
-    //   };
-    //   if (pname) {
-    //     query.name = pname;
-    //   }
+    return r.table('memberships')
+        .hasFields('project')
+        .filter({ user: context.user.id })
+        .eqJoin('project', r.table('projects'))
+        .orderBy(r.asc('right.created'))
+        .run(context.conn)
+        .then(cursor => cursor.toArray())
+        .then((result: Array<{ left: MembershipRecord, right: ProjectRecord }>) => {
+          return result.map(({ left, right }) => ({
+            ...right,
+            role: left.role,
+          }));
+        });
   },
 };
 

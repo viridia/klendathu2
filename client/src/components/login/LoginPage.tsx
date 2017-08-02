@@ -1,11 +1,11 @@
 import axios from 'axios';
+import autobind from 'bind-decorator';
 import * as React from 'react';
 import { ApolloClient, compose, withApollo } from 'react-apollo';
 import { Button, ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 import { withRouter } from 'react-router-dom';
-import autobind from '../../lib/autobind';
 import '../common/card.scss';
 import Header from '../header/Header';
 import './LoginPage.scss';

@@ -1,10 +1,10 @@
 import axios from 'axios';
+import autobind from 'bind-decorator';
 import * as React from 'react';
 import { ApolloClient, withApollo } from 'react-apollo';
 import { Button, ControlLabel, FormControl, FormGroup, HelpBlock } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
-import autobind from '../../lib/autobind';
 import Header from '../header/Header';
 import './LoginPage.scss';
 

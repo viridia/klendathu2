@@ -1,3 +1,4 @@
+import autobind from 'bind-decorator';
 import * as classNames from 'classnames';
 import { Label, Project } from 'common/api';
 import * as PropTypes from 'prop-types';
@@ -5,7 +6,6 @@ import * as React from 'react';
 import { withApollo } from 'react-apollo';
 import { Button, Checkbox, ControlLabel, FormControl, FormGroup, Modal } from 'react-bootstrap';
 import { toastr } from 'react-redux-toastr';
-import autobind from '../../lib/autobind';
 import { createLabel, updateLabel } from '../../store/reducers/label';
 import { setProjectPrefs } from '../../store/reducers/projectPrefs';
 import '../ac/Chip.scss';

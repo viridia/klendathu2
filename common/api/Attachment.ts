@@ -10,7 +10,7 @@ export interface Attachment {
   url: string;
 
   /** URL of the thumbnail for the attachment, if the type is an image. */
-  thumb?: string;
+  thumbnail?: string;
 
   /** MIME type for the attachment. */
   type: string;

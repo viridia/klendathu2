@@ -1,3 +1,4 @@
+import autobind from 'bind-decorator';
 // import axios from 'axios';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
@@ -5,7 +6,6 @@ import * as React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 // import { browserHistory } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
-import autobind from '../../lib/autobind';
 
 // TODO: implement
 // interface Props {

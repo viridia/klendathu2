@@ -1,7 +1,7 @@
+import autobind from 'bind-decorator';
 import { User } from 'common/api';
 import * as React from 'react';
 import { ApolloClient, withApollo } from 'react-apollo';
-import autobind from '../../lib/autobind';
 import AutocompleteChips from '../ac/AutocompleteChips';
 import Chip from '../ac/Chip';
 

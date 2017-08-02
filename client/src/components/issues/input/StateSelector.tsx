@@ -1,8 +1,8 @@
+import autobind from 'bind-decorator';
 import { Project, Workflow } from 'common/api';
 import * as Immutable from 'immutable';
 import * as React from 'react';
 import { ControlLabel, FormGroup, Radio } from 'react-bootstrap';
-import autobind from '../../../lib/autobind';
 
 interface Props {
   state: string;

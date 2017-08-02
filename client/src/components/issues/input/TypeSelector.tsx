@@ -1,7 +1,7 @@
+import autobind from 'bind-decorator';
 import { Template } from 'common/api';
 import * as React from 'react';
 import { Radio } from 'react-bootstrap';
-import autobind from '../../../lib/autobind';
 
 interface Props {
   value: string;

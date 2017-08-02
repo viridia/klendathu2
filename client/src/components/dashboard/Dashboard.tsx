@@ -1,7 +1,7 @@
+import autobind from 'bind-decorator';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
-import autobind from '../../lib/autobind';
 import CreateProjectDialog from '../projects/CreateProjectDialog';
 import ProjectList from '../projects/ProjectList';
 import './Dashboard.scss';

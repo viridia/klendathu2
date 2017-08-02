@@ -1,9 +1,8 @@
-// tslint:disable:jsx-no-lambda
+import autobind from 'bind-decorator';
 import * as classNames from 'classnames';
 import * as React from 'react';
 import { FormControl, FormControlProps } from 'react-bootstrap';
 import * as ReactDOM from 'react-dom';
-import autobind from '../../lib/autobind';
 import './AutocompleteChips.scss';
 
 interface Props<S> {

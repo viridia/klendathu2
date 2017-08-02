@@ -1,4 +1,3 @@
-// tslint:disable:jsx-no-lambda
 // tslint:disable:max-classes-per-file
 import ApolloClient from 'apollo-client';
 import autobind from 'bind-decorator';

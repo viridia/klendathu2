@@ -1,5 +1,5 @@
-// tslint:disable:jsx-no-lambda
-import { LinkedIssue, Project, Relation, Template, User, Workflow } from 'common/api';
+import autobind from 'bind-decorator';
+import { Issue, LinkedIssue, Project, Relation, Template, User, Workflow } from 'common/api';
 import * as Immutable from 'immutable';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
@@ -11,23 +11,21 @@ import {
 // import DropdownButton from 'react-bootstrap/lib/DropdownButton';
 // import MenuItem from 'react-bootstrap/lib/MenuItem';
 // import IssueAutoComplete from './issueAutocomplete.jsx';
-// import LabelSelector from './labelSelector.jsx';
 // import CustomEnumField from './customEnumField.jsx';
 // import CustomSuggestField from './customSuggestField.jsx';
 // import CommentEdit from './commentEdit.jsx';
 // import LinkedIssues from './linkedIssues.jsx';
-// import UploadAttachments from '../files/uploadAttachments.jsx';
-import autobind from '../../lib/autobind';
 import '../common/card.scss';
 import '../common/form.scss';
 import UserAutocomplete from '../common/UserAutocomplete';
+import UploadAttachments from '../files/UploadAttachments';
 import LabelSelector from './input/LabelSelector';
 import StateSelector from './input/StateSelector';
 import TypeSelector from './input/TypeSelector';
 import './IssueCompose.scss';
 
 interface Props extends RouteComponentProps<{}> {
-  issue?: { id: number; };
+  issue?: Issue;
   onSave: (issueId: number, issue: string) => void;
   project: Project;
   template: Template;
@@ -43,7 +41,6 @@ interface State {
   description: string;
   descriptionError: string;
   public: boolean;
-  // reporter: this.me,
   owner?: User;
   cc: User[];
   labels: number[];
@@ -64,10 +61,10 @@ export default class IssueCompose extends React.Component<Props, State> {
   };
 
   private form: HTMLFormElement;
+  private attachments: UploadAttachments;
 
   constructor(props: Props, context: any) {
     super(props, context);
-  //   this.me = { id: context.profile.username, label: context.profile.username };
     this.state = {
       prevState: null,
       issueState: 'new',
@@ -77,7 +74,6 @@ export default class IssueCompose extends React.Component<Props, State> {
       description: '',
       descriptionError: '',
       public: false,
-      // reporter: this.me,
       owner: null,
       cc: [],
       labels: [],
@@ -92,10 +88,10 @@ export default class IssueCompose extends React.Component<Props, State> {
   //   this.buildLinkedIssueList(this.state.linkedIssueMap);
   }
 
-  // componentDidMount() {
-  //   this.reset();
-  // }
-  //
+  public componentDidMount() {
+    this.reset();
+  }
+
   // componentWillUpdate(nextProps, nextState) {
   //   const thisId = this.props.issue && this.props.issue.id;
   //   const nextId = nextProps.issue && nextProps.issue.id;
@@ -110,13 +106,6 @@ export default class IssueCompose extends React.Component<Props, State> {
     // console.log(project, issue, location);
     const backLink = (location.state && location.state.back) || { pathname: '..' };
     const canSave = this.state.summary && !this.state.linkedIssue;
-    // return (<section className="kdt issue-compose">
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Attach files:</ControlLabel></th>
-    //                 <td>
-//                   <UploadAttachments ref={el => { this.attachments = el; }} project={project} />
-    //                 </td>
-    //               </tr>
     //               <tr>
     //                 <th className="header"><ControlLabel>Linked Issues:</ControlLabel></th>
     //                 <td>
@@ -265,6 +254,15 @@ export default class IssueCompose extends React.Component<Props, State> {
                         </div>
                       </td>
                     </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>Attach files:</ControlLabel></th>
+                      <td>
+                        <UploadAttachments
+                          ref={el => { this.attachments = el; }}
+                          project={project}
+                        />
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </form>
@@ -405,10 +403,6 @@ export default class IssueCompose extends React.Component<Props, State> {
     this.setState({ description: e.target.value });
   }
 
-  // onChangeReporter(e) {
-  //   this.setState({ reporter: e });
-  // }
-
   @autobind
   private onChangeOwner(selection: User) {
     this.setState({ owner: selection });
@@ -486,22 +480,23 @@ export default class IssueCompose extends React.Component<Props, State> {
   @autobind
   private onCreate() {
   //   this.buildLinkedIssueList(this.state.linkedIssueMap);
-  //   const issue = {
-  //     state: this.state.issueState,
-  //     type: this.state.type,
-  //     summary: this.state.summary,
-  //     description: this.state.description,
-  //     owner: this.state.owner ? this.state.owner.username : undefined,
-  //     cc: this.state.cc.map(cc => cc.username),
-  //     labels: this.state.labels.map(label => label.id),
-  //     linked: this.linkedIssueList,
-  //     attachments: this.attachments.files(),
-  //     custom: [],
-  //     public: this.state.public,
-  //     // comments
-  //   };
-  //   const { project } = this.props;
-  //   const issueType = project.template.typesById.get(issue.type);
+    const issue = {
+      state: this.state.issueState,
+      type: this.state.type,
+      summary: this.state.summary,
+      description: this.state.description,
+      owner: this.state.owner ? this.state.owner.username : undefined,
+      cc: this.state.cc.map(cc => cc.username),
+      labels: this.state.labels,
+      // linked: this.linkedIssueList,
+      attachments: this.attachments.files(),
+      // custom: [],
+      public: this.state.public,
+      // comments
+    };
+    const { project } = this.props;
+    console.info(issue, project);
+    // const issueType = project.template.typesById.get(issue.type);
   //   const fields = this.customFieldList(issueType);
   //   for (const field of fields) {
   //     const fieldValue = this.state.custom.get(field.id) || field.default;
@@ -522,18 +517,17 @@ export default class IssueCompose extends React.Component<Props, State> {
   //   });
   }
 
-  // reset() {
-  //   const { project, issue } = this.props;
+  private reset() {
+    const { project, issue } = this.props;
   //   const concreteTypes = project.template.types.filter(t => !t.abstract);
-  //   if (issue) {
+    if (issue) {
   //     const linked = issue.linked || [];
-  //     this.setState({
-  //       prevState: issue.state,
-  //       issueState: issue.state,
-  //       type: issue.type,
-  //       summary: issue.summary,
-  //       description: issue.description,
-  //       reporter: issue.reporter,
+      this.setState({
+        prevState: issue.state,
+        issueState: issue.state,
+        type: issue.type,
+        summary: issue.summary,
+        description: issue.description,
   //       owner: issue.ownerData,
   //       cc: issue.ccData,
   //       custom: issue.custom
@@ -545,33 +539,32 @@ export default class IssueCompose extends React.Component<Props, State> {
   //       relation: Relation.BLOCKED_BY,
   //       comments: issue.comments,
   //       public: !!issue.public,
-  //     });
+      });
   //     this.attachments.setFiles(issue.attachmentsData || []);
-  //   } else {
+    } else {
   //     const { start = ['new'] } = project.workflow;
-  //     this.setState({
-  //       prevState: null,
+      this.setState({
+        prevState: null,
   //       issueState: start[0],
   //       // If current type is valid then keep it, otherwise default to the first type.
   //       type: project.template.typesById.has(this.state.type)
   //           ? this.state.type : concreteTypes[0].id,
-  //       summary: '',
-  //       description: '',
-  //       reporter: this.me,
-  //       owner: null,
-  //       cc: [],
+        summary: '',
+        description: '',
+        owner: null,
+        cc: [],
   //       custom: Immutable.Map.of(),
-  //       labels: [],
-  //       comments: [],
-  //       linkedIssue: null,
+        labels: [],
+        comments: [],
+        linkedIssue: null,
   //       linkedIssueMap: Immutable.OrderedMap.of(),
   //       relation: Relation.BLOCKED_BY,
-  //       public: !!project.public,
-  //     });
-  //     this.attachments.setFiles([]);
-  //   }
-  // }
-  //
+        public: !!project.isPublic,
+      });
+      this.attachments.setFiles([]);
+    }
+  }
+
   // buildLinkedIssueList(linkedIssueMap) {
   //   this.linkedIssueList = linkedIssueMap.map((relation, to) =>
   //       ({ relation, to })).toArray();

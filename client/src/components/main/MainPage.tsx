@@ -2,6 +2,8 @@ import { User } from 'common/api';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { compose, DefaultChildProps, graphql } from 'react-apollo';
+import { DragDropContext } from 'react-dnd';
+import * as HTML5Backend from 'react-dnd-html5-backend';
 import ReduxToastr from 'react-redux-toastr';
 import 'react-redux-toastr/src/styles/index.scss';
 import {
@@ -83,4 +85,5 @@ class MainPage extends React.Component<
 export default compose(
   graphql(ProfileQuery),
   withRouter,
+  DragDropContext(HTML5Backend),
 )(MainPage);

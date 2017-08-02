@@ -11,6 +11,7 @@ import LoginPage from './login/LoginPage';
 import SignUpPage from './login/SignUpPage';
 import MainPage from './main/MainPage';
 
+// DragDropContext(HTML5Backend),
 export default (
   <ApolloProvider store={store} client={apollo}>
     <Router>

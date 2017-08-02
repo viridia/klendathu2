@@ -1,9 +1,9 @@
+import autobind from 'bind-decorator';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {
   Button, Checkbox, ControlLabel, FormControl, FormGroup, HelpBlock, Modal,
 } from 'react-bootstrap';
-import autobind from '../../lib/autobind';
 import { createProject } from '../../store/reducers/project';
 import './CreateProjectDialog.scss';
 

@@ -1,5 +1,5 @@
+import autobind from 'bind-decorator';
 import * as React from 'react';
-import autobind from '../../lib/autobind';
 import './ErrorDisplay.scss';
 
 interface Props {

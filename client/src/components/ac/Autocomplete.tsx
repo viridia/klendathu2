@@ -1,4 +1,3 @@
-// tslint:disable:jsx-no-lambda
 import autobind from 'bind-decorator';
 import * as classNames from 'classnames';
 import * as React from 'react';

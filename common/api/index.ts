@@ -1,3 +1,4 @@
+export { Attachment } from './Attachment';
 export { Change } from './Change';
 export { Comment } from './Comment';
 export { Issue } from './Issue';
