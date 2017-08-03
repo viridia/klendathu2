@@ -1,5 +1,5 @@
 # Input type for creating and editing linked issues.
-input LinkedIssueInput {
+input IssueLinkInput {
   # ID of issue to which this is linked
   to: Int!
 
@@ -52,7 +52,7 @@ input IssueInput {
   labels: [Int!]
 
   # List of issues linked to this one
-  linked: [LinkedIssueInput!]
+  linked: [IssueLinkInput!]
 
   # List of custom fields for this issue
   custom: [CustomFieldInput!]!

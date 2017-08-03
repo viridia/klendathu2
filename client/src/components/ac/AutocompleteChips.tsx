@@ -5,6 +5,8 @@ import { FormControl, FormControlProps } from 'react-bootstrap';
 import * as ReactDOM from 'react-dom';
 import './AutocompleteChips.scss';
 
+export type SearchCallback<S> = (suggestion: S[], suffixActions?: any[]) => void;
+
 interface Props<S> {
   selection: S | S[];
   className?: string;
@@ -12,7 +14,7 @@ interface Props<S> {
   autoFocus?: boolean;
   maxLength?: number;
   multiple?: boolean;
-  onSearch: (search: string, callback: (suggestion: S[], suffixActions?: any[]) => void) => void;
+  onSearch: (search: string, callback: SearchCallback<S>) => void;
   onChooseSuggestion?: (suggestion: S, callback: (suggestion: S) => void) => boolean;
   onRenderSuggestion?: (suggestion: S) => JSX.Element;
   onRenderSelection?: (suggestion: S) => JSX.Element;

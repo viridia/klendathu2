@@ -9,7 +9,7 @@ enum IssueRelation {
 }
 
 # Link to another issue.
-type LinkedIssue {
+type IssueLink {
   # ID of issue to which this is linked
   to: Int!
 
@@ -86,7 +86,7 @@ type Issue {
   labelProps: [Label!]!
 
   # List of issues linked to this one.
-  linked: [LinkedIssue!]!
+  linked: [IssueLink!]!
 
   # Linked issue that includes this one, for convenience.
   parent: Int
@@ -101,14 +101,8 @@ type Issue {
   attachments: [Attachment!]!
 
   # Whether this issue should be visible to non-members of the project.
-  public: Boolean
+  isPublic: Boolean
 
   # History of changes to this issue
   changes: [Change!]!
-
-  #   score: {
-  #     type: GraphQLInt,
-  #     description: 'Relevance score for text searches.',
-  #   },
-  # },
 }

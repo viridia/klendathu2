@@ -47,7 +47,7 @@ type CustomFieldChange {
 }
 
 # Represents a change to a linked issue
-type LinkedIssueChange {
+type IssueLinkChange {
   # issue id.
   to: Int!
 
@@ -94,5 +94,5 @@ type Change {
   custom: [CustomFieldChange!]
 
   # Change to the list of linked issues.
-  linked: [LinkedIssueChange!]
+  linked: [IssueLinkChange!]
 }

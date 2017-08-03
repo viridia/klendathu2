@@ -37,7 +37,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js'],
   },
   plugins,
-  devtool: 'source-map',
+  devtool: debug ? 'inline-source-map' : 'source-map',
   module: {
     rules: [
       {

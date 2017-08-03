@@ -4,6 +4,5 @@ query issueSearchQuery($project: ID!, $search:String!) {
     project
     summary
     description
-    score
   }
 }

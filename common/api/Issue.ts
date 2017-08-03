@@ -2,7 +2,7 @@ import { Attachment } from './Attachment';
 import { Change } from './Change';
 import { Comment } from './Comment';
 import { Label } from './Label';
-import { LinkedIssue } from './LinkedIssue';
+import { IssueLink } from './IssueLink';
 
 enum CustomFieldType {
   STRING = 's',
@@ -101,7 +101,7 @@ export interface Issue {
       // },
 
   /** List of issues linked to this one. */
-  linked: LinkedIssue[];
+  linked: IssueLink[];
 
   /** Linked issue that includes this one, for convenience. */
   parent?: number;
@@ -133,11 +133,8 @@ export interface Issue {
       // },
 
   /** Whether this issue should be visible to non-members of the project. */
-  public?: boolean;
+  isPublic?: boolean;
 
   /** History of changes for this issue. */
   changes?: Change[];
-
-  /** Relevance score for text searches. */
-  score: number;
 }

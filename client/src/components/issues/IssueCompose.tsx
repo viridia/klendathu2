@@ -1,28 +1,31 @@
 import autobind from 'bind-decorator';
-import { Issue, LinkedIssue, Project, Relation, Template, User, Workflow } from 'common/api';
+import { Issue, Project, Relation, Template, User, Workflow } from 'common/api';
 import * as Immutable from 'immutable';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-import { Button, Checkbox, ControlLabel, FormControl } from 'react-bootstrap';
+import {
+  Button, Checkbox, ControlLabel, DropdownButton, FormControl, MenuItem,
+} from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import {
   RouteComponentProps,
 } from 'react-router-dom';
-// import DropdownButton from 'react-bootstrap/lib/DropdownButton';
-// import MenuItem from 'react-bootstrap/lib/MenuItem';
-// import IssueAutoComplete from './issueAutocomplete.jsx';
+import { caption } from '../../lib/relation';
 // import CustomEnumField from './customEnumField.jsx';
 // import CustomSuggestField from './customSuggestField.jsx';
 // import CommentEdit from './commentEdit.jsx';
-// import LinkedIssues from './linkedIssues.jsx';
 import '../common/card.scss';
 import '../common/form.scss';
 import UserAutocomplete from '../common/UserAutocomplete';
 import UploadAttachments from '../files/UploadAttachments';
+import IssueAutoComplete from './input/IssueAutocomplete';
 import LabelSelector from './input/LabelSelector';
 import StateSelector from './input/StateSelector';
 import TypeSelector from './input/TypeSelector';
 import './IssueCompose.scss';
+import IssueLinks from './IssueLinks';
+
+type IssueLinkMap = Immutable.OrderedMap<number, Relation>;
 
 interface Props extends RouteComponentProps<{}> {
   issue?: Issue;
@@ -40,12 +43,12 @@ interface State {
   summaryError: string;
   description: string;
   descriptionError: string;
-  public: boolean;
+  isPublic: boolean;
   owner?: User;
   cc: User[];
   labels: number[];
-  linkedIssue?: LinkedIssue;
-  linkedIssueMap: Immutable.OrderedMap<number, LinkedIssue>;
+  issueToLink?: Issue;
+  issueLinkMap: IssueLinkMap;
   relation: Relation;
   custom: Immutable.Map<string, string>;
   commentText: string;
@@ -73,74 +76,39 @@ export default class IssueCompose extends React.Component<Props, State> {
       summaryError: '',
       description: '',
       descriptionError: '',
-      public: false,
+      isPublic: false,
       owner: null,
       cc: [],
       labels: [],
-      linkedIssue: null,
-      linkedIssueMap: Immutable.OrderedMap(),
+      issueToLink: null,
+      issueLinkMap: Immutable.OrderedMap(),
       relation: Relation.BLOCKED_BY,
       custom: Immutable.Map.of(),
       commentText: '',
       comments: [],
       another: false,
     };
-  //   this.buildLinkedIssueList(this.state.linkedIssueMap);
+    // this.buildIssueLinkList(this.state.issueLinkMap);
   }
 
   public componentDidMount() {
     this.reset();
   }
 
-  // componentWillUpdate(nextProps, nextState) {
-  //   const thisId = this.props.issue && this.props.issue.id;
-  //   const nextId = nextProps.issue && nextProps.issue.id;
-  //   if (thisId !== nextId) {
-  //     this.reset();
-  //   }
-  //   this.buildLinkedIssueList(nextState.linkedIssueMap);
-  // }
+  public componentWillUpdate(nextProps: Props, nextState: State) {
+    const thisId = this.props.issue && this.props.issue.id;
+    const nextId = nextProps.issue && nextProps.issue.id;
+    if (thisId !== nextId) {
+      this.reset();
+    }
+    // this.buildIssueLinkList(nextState.issueLinkMap);
+  }
 
   public render() {
     const { project, issue, location } = this.props;
     // console.log(project, issue, location);
     const backLink = (location.state && location.state.back) || { pathname: '..' };
-    const canSave = this.state.summary && !this.state.linkedIssue;
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Linked Issues:</ControlLabel></th>
-    //                 <td>
-    //                   <LinkedIssues
-    //                       project={project}
-    //                       links={this.linkedIssueList}
-    //                       onRemoveLink={this.onRemoveLinkedIssue} />
-    //                   <div className="linked-group">
-    //                     <DropdownButton
-    //                         bsSize="small"
-    //                         title={Relation.caption[this.state.relation]}
-    //                         id="issue-link-type"
-    //                         onSelect={this.onChangeRelation}>
-    //                       {Relation.values.map(r => (<MenuItem
-    //                           eventKey={r}
-    //                           key={r}
-//                           active={r === this.state.relation}>{Relation.caption[r]}</MenuItem>))}
-    //                     </DropdownButton>
-    //                     <div className="ac-shim">
-    //                       <IssueAutoComplete
-    //                           className="ac-issue"
-    //                           project={project}
-    //                           placeholder="select an issue..."
-    //                           exclude={issue && issue.id}
-    //                           selection={this.state.linkedIssue}
-    //                           onSelectionChange={this.onChangeLinkedIssue}
-    //                           onEnter={this.onAddLinkedIssue} />
-    //                     </div>
-    //                     <Button
-    //                         bsSize="small"
-    //                         onClick={this.onAddLinkedIssue}
-    //                         disabled={!this.state.linkedIssue}>Add</Button>
-    //                   </div>
-    //                 </td>
-    //               </tr>
+    const canSave = this.state.summary && !this.state.issueToLink;
     //               <tr>
     //                 <th className="header"><ControlLabel>Comments:</ControlLabel></th>
     //                 <td>
@@ -263,6 +231,51 @@ export default class IssueCompose extends React.Component<Props, State> {
                         />
                       </td>
                     </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>Linked Issues:</ControlLabel></th>
+                      <td>
+                        <IssueLinks
+                            project={project}
+                            links={this.state.issueLinkMap}
+                            onRemoveLink={this.onRemoveIssueLink}
+                        />
+                        <div className="linked-group">
+                          <DropdownButton
+                              bsSize="small"
+                              title={caption[this.state.relation]}
+                              id="issue-link-type"
+                              onSelect={this.onChangeRelation}
+                          >
+                            {Relation.values.map(r => (
+                              <MenuItem
+                                  eventKey={r}
+                                  key={r}
+                                  active={r === this.state.relation}
+                              >
+                                {caption[r]}
+                              </MenuItem>))}
+                          </DropdownButton>
+                          <div className="ac-shim">
+                            <IssueAutoComplete
+                                className="ac-issue"
+                                project={project}
+                                placeholder="select an issue..."
+                                exclude={issue && issue.id}
+                                selection={this.state.issueToLink}
+                                onSelectionChange={this.onChangeIssueToLink}
+                                onEnter={this.onAddIssueLink}
+                            />
+                          </div>
+                          <Button
+                              bsSize="small"
+                              onClick={this.onAddIssueLink}
+                              disabled={!this.state.issueToLink}
+                          >
+                            Add
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </form>
@@ -277,7 +290,7 @@ export default class IssueCompose extends React.Component<Props, State> {
               />
               {project.isPublic && <ControlLabel>Visbility</ControlLabel>}
               {project.isPublic &&
-                (<Checkbox checked={this.state.public} onChange={this.onChangePublic}>
+                (<Checkbox checked={this.state.isPublic} onChange={this.onChangePublic}>
                   Public
                 </Checkbox>)}
             </aside>
@@ -377,10 +390,6 @@ export default class IssueCompose extends React.Component<Props, State> {
     this.navigate(1);
   }
 
-  // private onFocusPrev() {
-  //   this.navigate(-1);
-  // }
-
   @autobind
   private onChangeType(value: string) {
     this.setState({ type: value });
@@ -418,21 +427,23 @@ export default class IssueCompose extends React.Component<Props, State> {
     this.setState({ labels: selection });
   }
 
-  // onChangeLinkedIssue(selection) {
-  //   this.setState({ linkedIssue: selection });
-  // }
-  //
-  // onChangeRelation(selection) {
-  //   this.setState({ relation: selection });
-  // }
-  //
+  @autobind
+  private onChangeIssueToLink(selection: Issue) {
+    this.setState({ issueToLink: selection });
+  }
+
+  @autobind
+  private onChangeRelation(selection: any) {
+    this.setState({ relation: selection as Relation });
+  }
+
   // onChangeCustomField(id, value) {
   //   this.setState({ custom: this.state.custom.set(id, value) });
   // }
 
   @autobind
   private onChangePublic(e: any) {
-    this.setState({ public: e.target.checked });
+    this.setState({ isPublic: e.target.checked });
   }
 
   @autobind
@@ -455,32 +466,31 @@ export default class IssueCompose extends React.Component<Props, State> {
   //   });
   //   return Promise.resolve(newComment);
   // }
-  //
-  // onAddLinkedIssue(e) {
-  //   if (e) {
-  //     e.preventDefault();
-  //   }
-  //   const { relation, linkedIssue } = this.state;
-  //   if (relation && linkedIssue) {
-  //     // Can't link an issue to itself.
-  //     if (this.props.issue && linkedIssue.id === this.props.issue.id) {
-  //       return;
-  //     }
-  //     this.setState({
-  //       linkedIssueMap: this.state.linkedIssueMap.set(linkedIssue.id, relation),
-  //       linkedIssue: null,
-  //     });
-  //   }
-  // }
-  //
-  // onRemoveLinkedIssue(id) {
-  //   this.setState({ linkedIssueMap: this.state.linkedIssueMap.remove(id) });
-  // }
+
+  @autobind
+  private onAddIssueLink() {
+    const { relation, issueToLink } = this.state;
+    if (relation && issueToLink) {
+      // Can't link an issue to itself.
+      if (this.props.issue && issueToLink.id === this.props.issue.id) {
+        return;
+      }
+      this.setState({
+        issueLinkMap: this.state.issueLinkMap.set(issueToLink.id, relation),
+        issueToLink: null,
+      });
+    }
+  }
+
+  @autobind
+  private onRemoveIssueLink(id: number) {
+    this.setState({ issueLinkMap: this.state.issueLinkMap.remove(id) });
+  }
 
   @autobind
   private onCreate() {
-  //   this.buildLinkedIssueList(this.state.linkedIssueMap);
-    const issue = {
+    // this.buildIssueLinkList(this.state.issueLinkMap);
+    const issue: Partial<Issue> = {
       state: this.state.issueState,
       type: this.state.type,
       summary: this.state.summary,
@@ -488,10 +498,10 @@ export default class IssueCompose extends React.Component<Props, State> {
       owner: this.state.owner ? this.state.owner.username : undefined,
       cc: this.state.cc.map(cc => cc.username),
       labels: this.state.labels,
-      // linked: this.linkedIssueList,
+      linked: this.state.issueLinkMap.map((relation, to) => ({ to, relation })).toArray(),
       attachments: this.attachments.files(),
-      // custom: [],
-      public: this.state.public,
+      custom: [],
+      isPublic: this.state.isPublic,
       // comments
     };
     const { project } = this.props;
@@ -534,11 +544,11 @@ export default class IssueCompose extends React.Component<Props, State> {
   //           ? new Immutable.Map(issue.custom.map(custom => [custom.name, custom.value]))
   //           : Immutable.Map.of(),
   //       labels: issue.labelProps,
-  //       linkedIssue: null,
-//       linkedIssueMap: new Immutable.OrderedMap(linked.map(({ relation, to }) => [to, relation])),
-  //       relation: Relation.BLOCKED_BY,
+        issueToLink: null,
+//       issueLinkMap: new Immutable.OrderedMap(linked.map(({ relation, to }) => [to, relation])),
+        relation: Relation.BLOCKED_BY,
   //       comments: issue.comments,
-  //       public: !!issue.public,
+        isPublic: !!issue.isPublic,
       });
   //     this.attachments.setFiles(issue.attachmentsData || []);
     } else {
@@ -556,17 +566,17 @@ export default class IssueCompose extends React.Component<Props, State> {
   //       custom: Immutable.Map.of(),
         labels: [],
         comments: [],
-        linkedIssue: null,
-  //       linkedIssueMap: Immutable.OrderedMap.of(),
-  //       relation: Relation.BLOCKED_BY,
-        public: !!project.isPublic,
+        issueToLink: null,
+        issueLinkMap: Immutable.OrderedMap<number, Relation>(),
+        relation: Relation.BLOCKED_BY,
+        isPublic: !!project.isPublic,
       });
       this.attachments.setFiles([]);
     }
   }
 
-  // buildLinkedIssueList(linkedIssueMap) {
-  //   this.linkedIssueList = linkedIssueMap.map((relation, to) =>
+  // private buildIssueLinkList(issueLinkMap: IssueLinkMap) {
+  //   this.linkedIssueList = issueLinkMap.map((relation, to) =>
   //       ({ relation, to })).toArray();
   // }
 

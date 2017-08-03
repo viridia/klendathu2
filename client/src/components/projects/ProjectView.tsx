@@ -1,11 +1,8 @@
 import autobind from 'bind-decorator';
-// import 'react-redux-toastr/src/less/index.less';
 import { Project, Template, Workflow } from 'common/api';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { compose, graphql, QueryProps } from 'react-apollo';
-// import { DragDropContext } from 'react-dnd';
-// import * as HTML5Backend from 'react-dnd-html5-backend';
 import {
   Route,
   RouteComponentProps,
@@ -42,7 +39,6 @@ class ProjectView extends React.Component<DataProps, undefined> {
 
   public render() {
     const { data, support } = this.props;
-    // const { data: { error, loading, project }, support: { template, workflow } } = this.props;
     if (data.error) {
       return <ErrorDisplay error={data.error} />;
     } else if (support && support.error) {
@@ -100,8 +96,6 @@ class ProjectView extends React.Component<DataProps, undefined> {
 }
 
 export default compose(
-  // TODO: finish (move to higher level)
-  // DragDropContext(HTML5Backend),
   graphql(ProjectQuery, {
     options: (props: Props) => ({
       variables: { project: props.match.params.project },

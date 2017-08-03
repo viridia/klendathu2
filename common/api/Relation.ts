@@ -7,3 +7,17 @@ export enum Relation {
   DUPLICATE = 'duplicate',
   RELATED = 'related',
 }
+
+console.log(JSON.stringify(Relation, null, 2));
+
+// tslint:disable:no-namespace
+export namespace Relation {
+  export const values = [
+    'blocked-by',
+    'blocks',
+    'included-by',
+    'includes',
+    'duplicate',
+    'related',
+  ];
+}

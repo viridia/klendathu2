@@ -21,7 +21,7 @@ import {
 // import CommentEdit from './commentEdit.jsx';
 // import { Role } from '../../lib/role';
 // import IssueDetailsQuery from '../../graphql/queries/issueDetails.graphql';
-// import LinkedIssues from './linkedIssues.jsx';
+// import IssueLinks from './linkedIssues.jsx';
 // import WorkflowActions from './workflowActions.jsx';
 // import ShowAttachments from '../files/showAttachments.jsx';
 // import { addComment, updateIssue, deleteIssue } from '../../store/issue';
@@ -343,10 +343,10 @@ class IssueDetails extends React.Component<Props> {
     //             {linked.length > 0 && <tr>
     //               <th className="header linked">Linked Issues:</th>
     //               <td>
-    //                 <LinkedIssues
+    //                 <IssueLinks
     //                     project={project}
     //                     links={linked}
-    //                     onRemoveLink={this.onRemoveLinkedIssue} />
+    //                     onRemoveLink={this.onRemoveIssueLink} />
     //               </td>
     //             </tr>}
     //             {((comments || []).length > 0 || (changes || []).length > 0) && <tr>
