@@ -1,5 +1,6 @@
 import { Project } from 'common/api';
 import { Role } from 'common/api/Role';
+import AddBoxIcon from 'icons/ic_add_box_black_24px.svg';
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
 import { Button } from 'react-bootstrap';
@@ -7,9 +8,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import {
   RouteComponentProps,
 } from 'react-router-dom';
-
-const ProjectQuery = require('../../graphql/queries/project.graphql');
-const AddBoxIcon = require('icons/ic_add_box_black_24px.svg');
+import ProjectQuery from '../../graphql/queries/project.graphql';
 
 type Props = RouteComponentProps<{ project: string }>;
 

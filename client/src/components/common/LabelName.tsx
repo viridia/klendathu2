@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
+import LabelQuery from '../../graphql/queries/label.graphql';
 import './LabelName.scss';
-
-const LabelQuery = require('../../graphql/queries/label.graphql');
 
 interface Props {
   label: number;

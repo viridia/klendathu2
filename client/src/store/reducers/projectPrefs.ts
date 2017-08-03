@@ -1,7 +1,6 @@
 // import { ProjectPrefs } from 'common/api';
+import SetProjectPrefsMutation from '../../graphql/mutations/setProjectPrefs.graphql';
 import apollo from '../apollo';
-
-const SetProjectPrefsMutation = require('../../graphql/mutations/setProjectPrefs.graphql');
 
 export function setProjectPrefs(project: string, {
     labels,

@@ -1,12 +1,11 @@
 import autobind from 'bind-decorator';
+import AddBoxIcon from 'icons/ic_add_box_black_24px.svg';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
 import CreateProjectDialog from '../projects/CreateProjectDialog';
 import ProjectList from '../projects/ProjectList';
 import './Dashboard.scss';
-
-const AddBoxIcon = require('icons/ic_add_box_black_24px.svg');
 
 interface State {
   showCreate: boolean;

@@ -15,8 +15,8 @@ import IssueSummaryView from '../issues/IssueSummaryView';
 import LabelList from '../labels/LabelList';
 import LeftNav from '../nav/LeftNav';
 
-const ProjectQuery = require('../../graphql/queries/project.graphql');
-const TemplateAndWorkflowQuery = require('../../graphql/queries/templateAndWorkflow.graphql');
+import ProjectQuery from '../../graphql/queries/project.graphql';
+import TemplateAndWorkflowQuery from '../../graphql/queries/templateAndWorkflow.graphql';
 
 type Props = RouteComponentProps<{ project: string }>;
 

@@ -1,13 +1,12 @@
 import autobind from 'bind-decorator';
 import { Project, Relation } from 'common/api';
+import CloseIcon from 'icons/ic_close_black_24px.svg';
 import * as Immutable from 'immutable';
 import * as React from 'react';
 import { Button } from 'react-bootstrap';
 import { caption } from '../../lib/relation';
 import IssueSummary from '../common/IssueSummary';
 import './IssueLinks.scss';
-
-const CloseIcon = require('icons/ic_close_black_24px.svg');
 
 interface Props {
   project: Project;

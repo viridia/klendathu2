@@ -1,4 +1,5 @@
 import autobind from 'bind-decorator';
+import AddBoxIcon from 'icons/ic_add_box_black_24px.svg';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {
@@ -6,8 +7,6 @@ import {
 } from 'react-bootstrap';
 import { createProject } from '../../store/reducers/project';
 import './CreateProjectDialog.scss';
-
-const AddBoxIcon = require('icons/ic_add_box_black_24px.svg');
 
 interface Props {
   onHide: () => void;

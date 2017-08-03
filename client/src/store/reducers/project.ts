@@ -1,10 +1,9 @@
 import { Project } from 'common/api';
+import DeleteProjectMutation from '../../graphql/mutations/deleteProject.graphql';
+import NewProjectMutation from '../../graphql/mutations/newProject.graphql';
+import UpdateProjectMutation from '../../graphql/mutations/updateProject.graphql';
+import ProjectListQuery from '../../graphql/queries/projectList.graphql';
 import apollo from '../apollo';
-
-const NewProjectMutation = require('../../graphql/mutations/newProject.graphql');
-const UpdateProjectMutation = require('../../graphql/mutations/updateProject.graphql');
-const DeleteProjectMutation = require('../../graphql/mutations/deleteProject.graphql');
-const ProjectListQuery = require('../../graphql/queries/projectList.graphql');
 
 export function createProject(input: Partial<Project>) {
   return apollo.mutate<{ newProject: Project }>({

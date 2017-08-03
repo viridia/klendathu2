@@ -2,7 +2,7 @@ import * as classNames from 'classnames';
 import * as React from 'react';
 import './Chip.scss';
 
-const CloseIcon = require('icons/ic_close_black_24px.svg');
+import CloseIcon from 'icons/ic_close_black_24px.svg';
 
 interface Props {
   children: React.ReactNode;

@@ -2,10 +2,9 @@ import autobind from 'bind-decorator';
 import { Issue, Project } from 'common/api';
 import * as React from 'react';
 import { ApolloClient, withApollo } from 'react-apollo';
+import IssueSearchQuery from '../../../graphql/queries/issueSearch.graphql';
 import AutocompleteChips, { SearchCallback } from '../../ac/AutocompleteChips';
 import '../../ac/Chip.scss';
-
-const IssueSearchQuery = require('../../../graphql/queries/issueSearch.graphql');
 
 interface Props {
   project: Project;
@@ -14,33 +13,8 @@ interface Props {
   selection: Issue | Issue[];
   onSelectionChange: (selection: Issue | Issue[] | null) => void;
 }
-// IssueAutoComplete.propTypes = {
-//   onEnter: PropTypes.func,
-//   client: PropTypes.instanceOf(ApolloClient).isRequired,
-//   selection: PropTypes.oneOfType([
-//     PropTypes.arrayOf(PropTypes.any.isRequired),
-//     PropTypes.any,
-//   ]),
-//   exclude: PropTypes.number,
-// };
-// className="ac-issue"
-// project={project}
-// placeholder="select an issue..."
-// exclude={issue && issue.id}
-// selection={this.state.issueLink}
-// onSelectionChange={this.onChangeIssueLink}
-// onEnter={this.onAddIssueLink}
 
 class IssueAutoComplete extends React.Component<Props> {
-  // selection: S | S[];
-  // onSearch: (search: string, callback: (suggestion: S[], suffixActions?: any[]) => void) => void;
-  // onChooseSuggestion?: (suggestion: S, callback: (suggestion: S) => void) => boolean;
-  // onRenderSuggestion?: (suggestion: S) => JSX.Element;
-  // onRenderSelection?: (suggestion: S) => JSX.Element;
-  // onGetValue?: (suggestion: S) => string | number;
-  // onGetSortKey?: (suggestion: S) => string | number;
-  // onEnter?: () => void;
-  // onSelectionChange: (selection: S | S[] | null) => void;
   public render() {
     return (
       <AutocompleteChips

@@ -1,7 +1,6 @@
+import AppsIcon from 'icons/ic_apps_black_24px.svg';
 import * as React from 'react';
 import NavItem from '../common/NavItem';
-
-const AppsIcon = require('icons/ic_apps_black_24px.svg');
 
 export default function DashboardNav() {
   return (

@@ -4,7 +4,7 @@ import { DefaultChildProps, graphql } from 'react-apollo';
 import ErrorDisplay from '../debug/ErrorDisplay';
 import ProjectCard from './ProjectCard';
 
-const ProjectListQuery = require('../../graphql/queries/projectList.graphql');
+import ProjectListQuery from '../../graphql/queries/projectList.graphql';
 
 interface Data {
   projects: Project[];

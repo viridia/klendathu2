@@ -4,12 +4,11 @@ import autobind from 'bind-decorator';
 import { Label, Project } from 'common/api';
 import * as React from 'react';
 import { withApollo } from 'react-apollo';
+import LabelSearchQuery from '../../../graphql/queries/labelSearch.graphql';
 import AutocompleteChips from '../../ac/AutocompleteChips';
 import Chip from '../../ac/Chip';
 import '../../ac/Chip.scss';
 import LabelDialog from '../../labels/LabelDialog';
-
-const LabelSearchQuery = require('../../../graphql/queries/labelSearch.graphql');
 
 interface Props {
   client: ApolloClient;

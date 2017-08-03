@@ -6,6 +6,7 @@ import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
 import { Button, Checkbox, Modal } from 'react-bootstrap';
 import { toastr } from 'react-redux-toastr';
+import LabelsQuery from '../../graphql/queries/labels.graphql';
 import { deleteLabel } from '../../store/reducers/label';
 import { setProjectPrefs } from '../../store/reducers/projectPrefs';
 import LabelName from '../common/LabelName';
@@ -13,8 +14,6 @@ import ErrorDisplay from '../debug/ErrorDisplay';
 import './../common/card.scss';
 import LabelDialog from './LabelDialog';
 import './LabelList.scss';
-
-const LabelsQuery = require('../../graphql/queries/labels.graphql');
 
 interface Data {
   labels: Label[];

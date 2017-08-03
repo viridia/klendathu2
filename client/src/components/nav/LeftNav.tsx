@@ -1,4 +1,10 @@
 import { Project, ProjectPrefs, Role } from 'common/api';
+import AppsIcon from 'icons/ic_apps_black_24px.svg';
+import BookmarkIcon from 'icons/ic_bookmark_border_black_24px.svg';
+import ListIcon from 'icons/ic_list_black_24px.svg';
+import LocalOfferIcon from 'icons/ic_local_offer_black_24px.svg';
+import PersonIcon from 'icons/ic_person_black_24px.svg';
+import SettingsIcon from 'icons/ic_settings_black_24px.svg';
 import * as qs from 'qs';
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
@@ -8,12 +14,6 @@ import NavItem from '../common/NavItem';
 import './LeftNav.scss';
 
 const LeftNavDataQuery  = require('../../graphql/queries/leftNavData.graphql');
-const AppsIcon = require('icons/ic_apps_black_24px.svg');
-const BookmarkIcon = require('icons/ic_bookmark_border_black_24px.svg');
-const ListIcon = require('icons/ic_list_black_24px.svg');
-const LocalOfferIcon = require('icons/ic_local_offer_black_24px.svg');
-const PersonIcon = require('icons/ic_person_black_24px.svg');
-const SettingsIcon = require('icons/ic_settings_black_24px.svg');
 const equal = require('deep-equal');
 
 interface Props {

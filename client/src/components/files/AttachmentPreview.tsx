@@ -1,12 +1,11 @@
 import autobind from 'bind-decorator';
 import * as classNames from 'classnames';
 import { Attachment } from 'common/api';
+import CloseIcon from 'icons/ic_close_black_24px.svg';
 import * as React from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import FileIcon from './FileIcon';
 import UploadableFile from './UploadableFile';
-
-const CloseIcon = require('icons/ic_close_black_24px.svg');
 
 interface Props {
   attachment: Attachment;

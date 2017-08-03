@@ -1,9 +1,8 @@
 import { Issue } from 'common/api';
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
+import IssueQuery from '../../graphql/queries/issue.graphql';
 import './LabelName.scss';
-
-const IssueQuery = require('../../graphql/queries/issue.graphql');
 
 interface Props {
   id: number;

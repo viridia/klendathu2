@@ -1,9 +1,9 @@
 import { Label } from 'common/api';
 import apollo from '../apollo';
 
-const NewLabelMutation = require('../../graphql/mutations/newLabel.graphql');
-const UpdateLabelMutation = require('../../graphql/mutations/updateLabel.graphql');
-const DeleteLabelMutation = require('../../graphql/mutations/deleteLabel.graphql');
+import NewLabelMutation from '../../graphql/mutations/newLabel.graphql';
+import UpdateLabelMutation from '../../graphql/mutations/updateLabel.graphql';
+import DeleteLabelMutation from '../../graphql/mutations/deleteLabel.graphql';
 
 export function createLabel(project: string, input: Partial<Label>) {
   return apollo.mutate<{ newLabel: Label }>({
