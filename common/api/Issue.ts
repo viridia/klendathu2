@@ -1,42 +1,15 @@
 import { Attachment } from './Attachment';
 import { Change } from './Change';
 import { Comment } from './Comment';
-import { Label } from './Label';
 import { IssueLink } from './IssueLink';
-
-enum CustomFieldType {
-  STRING = 's',
-  NUMBER = 'n',
-  BOOLEAN = 'b',
-}
-
-/** A custom field value with string type. */
-export interface CustomStringValue {
-  type: CustomFieldType.STRING;
-
-  value: string;
-}
-
-/** A custom field value with number type. */
-export interface CustomNumberValue {
-  type: CustomFieldType.NUMBER;
-
-  value: number;
-}
-
-/** A custom field value with boolean type. */
-export interface CustomBooleanValue {
-  type: CustomFieldType.BOOLEAN;
-
-  value: boolean;
-}
+import { Label } from './Label';
 
 /** Data for a custom field. */
 export interface CustomField {
   name: string;
 
   /** Value of the custom field. */
-  value: CustomStringValue | CustomNumberValue | CustomBooleanValue;
+  value: string;
 }
 
 /** An issue. */
@@ -65,21 +38,8 @@ export interface Issue {
   /** Username of current owner of this issue. */
   owner: string;
 
-  /** Current owner of this issue, as a user object. */
-  // ownerData: User;
-      // resolve(issue, args, context, options) {
-      //   return options.rootValue.singleUser({ username: issue.owner });
-      // },
-
   /** Users who wish to be informed when this issue is updated. */
   cc: string[];
-    // ccData: {
-    //   type: new GraphQLList(new GraphQLNonNull(userType)),
-    //   description: 'Users who wish to be informed when this issue is updated (as User objects).',
-    //   // resolve(issue, args, context, options) {
-    //   //   return issue.cc.map(cc => options.rootValue.singleUser({ username: cc }));
-    //   // },
-    // },
 
   /** Date and time when the issue was created. */
   created: Date;
@@ -124,7 +84,7 @@ export interface Issue {
   attachments: string[];
 
   /** Details for the list of attachments. */
-  attachmentsDetails: Attachment[];
+  attachmentProps: Attachment[];
       // resolve(issue, args, context, options) {
       //   if (!issue.attachments || issue.attachments.length === 0) {
       //     return [];

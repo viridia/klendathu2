@@ -39,23 +39,23 @@ export const mutations = {
       args: { project: string, user: string, role: Role },
       context: Context): Promise<MembershipRecord> {
     if (!context.user) {
-      return Promise.reject(new Unauthorized());
+      throw new Unauthorized();
     }
     const isSelf = args.user === context.user.id;
     const { project, role } = await getProjectAndRole(context, args.project, undefined, true);
     if (!project || (!project.isPublic && role < Role.VIEWER)) {
-      return Promise.reject(new NotFound({ notFound: 'project' }));
+      throw new NotFound({ notFound: 'project' });
     } else if (role < Role.VIEWER || (role < Role.MANAGER && !isSelf)) {
       // Current user must be a member of the project to update their own membership.
       // Must be a manager to update someone else's membership.
-      return Promise.reject(new Forbidden());
+      throw new Forbidden();
     }
 
     // Make sure it's an actual user
     if (!isSelf) {
       const existingUser = await r.table('users').get(args.user).run(context.conn);
       if (!existingUser) {
-        return Promise.reject(new NotFound({ notFound: 'user' }));
+        throw new NotFound({ notFound: 'user' });
       }
     }
 
@@ -67,7 +67,7 @@ export const mutations = {
 
     // Can't affect roles that are greater than your own role - either the existing or new role.
     if (role < args.role || (pm && role < pm.role)) {
-      return Promise.reject(new Forbidden());
+      throw new Forbidden();
     }
 
     // If role didn't change, then simpy return the existing membership without touching the db.

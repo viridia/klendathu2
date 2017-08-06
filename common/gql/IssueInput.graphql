@@ -55,13 +55,13 @@ input IssueInput {
   linked: [IssueLinkInput!]
 
   # List of custom fields for this issue
-  custom: [CustomFieldInput!]!
+  custom: [CustomFieldInput!]
 
   # List of comments on this issue
-  comments: [CommentInput!]!
+  comments: [CommentInput!]
 
   # List of attachments for this issue
-  attachments: [AttachmentInput!]!
+  attachments: [AttachmentInput!]
 
   # Whether this issue should be visible to non-members of the project.
   public: Boolean

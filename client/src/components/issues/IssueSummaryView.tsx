@@ -13,7 +13,7 @@ import {
 // import FilterParams from '../filters/filterParams.jsx';
 // import MassEdit from '../filters/massEdit.jsx';
 // import IssueList from './issueList.jsx';
-// import IssueListQuery from '../../graphql/queries/issueList.graphql';
+// import * as IssueListQuery from '../../graphql/queries/issueList.graphql';
 // import { setFilterTerms } from '../../store/filter';
 // import { getFieldType } from '../filters/fieldTypes';
 

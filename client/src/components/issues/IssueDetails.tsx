@@ -20,7 +20,7 @@ import {
 // import IssueChanges from './issueChanges.jsx';
 // import CommentEdit from './commentEdit.jsx';
 // import { Role } from '../../lib/role';
-// import IssueDetailsQuery from '../../graphql/queries/issueDetails.graphql';
+// import * as IssueDetailsQuery from '../../graphql/queries/issueDetails.graphql';
 // import IssueLinks from './linkedIssues.jsx';
 // import WorkflowActions from './workflowActions.jsx';
 // import ShowAttachments from '../files/showAttachments.jsx';

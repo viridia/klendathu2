@@ -1,10 +1,11 @@
 export { Attachment } from './Attachment';
 export { Change } from './Change';
 export { Comment } from './Comment';
-export { Issue } from './Issue';
+export { CustomField, Issue } from './Issue';
 export { IssueLink } from './IssueLink';
 export { Label } from './Label';
 export { Membership } from './Membership';
+export { Predicate } from './Predicate';
 export { Project } from './Project';
 export { ProjectPrefs, Filter } from './ProjectPrefs';
 export { User } from './User';

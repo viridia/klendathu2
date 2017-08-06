@@ -2,7 +2,7 @@ import autobind from 'bind-decorator';
 import { Issue, Project } from 'common/api';
 import * as React from 'react';
 import { ApolloClient, withApollo } from 'react-apollo';
-import IssueSearchQuery from '../../../graphql/queries/issueSearch.graphql';
+import * as IssueSearchQuery from '../../../graphql/queries/issueSearch.graphql';
 import AutocompleteChips, { SearchCallback } from '../../ac/AutocompleteChips';
 import '../../ac/Chip.scss';
 

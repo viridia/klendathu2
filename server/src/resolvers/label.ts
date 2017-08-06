@@ -43,7 +43,7 @@ export const mutations = {
       args: { project: string, input: LabelInput },
       context: Context): Promise<LabelRecord> {
     if (!context.user) {
-      return Promise.reject(new Unauthorized());
+      throw new Unauthorized();
     }
     const { project, role } = await getProjectAndRole(context, args.project, undefined, true);
     if (!project || (!project.isPublic && role < Role.VIEWER)) {
@@ -52,16 +52,16 @@ export const mutations = {
       } else {
         logger.error(`newLabel: project ${args.project} not found.`);
       }
-      return Promise.reject(new NotFound());
+      throw new NotFound({ notFound: 'project' });
     } else if (role < Role.DEVELOPER) {
       logger.error(`newLabel: user ${context.user.id} has insufficient privileges.`);
-      return Promise.reject(new Forbidden());
+      throw new Forbidden();
     } else if (!args.input.name) {
       logger.error(`newLabel: missing field 'name'.`);
-      return Promise.reject(new ResolverError(ErrorKind.MISSING_FIELD, { field: 'name' }));
+      throw new ResolverError(ErrorKind.MISSING_FIELD, { field: 'name' });
     } else if (!args.input.color) {
       logger.error(`newLabel: missing field 'color'.`);
-      return Promise.reject(new ResolverError(ErrorKind.MISSING_FIELD, { field: 'color' }));
+      throw new ResolverError(ErrorKind.MISSING_FIELD, { field: 'color' });
     }
 
     // Increment the label id counter.
@@ -88,7 +88,7 @@ export const mutations = {
       return nl;
     }, error => {
       logger.error('Error creating project', error);
-      return Promise.reject(new InternalError());
+      throw new InternalError();
     });
   },
 
@@ -97,16 +97,16 @@ export const mutations = {
       args: { project: string, id: number, input: LabelInput },
       context: Context): Promise<number> {
     if (!context.user) {
-      return Promise.reject(new Unauthorized());
+      throw new Unauthorized();
     }
 
     const { project, role } = await getProjectAndRole(context, args.project, undefined, true);
     if (project === null || (!project.isPublic && role < Role.VIEWER)) {
-      return Promise.reject(new NotFound());
+      throw new NotFound({ notFound: 'project' });
     } else if (role < Role.DEVELOPER) {
-      return Promise.reject(new Forbidden());
+      throw new Forbidden();
     } else if (!args.input.name || !args.input.color) {
-      return Promise.reject(new ResolverError(ErrorKind.MISSING_FIELD));
+      throw new ResolverError(ErrorKind.MISSING_FIELD);
     }
 
     const record: Partial<LabelRecord> = {
@@ -127,20 +127,20 @@ export const mutations = {
       return (resp as any).changes[0].new_val;
     } else {
       logger.error('Error updating non-existent label', args.id, args.project, context.user);
-      return Promise.reject(new NotFound());
+      throw new NotFound({ notFound: 'label' });
     }
   },
 
   async deleteLabel(_: any, args: { project: string, id: number }, context: Context):
       Promise<number> {
     if (!context.user) {
-      return Promise.reject(new Unauthorized());
+      throw new Unauthorized();
     }
     const { project, role } = await getProjectAndRole(context, args.project, undefined, true);
     if (project === null || (!project.isPublic && role < Role.VIEWER)) {
-      return Promise.reject(new NotFound());
+      throw new NotFound({ notFound: 'project' });
     } else if (role < Role.DEVELOPER) {
-      return Promise.reject(new Forbidden());
+      throw new Forbidden();
     }
 
     // Delete all instances of that label from issues
@@ -159,7 +159,7 @@ export const mutations = {
         .delete()
         .run(context.conn);
     if (resp.deleted !== 1) {
-      return Promise.reject(new NotFound());
+      throw new NotFound({ notFound: 'label' });
     }
 
     // Return the id of the deleted label

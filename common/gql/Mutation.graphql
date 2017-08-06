@@ -4,17 +4,17 @@ type Mutation {
     # Id of the project the new issue is being added to.
     project: ID!,
     # Contents of the issue to be created.
-    issue: IssueInput!
+    input: IssueInput!
   ): Issue!
 
   # Update an existing issue record.
-  newIssue(
+  updateIssue(
     # Project containing the issue.
     project: ID!,
     # Id of the issue to update.
     id: Int!,
     # Updated contents of the issue
-    issue: IssueInput!
+    input: IssueInput!
   ): Issue!
 
   # Delete an issue record.

@@ -12,6 +12,7 @@ logger.level = 'warn';
 
 let token: string;
 let app: App;
+const consoleErrors = console.error;
 
 const newProjectMutation = `mutation NewProject($input: ProjectInput!) {
   newProject(input: $input) {
@@ -39,6 +40,11 @@ export function clearTables(...tableNames: string[]) {
   return function() {
     return Promise.all(tableNames.map(t => r.table(t).delete({}).run(this.app.conn)));
   };
+}
+
+export function clearAllTables() {
+  return clearTables(
+    'users', 'projects', 'labels', 'issues', 'issueChanges', 'issueLinks', 'memberships');
 }
 
 export function createTestAccount() {
@@ -85,12 +91,15 @@ export function createTestProject() {
     });
 }
 
-export function suppressErrorLog(test: any) {
-  test.app.logErrors = false;
-  console.error = () => '';
+interface RequestOptions {
+  suppressErrorLog?: boolean;
 }
 
-export function graphqlRequest(query: string, variables: object) {
+export function graphqlRequest(query: string, variables: object, options: RequestOptions = {}) {
+  if (options.suppressErrorLog) {
+    app.logErrors = false;
+    console.error = () => '';
+  }
   return request(app.httpServer)
     .post('/api/graphql')
     .set('authorization', `JWT ${token}`)
@@ -98,5 +107,17 @@ export function graphqlRequest(query: string, variables: object) {
       query,
       variables,
     })
-    .expect(200);
+    .expect(200).then(resp => {
+      if (options.suppressErrorLog) {
+        app.logErrors = true;
+        console.error = consoleErrors;
+      }
+      return resp;
+    }, error => {
+      if (options.suppressErrorLog) {
+        app.logErrors = true;
+        console.error = consoleErrors;
+      }
+      return Promise.reject(error);
+    });
 }

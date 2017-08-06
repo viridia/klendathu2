@@ -8,7 +8,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import {
   RouteComponentProps,
 } from 'react-router-dom';
-import ProjectQuery from '../../graphql/queries/project.graphql';
+import * as ProjectQuery from '../../graphql/queries/project.graphql';
 
 type Props = RouteComponentProps<{ project: string }>;
 

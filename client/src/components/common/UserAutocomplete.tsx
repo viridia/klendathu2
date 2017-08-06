@@ -2,7 +2,7 @@ import autobind from 'bind-decorator';
 import { User } from 'common/api';
 import * as React from 'react';
 import { ApolloClient, withApollo } from 'react-apollo';
-import UsersQuery from '../../graphql/queries/users.graphql';
+import * as UsersQuery from '../../graphql/queries/users.graphql';
 import AutocompleteChips from '../ac/AutocompleteChips';
 import Chip from '../ac/Chip';
 

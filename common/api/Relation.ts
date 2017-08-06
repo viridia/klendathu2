@@ -1,23 +1,21 @@
 /** Enumeration representing relationship between linked issues. */
 export enum Relation {
-  BLOCKED_BY = 'blocked-by',
-  BLOCKS = 'blocks',
-  INCLUDED_BY = 'included-by',
-  INCLUDES = 'includes',
-  DUPLICATE = 'duplicate',
-  RELATED = 'related',
+  BLOCKED_BY = 'BLOCKED_BY',
+  BLOCKS = 'BLOCKS',
+  INCLUDED_BY = 'INCLUDED_BY',
+  INCLUDES = 'INCLUDES',
+  DUPLICATE = 'DUPLICATE',
+  RELATED = 'RELATED',
 }
-
-console.log(JSON.stringify(Relation, null, 2));
 
 // tslint:disable:no-namespace
 export namespace Relation {
   export const values = [
-    'blocked-by',
-    'blocks',
-    'included-by',
-    'includes',
-    'duplicate',
-    'related',
+    'BLOCKED_BY',
+    'BLOCKS',
+    'INCLUDED_BY',
+    'INCLUDES',
+    'DUPLICATE',
+    'RELATED',
   ];
 }

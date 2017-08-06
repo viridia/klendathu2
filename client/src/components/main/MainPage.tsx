@@ -20,7 +20,7 @@ import Header from '../header/Header';
 import ProjectView from '../projects/ProjectView';
 import './MainPage.scss';
 
-import ProfileQuery from '../../graphql/queries/profile.graphql';
+import * as ProfileQuery from '../../graphql/queries/profile.graphql';
 
 interface RouteParams {
   project: string;

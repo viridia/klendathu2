@@ -4,7 +4,7 @@ import autobind from 'bind-decorator';
 import { Label, Project } from 'common/api';
 import * as React from 'react';
 import { withApollo } from 'react-apollo';
-import LabelSearchQuery from '../../../graphql/queries/labelSearch.graphql';
+import * as LabelSearchQuery from '../../../graphql/queries/labelSearch.graphql';
 import AutocompleteChips from '../../ac/AutocompleteChips';
 import Chip from '../../ac/Chip';
 import '../../ac/Chip.scss';

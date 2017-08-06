@@ -3,7 +3,6 @@ import * as request from 'supertest';
 import { Role } from '../../../common/api';
 import {
   clearTables, createApp, createSecondUser, createTestAccount, createTestProject,
-  suppressErrorLog,
 } from './fixtures';
 
 const projectMembershipQuery = `query ProjectMembership($project: ID!, $user: ID!) {
@@ -35,6 +34,11 @@ const setProjectRoleMutation = `mutation SetRoleMutation($project: ID!, $user: I
     updated
   }
 }`;
+
+export function suppressErrorLog(test: any) {
+  test.app.logErrors = false;
+  console.error = () => '';
+}
 
 describe('Memberships', function () {
   this.slow(400);

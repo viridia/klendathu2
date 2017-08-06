@@ -78,7 +78,7 @@ module.exports = {
       },
       {
         test: /\.(graphql|gql)$/,
-        include: path.resolve(__dirname, 'client'),
+        include: path.resolve(__dirname, 'client/src'),
         loader: 'graphql-tag/loader'
       }
     ],

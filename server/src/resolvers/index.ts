@@ -27,6 +27,7 @@ export const resolverMap = {
 
   // // Merge definitions for all mutation resolvers
   Mutation: {
+    ...issue.mutations,
     ...label.mutations,
     ...membership.mutations,
     ...project.mutations,
@@ -40,6 +41,7 @@ export const resolverMap = {
 
   // Merge definitions for all type resolvers
   ...date.types,
+  ...issue.types,
   ...label.types,
   ...profile.types,
   ...project.types,

@@ -14,6 +14,15 @@ enum Predicate {
   LESS_EQUAL
 }
 
+input CustomSearchInput {
+  # Name of the custom field we are searching for.
+  name: String!
+  # Single values to search for. Default behavior is substring match.
+  value: String
+  # List of values we are searching for. Used for enum values.
+  values: [String!]
+}
+
 # Query definitions
 type Query {
   # Retrieve a project record by id or by name.
@@ -31,13 +40,13 @@ type Query {
     # Text search string.
     search: String
     # Query term that restricts the issue search to a set of types.
-    type: [String]
+    type: [String!]
     # Query term that restricts the issue search to a set of states.
-    state: [String]
+    state: [String!]
     # Query term that restricts the issue search to a set of owners.
-    owner: [String]
+    owner: [String!]
     # Query term that restricts the issue search to a set of reporters.
-    reporter: [String]
+    reporter: [String!]
     # Query term that restricts the issue search to a set of CCs.
     cc: [String]
     # Query term that searches the summary field.
@@ -50,39 +59,19 @@ type Query {
     descriptionPred: Predicate
     # Query term that restricts the issue search to a set of label ids.
     labels: [Int!]
+    # Specifies a list of linked issues to search for.
+    linked: [Int!]
+    # Query term that searches the issue comments.
+    comment: String
+    # 'Search predicate for the comments
+    commentPred: Predicate
+    # Query term that searches custom fields
+    custom: [CustomSearchInput!]
+    # Query term that specifies the field sort order
+    sort: [String!]
+    # Whether to show issues hierarchically (subtasks)
+    subtasks: Boolean
   ): [Issue!]!
-
-  #   //     description: 'Retrieve issues which meet a set of filter criteria.',
-  #   //   issues: {
-  #   //     type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(issueType))),
-  #   //     args: {
-  #   //       linked: {
-  #   //         type: new GraphQLList(new GraphQLNonNull(GraphQLInt)),
-  #   //         description: 'Specifies a list of linked issues to search for.',
-  #   //       },
-  #   //       comment: {
-  #   //         type: GraphQLString,
-  #   //         description: 'Query term that searches the issue comments.',
-  #   //       },
-  #   //       commentPred: {
-  #   //         type: predicateType,
-  #   //         description: 'Search predicate for the comments.',
-  #   //         defaultValue: 'in',
-  #   //       },
-  #   //       custom: {
-  #   //         type: new GraphQLList(new GraphQLNonNull(customSearch)),
-  #   //         description: 'Query term that searches custom fields.',
-  #   //       },
-  #   //       sort: {
-  #   //         type: new GraphQLList(GraphQLString),
-  #   //         description: 'Query term that specifies the field sort order.',
-  #   //       },
-  #   //       subtasks: {
-  #   //         type: GraphQLBoolean,
-  #   //         description: 'Whether to show issues hierarchically (subtasks).',
-  #   //       },
-  #   //     },
-  #   //   },
 
   # Search for issues by text query, sorted by relevance.
   issueSearch(project: ID!, search: String!): [Issue!]!

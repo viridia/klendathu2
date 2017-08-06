@@ -4,6 +4,8 @@ declare module 'icons/*.svg' {
   export default _;
 }
 declare module '*.graphql' {
-  const _: any;
-  export default _;
+  import { DocumentNode } from 'graphql';
+  const value: DocumentNode;
+  export = value;
+  // export default value;
 }

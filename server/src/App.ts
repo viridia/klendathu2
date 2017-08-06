@@ -49,6 +49,8 @@ export default class App {
     await ensureDbsExist(this.conn, [process.env.DB_NAME]);
     await ensureTablesExist(this.conn, process.env.DB_NAME, [
       'issues',
+      'issueChanges',
+      'issueLinks',
       'labels',
       'memberships',
       'projects',

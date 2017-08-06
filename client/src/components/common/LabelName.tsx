@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
-import LabelQuery from '../../graphql/queries/label.graphql';
+import * as LabelQuery from '../../graphql/queries/label.graphql';
 import './LabelName.scss';
 
 interface Props {

@@ -54,14 +54,14 @@ export const mutations = {
   async newProject(_: any, args: { input: Project }, context: Context): Promise<ProjectRecord> {
     const { input } = args;
     if (!context.user) {
-      return Promise.reject(new Unauthorized());
+      throw new Unauthorized();
     }
     //   const { name, owner } = req.body;
     if (!input.name || input.name.length < 6) {
-      return Promise.reject(new ResolverError(ErrorKind.NAME_TOO_SHORT));
+      throw new ResolverError(ErrorKind.NAME_TOO_SHORT);
     } else if (!input.name.match(/^[a-z0-9\-]+$/)) {
       // Special characters not allowed
-      return Promise.reject(new ResolverError(ErrorKind.INVALID_NAME));
+      throw new ResolverError(ErrorKind.INVALID_NAME);
     }
     const projects = r.table('projects');
     const p = await projects.filter({ name: input.name }).run(context.conn)
@@ -69,7 +69,7 @@ export const mutations = {
 
     // Check if project exists
     if (p.length > 0) {
-      return Promise.reject(new ResolverError(ErrorKind.NAME_EXISTS));
+      throw new ResolverError(ErrorKind.NAME_EXISTS);
     } else {
       const now = new Date();
       const newProject: ProjectRecord = {
@@ -108,19 +108,23 @@ export const mutations = {
   // Delete an existing project
   deleteProject(_: any, args: { project: string }, context: Context): Promise<string> {
     if (!context.user) {
-      return Promise.reject(new Unauthorized());
+      throw new Unauthorized();
     }
     return getProjectAndRole(context, args.project, undefined, true).then(({ project, role }) => {
       if (!project) {
         logger.error('Error updating non-existent project', args.project, this.user.id);
-        return Promise.reject(new NotFound());
+        throw new NotFound({ notFound: 'project' });
       } else if (role < Role.ADMINISTRATOR) {
         logger.error('Access denied updating project', args.project, this.user.id);
-        return Promise.reject(new Forbidden());
+        throw new Forbidden();
       }
+      const projectFilter = (r.row('id') as any).nth(0).eq(args.project);
+      const projectFilter2 = (r.row('issue') as any).nth(0).eq(args.project);
       return Promise.all([
-        r.table('issues').filter({ project: args.project }).delete().run(context.conn),
-        r.table('labels').filter({ project: args.project }).delete().run(context.conn),
+        r.table('issues').filter(projectFilter).delete().run(context.conn),
+        r.table('labels').filter(projectFilter).delete().run(context.conn),
+        r.table('issueLinks').filter({ project: args.project }).delete().run(context.conn),
+        r.table('issueChanges').filter(projectFilter2).delete().run(context.conn),
         r.table('memberships').filter({ project: args.project }).delete().run(context.conn),
         r.table('projectPrefs').filter({ project: args.project }).delete().run(context.conn),
         r.table('projects').filter({ id: args.project }).delete().run(context.conn),
@@ -130,7 +134,7 @@ export const mutations = {
       return args.project;
     }, error => {
       logger.error('Error deleting project:', args.project, error);
-      return Promise.reject(new InternalError());
+      throw new InternalError();
     });
   },
 };
