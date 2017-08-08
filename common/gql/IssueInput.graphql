@@ -10,7 +10,7 @@ input IssueLinkInput {
 # Input type for creating and editing issue comments.
 input CommentInput {
   # Id of this comment
-  id: ID
+  id: Int
 
   # Author of the comment
   author: String

@@ -15,12 +15,7 @@ export enum ErrorKind {
   INVALID_PREDICATE = 'invalid-predicate',
   INVALID_LINK = 'invalid-link',
   INVALID_SORT_KEY = 'invalid-sort-key',
-  // MISSING_PASSWORD = 'missing-password',
-  // INVALID_PASSWORD = 'invalid-password',
-  // INCORRECT_PASSWORD = 'incorrect-password',
-  // DUPLICATE_USERNAME = 'duplicate-username',
-  // MISSING_PARENT = 'missing-parent',
-  // DUPLICATE_NAME = 'duplicate-name',
+  INVALID_COMMENT_ID = 'invalid-comment-id',
 }
 
 /** Base class for errors. */

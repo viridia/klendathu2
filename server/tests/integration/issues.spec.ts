@@ -1,7 +1,14 @@
 import { ensure } from 'certainty';
 import { Issue } from 'common/api';
 import {
-  clearAllTables, createApp, createTestAccount, createTestProject, graphqlRequest,
+  changesTo,
+  clearAllTables,
+  clearProjects,
+  createApp,
+  createTestAccount,
+  createTestProject,
+  graphqlRequest,
+  linksFrom,
 } from './fixtures';
 
 const newIssueMutation = `mutation NewIssue($project: ID!, $input: IssueInput!) {
@@ -18,33 +25,45 @@ const newIssueMutation = `mutation NewIssue($project: ID!, $input: IssueInput!) 
     created
     updated
     labels
+    comments {
+      id
+      author
+      body
+      created
+    }
+    linked {
+      relation
+      to
+    }
   }
 }`;
-  // custom {
-  //   name
-  //   value
-  // }
-  // labelProps {
-  //   id
-  //   name
-  //   color
-  // }
-  // attachmentsData {
-  //   id
-  //   filename
-  //   url
-  //   thumb
-  //   type
-  // }
-  // comments {
-  //   author
-  //   body
-  //   created
-  // }
-  // linked {
-  //   relation
-  //   to
-  // }
+
+const updateIssueMutation = `mutation updateIssue($project: ID!, $id: Int!, $input: IssueInput!) {
+  updateIssue(id: $id, project: $project, input: $input) {
+    project
+    id
+    type
+    state
+    summary
+    description
+    reporter
+    owner
+    cc
+    created
+    updated
+    labels
+    comments {
+      id
+      author
+      body
+      created
+    }
+    linked {
+      relation
+      to
+    }
+  }
+}`;
 
 const issueQuery = `query IssueQuery($project: ID!, $id: Int!) {
   issue(project: $project, id: $id) {
@@ -60,6 +79,16 @@ const issueQuery = `query IssueQuery($project: ID!, $id: Int!) {
     created
     updated
     labels
+    comments {
+      id
+      author
+      body
+      created
+    }
+    linked {
+      relation
+      to
+    }
   }
 }`;
 
@@ -119,6 +148,22 @@ const issuesQuery = `query IssuesQuery(
     }
   }
 }`;
+  // custom {
+  //   name
+  //   value
+  // }
+  // labelProps {
+  //   id
+  //   name
+  //   color
+  // }
+  // attachmentsData {
+  //   id
+  //   filename
+  //   url
+  //   thumb
+  //   type
+  // }
 
 const newLabelMutation = `mutation NewLlabel($project: ID!, $input: LabelInput!) {
   newLabel(project: $project, input: $input) {
@@ -141,54 +186,364 @@ const newLabelMutation = `mutation NewLlabel($project: ID!, $input: LabelInput!)
 // cc
 
 describe('Issues', function () {
-  this.slow(400);
+  this.slow(300);
 
   before(createApp);
   before(clearAllTables());
   before(createTestAccount);
-  before(createTestProject);
 
+  after(clearAllTables());
   after(function () {
     this.app.stop();
   });
 
   describe('mutation', function () {
-    it('newIssue', function () {
-      return graphqlRequest(newIssueMutation, {
-        project: this.project.id,
-        input: {
-          type: 'bug',
-          state: 'open',
-          summary: 'test-summary',
-          description: 'test-description',
-        },
-      }).then(resp => {
-        const record = resp.body.data.newIssue;
-        ensure(record).exists();
-        ensure(record.id).equals(1);
-        ensure(record.project).equals(this.project.id);
-        ensure(record.type).equals('bug');
-        ensure(record.state).equals('open');
-        ensure(record.summary).equals('test-summary');
-        ensure(record.description).equals('test-description');
-        ensure(record.reporter).equals('test-user');
-        ensure(record.owner).isNull();
-        ensure(record.created).matches(/\w+ \w+ \d+ \d+ \d+:\d+:\d+/);
-        ensure(record.updated).matches(/\w+ \w+ \d+ \d+ \d+:\d+:\d+/);
-        ensure(record.labels).hasLength(0);
+    let issueId: number;
+
+    before(createTestProject);
+    after(clearProjects());
+
+    describe('newIssue', function () {
+      it('newIssue', function () {
+        return graphqlRequest(newIssueMutation, {
+          project: this.project.id,
+          input: {
+            type: 'bug',
+            state: 'open',
+            summary: 'test-summary',
+            description: 'test-description',
+          },
+        }).then(resp => {
+          const record = resp.body.data.newIssue;
+          ensure(record).exists();
+          ensure(record.id).equals(1);
+          ensure(record.project).equals(this.project.id);
+          ensure(record.type).equals('bug');
+          ensure(record.state).equals('open');
+          ensure(record.summary).equals('test-summary');
+          ensure(record.description).equals('test-description');
+          ensure(record.reporter).equals('test-user');
+          ensure(record.owner).isNull();
+          ensure(record.created).matches(/\w+ \w+ \d+ \d+ \d+:\d+:\d+/);
+          ensure(record.updated).matches(/\w+ \w+ \d+ \d+ \d+:\d+:\d+/);
+          ensure(record.labels).hasLength(0);
+          issueId = resp.body.data.newIssue.id;
+        });
       });
     });
 
-    it('updateIssue', function () {
-      //
+    describe('updateIssue', function () {
+      it('type', function () {
+        return graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            type: 'feature',
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record).exists();
+          ensure(record.id).equals(1);
+          ensure(record.project).equals(this.project.id);
+          ensure(record.type).equals('feature');
+          ensure(record.state).equals('open');
+          ensure(record.summary).equals('test-summary');
+          ensure(record.description).equals('test-description');
+          ensure(record.reporter).equals('test-user');
+          ensure(record.owner).isNull();
+          ensure(record.created).matches(/\w+ \w+ \d+ \d+ \d+:\d+:\d+/);
+          ensure(record.updated).matches(/\w+ \w+ \d+ \d+ \d+:\d+:\d+/);
+          ensure(record.labels).hasLength(0);
+        });
+      });
+
+      it('state', function () {
+        return graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            state: 'closed',
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.state).equals('closed');
+        });
+      });
+
+      it('summary, description', function () {
+        return graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            summary: 'modified-summary',
+            description: 'modified-description',
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.summary).equals('modified-summary');
+          ensure(record.description).equals('modified-description');
+        });
+      });
+
+      it('owner (null)', function () {
+        return graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            owner: null,
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.owner).isNull();
+        });
+      });
+
+      it('owner, cc', function () {
+        return graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            owner: 'test-user',
+            cc: ['test-user'],
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.owner).equals('test-user');
+          ensure(record.cc).isDeeplyEqualTo(['test-user']);
+        });
+      });
+
+      it('labels', function () {
+        return graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            owner: 'test-user',
+            cc: ['test-user'],
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.owner).equals('test-user');
+          ensure(record.cc).isDeeplyEqualTo(['test-user']);
+        });
+      });
+
+      it('comments', async function () {
+        this.slow(400);
+        await graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            comments: [{ body: 'A comment' }],
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.comments).hasLength(1);
+          ensure(record.comments[0].id).equals(1);
+          ensure(record.comments[0].body).equals('A comment');
+          ensure(record.comments[0].author).equals('test-user');
+        });
+
+        await graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            comments: [{ body: 'Another comment' }, { id: 1, body: 'Updated comment' }],
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.comments).hasLength(2);
+          ensure(record.comments[0].id).equals(1);
+          ensure(record.comments[0].body).equals('Updated comment');
+          ensure(record.comments[0].author).equals('test-user');
+          ensure(record.comments[1].id).equals(2);
+          ensure(record.comments[1].body).equals('Another comment');
+          ensure(record.comments[1].author).equals('test-user');
+        });
+      });
+
+      it('linked', async function () {
+        this.slow(1000);
+        let otherIssue: number;
+        await graphqlRequest(newIssueMutation, {
+          project: this.project.id,
+          input: {
+            type: 'bug',
+            state: 'open',
+            summary: 'test-summary',
+            description: 'test-description',
+          },
+        }).then(resp => {
+          otherIssue = resp.body.data.newIssue.id;
+        });
+
+        // Establish a new link
+        await graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            linked: [
+              { to: otherIssue, relation: 'BLOCKED_BY' },
+            ],
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.linked).isDeeplyEqualTo([{ to: otherIssue, relation: 'BLOCKED_BY' }]);
+        });
+
+        let links = await linksFrom(this.project.id, issueId);
+        ensure(links).hasLength(1);
+        ensure(links[0].project).equals(this.project.id);
+        ensure(links[0].from).equals(issueId);
+        ensure(links[0].to).equals(otherIssue);
+        ensure(links[0].relation).equals('BLOCKED_BY');
+
+        links = await linksFrom(this.project.id, otherIssue);
+        ensure(links).hasLength(1);
+        ensure(links[0].project).equals(this.project.id);
+        ensure(links[0].from).equals(otherIssue);
+        ensure(links[0].to).equals(issueId);
+        ensure(links[0].relation).equals('BLOCKS');
+
+        // Change the type of the new link
+        await graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            linked: [
+              { to: otherIssue, relation: 'PART_OF' },
+            ],
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.linked).isDeeplyEqualTo([{ to: otherIssue, relation: 'PART_OF' }]);
+        });
+
+        links = await linksFrom(this.project.id, issueId);
+        ensure(links).hasLength(1);
+        ensure(links[0].project).equals(this.project.id);
+        ensure(links[0].from).equals(issueId);
+        ensure(links[0].to).equals(otherIssue);
+        ensure(links[0].relation).equals('PART_OF');
+
+        links = await linksFrom(this.project.id, otherIssue);
+        ensure(links).hasLength(1);
+        ensure(links[0].project).equals(this.project.id);
+        ensure(links[0].from).equals(otherIssue);
+        ensure(links[0].to).equals(issueId);
+        ensure(links[0].relation).equals('HAS_PART');
+
+        // Delete the links
+        await graphqlRequest(updateIssueMutation, {
+          project: this.project.id,
+          id: issueId,
+          input: {
+            linked: [],
+          },
+        }).then(resp => {
+          const record = resp.body.data.updateIssue;
+          ensure(record.linked).isDeeplyEqualTo([]);
+        });
+
+        links = await linksFrom(this.project.id, issueId);
+        ensure(links).isEmpty();
+
+        links = await linksFrom(this.project.id, otherIssue);
+        ensure(links).isEmpty();
+
+        const otherChanges = await changesTo(this.project.id, otherIssue);
+        ensure(otherChanges).hasLength(3);
+        ensure(otherChanges[0].by).equals('test-user');
+        ensure(otherChanges[0].project).equals(this.project.id);
+        ensure(otherChanges[0].linked).isDeeplyEqualTo([{
+          after: 'BLOCKS',
+          to: issueId,
+        }]);
+
+        ensure(otherChanges[1].by).equals('test-user');
+        ensure(otherChanges[1].project).equals(this.project.id);
+        ensure(otherChanges[1].linked).isDeeplyEqualTo([{
+          before: 'BLOCKS',
+          after: 'HAS_PART',
+          to: issueId,
+        }]);
+
+        ensure(otherChanges[2].by).equals('test-user');
+        ensure(otherChanges[2].project).equals(this.project.id);
+        ensure(otherChanges[2].linked).isDeeplyEqualTo([{
+          before: 'HAS_PART',
+          to: issueId,
+        }]);
+      });
+
+      it('changes', async function () {
+        const changes = await changesTo(this.project.id, issueId);
+        // console.log(JSON.stringify(changes, null, 2));
+        ensure(changes).hasLength(7);
+
+        for (const ch of changes) {
+          ensure(ch.issue).equals(issueId);
+          ensure(ch.by).equals('test-user');
+          ensure(ch.project).equals(this.project.id);
+          ensure(ch.at).isNotNull();
+        }
+
+        ensure(changes[0].type).isDeeplyEqualTo({
+          before: 'bug',
+          after: 'feature',
+        });
+
+        ensure(changes[1].state).isDeeplyEqualTo({
+          before: 'open',
+          after: 'closed',
+        });
+
+        ensure(changes[2].description).isDeeplyEqualTo({
+          before: 'test-description',
+          after: 'modified-description',
+        });
+        ensure(changes[2].summary).isDeeplyEqualTo({
+          before: 'test-summary',
+          after: 'modified-summary',
+        });
+
+        ensure(changes[3].owner).isDeeplyEqualTo({
+          before: null,
+          after: 'test-user',
+        });
+        ensure(changes[3].cc).isDeeplyEqualTo({
+          added: ['test-user'],
+          removed: [],
+        });
+
+        ensure(changes[4].linked).isDeeplyEqualTo([{
+          after: 'BLOCKED_BY',
+          to: 2,
+        }]);
+
+        ensure(changes[5].linked).isDeeplyEqualTo([{
+          before: 'BLOCKED_BY',
+          after: 'PART_OF',
+          to: 2,
+        }]);
+
+        ensure(changes[6].linked).isDeeplyEqualTo([{
+          before: 'PART_OF',
+          to: 2,
+        }]);
+      });
     });
   });
 
   describe('query', function () {
     let labelIndex: number;
+    let issue0: number;
     let issue1: number;
     let issue2: number;
     let issue3: number;
+
+    before(createTestProject);
+    after(clearProjects());
 
     before(async function () {
       // Create a label
@@ -202,7 +557,19 @@ describe('Issues', function () {
         labelIndex = resp.body.data.newLabel.id;
       });
 
-      // Create three issues
+      // Create four issues
+      await graphqlRequest(newIssueMutation, {
+        project: this.project.id,
+        input: {
+          type: 'bug',
+          state: 'open',
+          summary: 'test-summary',
+          description: 'test-description',
+        },
+      }).then(resp => {
+        issue0 = resp.body.data.newIssue.id;
+      });
+
       await graphqlRequest(newIssueMutation, {
         project: this.project.id,
         input: {

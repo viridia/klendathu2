@@ -5,6 +5,6 @@ export const caption = {
   [Relation.BLOCKS]: 'blocks',
   [Relation.DUPLICATE]: 'duplicates',
   [Relation.RELATED]: 'related to',
-  [Relation.INCLUDED_BY]: 'included by',
-  [Relation.INCLUDES]: 'includes',
+  [Relation.PART_OF]: 'included by',
+  [Relation.HAS_PART]: 'includes',
 };

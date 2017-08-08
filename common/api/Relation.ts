@@ -2,8 +2,8 @@
 export enum Relation {
   BLOCKED_BY = 'BLOCKED_BY',
   BLOCKS = 'BLOCKS',
-  INCLUDED_BY = 'INCLUDED_BY',
-  INCLUDES = 'INCLUDES',
+  PART_OF = 'PART_OF',
+  HAS_PART = 'HAS_PART',
   DUPLICATE = 'DUPLICATE',
   RELATED = 'RELATED',
 }
@@ -13,8 +13,8 @@ export namespace Relation {
   export const values = [
     'BLOCKED_BY',
     'BLOCKS',
-    'INCLUDED_BY',
-    'INCLUDES',
+    'PART_OF',
+    'HAS_PART',
     'DUPLICATE',
     'RELATED',
   ];

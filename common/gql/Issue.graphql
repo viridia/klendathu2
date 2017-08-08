@@ -20,7 +20,7 @@ type IssueLink {
 # Comment on an issue.
 type Comment {
   # Id of this comment
-  id: ID!
+  id: Int!
 
   # Author of the comment
   author: String!

@@ -3,6 +3,7 @@ import * as r from 'rethinkdb';
 import * as request from 'supertest';
 // import { Role } from '../../../common/api';
 import App from '../../src/App';
+import { IssueChangeRecord, IssueLinkRecord } from '../../src/db/types';
 import { logger } from '../../src/logger';
 
 dotenv.config();
@@ -44,7 +45,25 @@ export function clearTables(...tableNames: string[]) {
 
 export function clearAllTables() {
   return clearTables(
-    'users', 'projects', 'labels', 'issues', 'issueChanges', 'issueLinks', 'memberships');
+    'issues',
+    'issueChanges',
+    'issueLinks',
+    'labels',
+    'memberships',
+    'users',
+    'projects',
+  );
+}
+
+export function clearProjects() {
+  return clearTables(
+    'issues',
+    'issueChanges',
+    'issueLinks',
+    'labels',
+    'memberships',
+    'projects',
+  );
 }
 
 export function createTestAccount() {
@@ -120,4 +139,20 @@ export function graphqlRequest(query: string, variables: object, options: Reques
       }
       return Promise.reject(error);
     });
+}
+
+export function linksFrom(project: string, id: number): Promise<IssueLinkRecord[]> {
+  return r.table('issueLinks')
+      .filter({ project, from: id })
+      .orderBy(r.asc('to'))
+      .run((app as any).conn)
+      .then(cursor => cursor.toArray());
+}
+
+export function changesTo(project: string, id: number): Promise<IssueChangeRecord[]> {
+  return r.table('issueChanges')
+      .filter({ project, issue: id })
+      .orderBy(r.asc('at'))
+      .run((app as any).conn)
+      .then(cursor => cursor.toArray());
 }

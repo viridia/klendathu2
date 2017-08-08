@@ -19,10 +19,10 @@ export interface LinkFieldChange {
   after?: string;   // Relation
 }
 
-interface CustomFieldChange {
+export interface CustomFieldChange {
   name: string;
-  before?: string;
-  after?: string;
+  before?: string | number | boolean;
+  after?: string | number | boolean;
 }
 
 export interface IssueChangeRecord {

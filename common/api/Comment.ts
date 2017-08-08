@@ -1,5 +1,8 @@
 /** A comment on an issue. */
 export interface Comment {
+  /** Comment ID. */
+  id?: number;
+
   /** User that created this comment. */
   author?: string;
 
