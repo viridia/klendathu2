@@ -1,8 +1,6 @@
 import { Project } from 'common/api';
 import * as React from 'react';
-import {
-  RouteComponentProps,
-} from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 // import { graphql } from 'react-apollo';
 // import { browserHistory } from 'react-router';
 // import marked from 'marked';

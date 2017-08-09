@@ -11,6 +11,7 @@ import {
 import ErrorDisplay from '../debug/ErrorDisplay';
 import IssueCreate from '../issues/IssueCreate';
 import IssueDetails from '../issues/IssueDetails';
+import IssueEdit from '../issues/IssueEdit';
 import IssueSummaryView from '../issues/IssueSummaryView';
 import LabelList from '../labels/LabelList';
 import LeftNav from '../nav/LeftNav';
@@ -59,7 +60,7 @@ class ProjectView extends React.Component<DataProps, undefined> {
         <LeftNav project={data.project} />
         <Switch>
           <Route path="/project/:project/new" render={this.renderIssueCreate}/>
-          <Route path="/project/:project/edit/:id" />
+          <Route path="/project/:project/edit/:id" render={this.renderIssueEdit} />
           <Route path="/project/:project/issues/:id" render={this.renderIssueDetails} />
           <Route path="/project/:project/issues" exact={true} render={this.renderIssueList} />
           <Route path="/project/:project/labels" render={this.renderLabelList} />
@@ -74,6 +75,19 @@ class ProjectView extends React.Component<DataProps, undefined> {
   private renderIssueCreate(props: RouteComponentProps<{}>) {
     const { data: { project }, support: { template, workflow } } = this.props;
     return (<IssueCreate {...props} project={project} template={template} workflow={workflow} />);
+  }
+
+  @autobind
+  private renderIssueEdit(props: RouteComponentProps<{ id: string }>) {
+    const { data: { project }, support: { template, workflow } } = this.props;
+    return (
+      <IssueEdit
+        {...props}
+        project={project}
+        template={template}
+        workflow={workflow}
+        issue={props.match.params.id}
+      />);
   }
 
   @autobind

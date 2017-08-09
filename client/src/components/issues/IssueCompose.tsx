@@ -1,5 +1,15 @@
 import autobind from 'bind-decorator';
-import { Issue, Project, Relation, Template, User, Workflow } from 'common/api';
+import {
+  DataType,
+  FieldType,
+  Issue,
+  IssueType,
+  Project,
+  Relation,
+  Template,
+  User,
+  Workflow,
+} from 'common/api';
 import * as Immutable from 'immutable';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
@@ -7,17 +17,15 @@ import {
   Button, Checkbox, ControlLabel, DropdownButton, FormControl, MenuItem,
 } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import {
-  RouteComponentProps,
-} from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { caption } from '../../lib/relation';
-// import CustomEnumField from './customEnumField.jsx';
-// import CustomSuggestField from './customSuggestField.jsx';
-// import CommentEdit from './commentEdit.jsx';
 import '../common/card.scss';
 import '../common/form.scss';
 import UserAutocomplete from '../common/UserAutocomplete';
 import UploadAttachments from '../files/UploadAttachments';
+import CommentEdit from './input/CommentEdit';
+import CustomEnumField from './input/CustomEnumField';
+import CustomSuggestField from './input/CustomSuggestField';
 import IssueAutoComplete from './input/IssueAutocomplete';
 import LabelSelector from './input/LabelSelector';
 import StateSelector from './input/StateSelector';
@@ -29,7 +37,7 @@ type IssueLinkMap = Immutable.OrderedMap<number, Relation>;
 
 interface Props extends RouteComponentProps<{}> {
   issue?: Issue;
-  onSave: (issueId: number, issue: string) => void;
+  onSave: (issueId: number, issue: Partial<Issue>) => Promise<any>;
   project: Project;
   template: Template;
   workflow: Workflow;
@@ -88,7 +96,6 @@ export default class IssueCompose extends React.Component<Props, State> {
       comments: [],
       another: false,
     };
-    // this.buildIssueLinkList(this.state.issueLinkMap);
   }
 
   public componentDidMount() {
@@ -101,29 +108,12 @@ export default class IssueCompose extends React.Component<Props, State> {
     if (thisId !== nextId) {
       this.reset();
     }
-    // this.buildIssueLinkList(nextState.issueLinkMap);
   }
 
   public render() {
     const { project, issue, location } = this.props;
-    // console.log(project, issue, location);
     const backLink = (location.state && location.state.back) || { pathname: '..' };
     const canSave = this.state.summary && !this.state.issueToLink;
-    //               <tr>
-    //                 <th className="header"><ControlLabel>Comments:</ControlLabel></th>
-    //                 <td>
-    //                   <CommentEdit
-    //                       issue={issue} project={project} comments={this.state.comments}
-    //                       onAddComment={this.onAddComment} />
-    //                 </td>
-    //               </tr>
-    //             </tbody>
-    //           </table>
-    //         </form>
-    //       </div>
-    //     </section>
-    //   </div>
-    // </section>);
     return (
       <section className="kdt issue-compose">
         <div className="card">
@@ -276,6 +266,15 @@ export default class IssueCompose extends React.Component<Props, State> {
                         </div>
                       </td>
                     </tr>
+                    <tr>
+                      <th className="header"><ControlLabel>Comments:</ControlLabel></th>
+                      <td>
+                        <CommentEdit
+                            project={project}
+                            onAddComment={this.onAddComment}
+                        />
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </form>
@@ -318,65 +317,73 @@ export default class IssueCompose extends React.Component<Props, State> {
   }
 
   private renderTemplateFields(): JSX.Element[] {
-    // const { project } = this.props;
-    // const issueType = project.template.typesById.get(this.state.type);
-    // const result = [];
-    // if (issueType) {
-    //   return this.renderCustomFields(issueType, result);
-    // }
-    // return result;
-    return [];
+    const issueType = this.getIssueType(this.state.type);
+    const result: JSX.Element[] = [];
+    if (issueType) {
+      return this.renderCustomFields(issueType, result);
+    }
+    return result;
   }
 
-  // renderCustomFields(issueType, result) {
-  //   const { project } = this.props;
-  //   const fields = this.customFieldList(issueType);
-  //   for (const field of fields) {
-  //     let component = null;
-  //     const value = this.state.custom.get(field.id) || field.default || '';
-  //     switch (field.type) {
-  //       case 'TEXT':
-  //         component = (<CustomSuggestField
-  //             value={value}
-  //             field={field}
-  //             project={project}
-  //             onChange={this.onChangeCustomField}
-  //             onEnter={this.onFocusNext} />);
-  //         break;
-  //       case 'ENUM':
-  //         component = (<CustomEnumField
-  //             value={value}
-  //             field={field}
-  //             onChange={this.onChangeCustomField} />);
-  //         break;
-  //       default:
-  //         console.error('invalid field type:', field.type);
-  //         break;
-  //     }
-  //     if (component) {
-  //       result.push(<tr key={field.id}>
-  //         <th>{field.caption}:</th>
-  //         <td>{component}</td>
-  //       </tr>);
-  //     }
-  //   }
-  //   return result;
-  // }
-  //
-  // customFieldList(issueType) {
-  //   let fields = [];
-  //   const { project } = this.props;
-  //   if (issueType.extends && issueType.extends.startsWith('./')) {
-  //     const parentType = project.template.typesById.get(issueType.extends.slice(2));
-  //     if (parentType) {
-  //       fields = this.customFieldList(parentType);
-  //     }
-  //   }
-  //   if (issueType.fields) {
-  //     fields = fields.concat(issueType.fields);
-  //   }
-  //   return fields;
-  // }
+  private renderCustomFields(issueType: IssueType, result: JSX.Element[]) {
+    const { project } = this.props;
+    const fields = this.customFieldList(issueType);
+    for (const field of fields) {
+      let component = null;
+      const value = this.state.custom.get(field.id) || field.default || '';
+      switch (field.type) {
+        case DataType.TEXT:
+          component = (
+            <CustomSuggestField
+                value={value}
+                field={field}
+                project={project}
+                onChange={this.onChangeCustomField}
+                onEnter={this.onFocusNext}
+            />
+          );
+          break;
+        case DataType.ENUM:
+          component = (
+            <CustomEnumField
+                value={value}
+                field={field}
+                onChange={this.onChangeCustomField}
+            />
+          );
+          break;
+        default:
+          console.error('invalid field type:', field.type);
+          break;
+      }
+      if (component) {
+        result.push(
+          <tr key={field.id}>
+            <th>{field.caption}:</th>
+            <td>{component}</td>
+          </tr>);
+      }
+    }
+    return result;
+  }
+
+  private customFieldList(issueType: IssueType): FieldType[] {
+    let fields: FieldType[] = [];
+    if (issueType.extends && issueType.extends.startsWith('./')) {
+      const parentType = this.getIssueType(issueType.extends.slice(2));
+      if (parentType) {
+        fields = this.customFieldList(parentType);
+      }
+    }
+    if (issueType.fields) {
+      fields = fields.concat(issueType.fields);
+    }
+    return fields;
+  }
+
+  private getIssueType(id: string): IssueType {
+    return this.props.template.types.find(type => type.id === id);
+  }
 
   @autobind
   private onInputKeyDown(e: any) {
@@ -437,9 +444,10 @@ export default class IssueCompose extends React.Component<Props, State> {
     this.setState({ relation: selection as Relation });
   }
 
-  // onChangeCustomField(id, value) {
-  //   this.setState({ custom: this.state.custom.set(id, value) });
-  // }
+  @autobind
+  private onChangeCustomField(id: string, value: any) {
+    this.setState({ custom: this.state.custom.set(id, value) });
+  }
 
   @autobind
   private onChangePublic(e: any) {
@@ -451,21 +459,18 @@ export default class IssueCompose extends React.Component<Props, State> {
     this.setState({ another: e.target.checked });
   }
 
-  // onChangeCommentText(e) {
-  //   this.setState({ commentText: e.target.value });
-  // }
-  //
-  // onAddComment(commentText) {
-  //   const newComment = {
-  //     author: this.context.profile.username,
-  //     body: commentText,
-  //   };
-  //   this.setState({
-  //     comments: this.state.comments.concat([newComment]),
-  //     commentText: '',
-  //   });
-  //   return Promise.resolve(newComment);
-  // }
+  @autobind
+  private onAddComment(commentText: string) {
+    const newComment = {
+      author: this.context.profile.username,
+      body: commentText,
+    };
+    this.setState({
+      comments: this.state.comments.concat([newComment]),
+      commentText: '',
+    });
+    return Promise.resolve(newComment);
+  }
 
   @autobind
   private onAddIssueLink() {
@@ -489,7 +494,6 @@ export default class IssueCompose extends React.Component<Props, State> {
 
   @autobind
   private onCreate() {
-    // this.buildIssueLinkList(this.state.issueLinkMap);
     const issue: Partial<Issue> = {
       state: this.state.issueState,
       type: this.state.type,
@@ -502,36 +506,36 @@ export default class IssueCompose extends React.Component<Props, State> {
       attachments: this.attachments.files(),
       custom: [],
       isPublic: this.state.isPublic,
-      // comments
+      comments: this.state.comments,
     };
-    const { project } = this.props;
+    const { project, template } = this.props;
     console.info(issue, project);
-    // const issueType = project.template.typesById.get(issue.type);
-  //   const fields = this.customFieldList(issueType);
-  //   for (const field of fields) {
-  //     const fieldValue = this.state.custom.get(field.id) || field.default;
-  //     if (fieldValue) {
-  //       issue.custom.push({
-  //         name: field.id,
-  //         value: fieldValue,
-  //       });
-  //     }
-  //   }
-// return this.props.onSave(this.props.issue ? this.props.issue.id : undefined, issue).then(() => {
-  //     this.reset();
-  //     if (!this.props.issue && !this.state.another) {
-  //       const { location } = this.props;
-  //       const back = (location.state && location.state.back) || { pathname: '..' };
-  //       browserHistory.push(back);
-  //     }
-  //   });
+    const issueType = template.types.find(type => type.id === issue.type);
+    const fields = this.customFieldList(issueType);
+    for (const field of fields) {
+      const fieldValue = this.state.custom.get(field.id) || field.default;
+      if (fieldValue) {
+        issue.custom.push({
+          name: field.id,
+          value: fieldValue,
+        });
+      }
+    }
+    return this.props.onSave(this.props.issue ? this.props.issue.id : undefined, issue).then(() => {
+      this.reset();
+      if (!this.props.issue && !this.state.another) {
+        const { location } = this.props;
+        const back = (location.state && location.state.back) || { pathname: '..' };
+        this.props.history.push(back);
+      }
+    });
   }
 
   private reset() {
-    const { project, issue } = this.props;
-  //   const concreteTypes = project.template.types.filter(t => !t.abstract);
+    const { project, issue, workflow, template } = this.props;
+    const concreteTypes = template.types.filter(t => !t.abstract);
     if (issue) {
-  //     const linked = issue.linked || [];
+      const linked = issue.linked || [];
       this.setState({
         prevState: issue.state,
         issueState: issue.state,
@@ -540,30 +544,31 @@ export default class IssueCompose extends React.Component<Props, State> {
         description: issue.description,
   //       owner: issue.ownerData,
   //       cc: issue.ccData,
-  //       custom: issue.custom
-  //           ? new Immutable.Map(issue.custom.map(custom => [custom.name, custom.value]))
-  //           : Immutable.Map.of(),
+        custom: issue.custom
+            ? Immutable.Map(issue.custom.map(custom => [custom.name, custom.value]))
+            : Immutable.Map.of(),
   //       labels: issue.labelProps,
         issueToLink: null,
-//       issueLinkMap: new Immutable.OrderedMap(linked.map(({ relation, to }) => [to, relation])),
+        issueLinkMap: Immutable.OrderedMap<number, Relation>(
+            linked.map(({ relation, to }) => ([to, relation] as [number, Relation]))),
         relation: Relation.BLOCKED_BY,
-  //       comments: issue.comments,
+        comments: issue.comments,
         isPublic: !!issue.isPublic,
       });
   //     this.attachments.setFiles(issue.attachmentsData || []);
     } else {
-  //     const { start = ['new'] } = project.workflow;
+      const { start = ['new'] } = workflow;
       this.setState({
         prevState: null,
-  //       issueState: start[0],
-  //       // If current type is valid then keep it, otherwise default to the first type.
-  //       type: project.template.typesById.has(this.state.type)
-  //           ? this.state.type : concreteTypes[0].id,
+        issueState: start[0],
+        // If current type is valid then keep it, otherwise default to the first type.
+        type: template.types.find(type => type.id === this.state.type)
+            ? this.state.type : concreteTypes[0].id,
         summary: '',
         description: '',
         owner: null,
         cc: [],
-  //       custom: Immutable.Map.of(),
+        custom: Immutable.Map.of(),
         labels: [],
         comments: [],
         issueToLink: null,
@@ -574,11 +579,6 @@ export default class IssueCompose extends React.Component<Props, State> {
       this.attachments.setFiles([]);
     }
   }
-
-  // private buildIssueLinkList(issueLinkMap: IssueLinkMap) {
-  //   this.linkedIssueList = issueLinkMap.map((relation, to) =>
-  //       ({ relation, to })).toArray();
-  // }
 
   private navigate(dir: number) {
     const activeEl = document.activeElement;

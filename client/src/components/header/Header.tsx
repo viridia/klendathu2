@@ -1,8 +1,6 @@
 import { Location } from 'history';
 import * as React from 'react';
-import {
-  Route,
-} from 'react-router-dom';
+import { Route } from 'react-router-dom';
 import './Header.scss';
 import NewIssueButton from './NewIssueButton';
 import SignInLink from './SignInLink';

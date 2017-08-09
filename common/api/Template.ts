@@ -1,7 +1,7 @@
 /** Field data type. */
 export enum DataType {
-  TEXT = 'text',
-  ENUM = 'enum',
+  TEXT = 'TEXT',
+  ENUM = 'ENUM',
 }
 
 /** Defines a custom field type. */
@@ -23,6 +23,9 @@ export interface FieldType {
 
   /** List of valid values for this type. */
   values?: string[];
+
+  /** For string fields, the maximum length of the field. */
+  maxLength?: number;
 }
 
 /** Defines an issue type (bug, feature request, etc.). */

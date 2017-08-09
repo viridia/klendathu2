@@ -5,9 +5,7 @@ import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
 import { Button } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
-import {
-  RouteComponentProps,
-} from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import * as ProjectQuery from '../../graphql/queries/project.graphql';
 
 type Props = RouteComponentProps<{ project: string }>;

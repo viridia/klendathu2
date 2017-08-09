@@ -1,12 +1,10 @@
 import autobind from 'bind-decorator';
-import { Project, Template, Workflow } from 'common/api';
+import { Issue, Project, Template, Workflow } from 'common/api';
 import * as React from 'react';
-import {
-  RouteComponentProps,
-} from 'react-router-dom';
-// import { toastr } from 'react-redux-toastr';
+import { toastr } from 'react-redux-toastr';
+import { RouteComponentProps } from 'react-router-dom';
+import { createIssue } from '../../store/reducers/issue';
 import IssueCompose from './IssueCompose';
-// import { createIssue } from 'src/store/reducers/issue';
 
 interface Props extends RouteComponentProps<{}> {
   project: Project;
@@ -25,9 +23,9 @@ export default class IssueCreate extends React.Component<Props, undefined> {
   }
 
   @autobind
-  private onSave(issueId: number, issue: string) {
-    // return createIssue(this.props.project.id, issue).then(resp => {
-    //   toastr.success(`Issue #${resp.data.newIssue.id} created.`);
-    // });
+  private onSave(issueId: number, issue: Partial<Issue>): Promise<any> {
+    return createIssue(this.props.project.id, issue as Issue).then((resp: any) => {
+      toastr.success(null, `Issue #${resp.data.newIssue.id} created.`);
+    });
   }
 }

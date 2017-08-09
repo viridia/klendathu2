@@ -9,7 +9,7 @@ export { Predicate } from './Predicate';
 export { Project } from './Project';
 export { ProjectPrefs, Filter } from './ProjectPrefs';
 export { User } from './User';
-export { Template } from './Template';
+export { DataType, FieldType, IssueType, Template } from './Template';
 export { Workflow } from './Workflow';
 export { Relation } from './Relation';
 export { Role } from './Role';
