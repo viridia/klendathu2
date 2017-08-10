@@ -15,28 +15,28 @@ fragment issueContent on Issue {
     name
     value
   }
-  ownerData {
-    username
-    fullname
-    photo
-  }
-  ccData {
-    username
-    fullname
-    photo
-  }
+  # ownerData {
+  #   username
+  #   fullname
+  #   photo
+  # }
+  # ccData {
+  #   username
+  #   fullname
+  #   photo
+  # }
   labelProps {
     id
     name
     color
   }
-  attachmentsData {
-    id
-    filename
-    url
-    thumb
-    type
-  }
+  # attachmentsData {
+  #   id
+  #   filename
+  #   url
+  #   thumb
+  #   type
+  # }
   comments {
     author
     body

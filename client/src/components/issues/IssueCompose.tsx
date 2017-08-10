@@ -508,8 +508,7 @@ export default class IssueCompose extends React.Component<Props, State> {
       isPublic: this.state.isPublic,
       comments: this.state.comments,
     };
-    const { project, template } = this.props;
-    console.info(issue, project);
+    const { template } = this.props;
     const issueType = template.types.find(type => type.id === issue.type);
     const fields = this.customFieldList(issueType);
     for (const field of fields) {

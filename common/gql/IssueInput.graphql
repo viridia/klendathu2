@@ -64,5 +64,5 @@ input IssueInput {
   attachments: [AttachmentInput!]
 
   # Whether this issue should be visible to non-members of the project.
-  public: Boolean
+  isPublic: Boolean
 }

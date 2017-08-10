@@ -2,17 +2,6 @@ const webpack = require('webpack');
 const path = require('path');
 
 const debug = process.env.NODE_ENV !== 'production';
-const plugins = [
-  new webpack.DefinePlugin({
-    'process.env': {
-      NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-    },
-  }),
-  new webpack.LoaderOptionsPlugin({ minimize: !debug, debug }),
-  new webpack.ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
-];
-
-// console.log(path.resolve(__dirname, 'node_modules'));
 
 module.exports = {
   context: path.resolve(__dirname, 'client'),
@@ -36,7 +25,15 @@ module.exports = {
     },
     extensions: ['.ts', '.tsx', '.js'],
   },
-  plugins,
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+      },
+    }),
+    new webpack.LoaderOptionsPlugin({ minimize: !debug, debug }),
+    new webpack.ContextReplacementPlugin(/graphql-language-service-interface[\/\\]dist/, /\.js$/),
+  ],
   devtool: debug ? 'inline-source-map' : 'source-map',
   module: {
     rules: [
@@ -52,7 +49,10 @@ module.exports = {
         // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
         enforce: 'pre',
         test: /\.js$/,
-        include: path.resolve(__dirname, 'client'),
+        include: [
+          path.resolve(__dirname, 'client'),
+          path.resolve(__dirname, 'common'),
+        ],
         loader: 'source-map-loader',
       },
       {
@@ -65,11 +65,11 @@ module.exports = {
         test: /\.css$/,
         loaders: ['style-loader', 'css-loader'],
       },
-      {
-        // Fonts
-        test: /\.(eot|woff|woff2|ttf)/,
-        loader: 'file-loader?name=fonts/[name]-[hash].[ext]',
-      },
+      // {
+      //   // Fonts
+      //   test: /\.(eot|woff|woff2|ttf)/,
+      //   loader: 'file-loader?name=fonts/[name]-[hash].[ext]',
+      // },
       {
         // Inline SVG icons
         include: path.join(__dirname, 'client/src/media/icons'),

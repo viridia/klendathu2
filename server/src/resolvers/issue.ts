@@ -1,5 +1,7 @@
 import * as r from 'rethinkdb';
-import { CustomField, Issue, IssueLink, Predicate, Relation, Role } from '../../../common/api';
+import {
+  CustomField, Issue, IssueLink, Label, Predicate, Relation, Role,
+} from '../../../common/api';
 import Context from '../context/Context';
 import { escapeRegExp } from '../db/helpers';
 import {
@@ -797,6 +799,13 @@ export const types = {
   Issue: {
     id(issue: IssueRecord) { return issue.id[1]; },
     project(issue: IssueRecord) { return issue.id[0]; },
+    custom(issue: IssueRecord) {
+      const result: CustomField[] = [];
+      Object.getOwnPropertyNames(issue.custom).forEach(name => {
+        result.push({ name, value: `${issue.custom[name]}` });
+      });
+      return result;
+    },
     linked(issue: IssueRecord, _: any, context: Context): Promise<IssueLink[]> {
       return r.table('issueLinks').filter({
         project: issue.id[0],
@@ -809,6 +818,11 @@ export const types = {
         project: issue.id[0],
         issue: issue.id[1],
       }).orderBy(r.desc('at')).run(context.conn)
+      .then(cursor => cursor.toArray());
+    },
+    labelProps(issue: IssueRecord, _: any, context: Context): Promise<Label[]> {
+      return r.table('labels').getAll(...issue.labels.map(label => [issue.id[0], label]) as any)
+      .run(context.conn)
       .then(cursor => cursor.toArray());
     },
     // changes
