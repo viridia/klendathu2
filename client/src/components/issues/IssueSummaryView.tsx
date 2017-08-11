@@ -1,31 +1,81 @@
-import { Project } from 'common/api';
+import { FieldType, Issue, Project, ProjectPrefs, Template, Workflow } from 'common/api';
+import * as Immutable from 'immutable';
+import * as qs from 'qs';
 import * as React from 'react';
+import { compose, DefaultChildProps, graphql, withApollo } from 'react-apollo';
+import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
-// import { connect } from 'react-redux';
-// import { bindActionCreators, compose } from 'redux';
-// import Immutable from 'immutable';
-// import { graphql, withApollo } from 'react-apollo';
-// import ApolloClient from 'apollo-client';
+// import { bindActionCreators } from 'redux';
 // import equal from 'deep-equal';
-// import ErrorDisplay from '../debug/errorDisplay.jsx';
+import ErrorDisplay from '../debug/ErrorDisplay';
 // import FilterParams from '../filters/filterParams.jsx';
 // import MassEdit from '../filters/massEdit.jsx';
-// import IssueList from './issueList.jsx';
-// import * as IssueListQuery from '../../graphql/queries/issueList.graphql';
+import IssueList from './IssueList';
 // import { setFilterTerms } from '../../store/filter';
 // import { getFieldType } from '../filters/fieldTypes';
 
-interface Props extends RouteComponentProps<{}> {
+import * as IssueListQuery from '../../graphql/queries/issueList.graphql';
+
+interface OwnProps extends RouteComponentProps<{}> {
   project: Project;
+  template: Template;
+  workflow: Workflow;
 }
 
-class IssueSummaryView extends React.Component<Props, undefined> {
-  // constructor(props, context) {
-  //   super(props, context);
+interface StateProps {
+  selection: Immutable.Set<number>;
+}
+
+type Props = OwnProps;
+
+interface Data {
+  issues: Issue[];
+  projectPrefs: ProjectPrefs;
+}
+
+interface QueryParams {
+  type?: string;
+  state?: string;
+  summary?: string;
+  summaryPred?: string;
+  description?: string;
+  descriptionPred?: string;
+  labels?: string[];
+  owner?: string;
+  reporter?: string;
+  search?: string;
+  sort?: string;
+  subtasks?: boolean;
+}
+
+function parseQueryParams(query: string, workflow: Workflow): QueryParams {
+  const { label, type, state, sort, subtasks, ...params } = qs.parse(query);
+  return {
+    ...params,
+    type: type && type.split(','),
+    state: (state && state !== 'open') ? state.split(',') : defaultStates(workflow),
+    labels: label && label.split(','),
+    sort: [sort || '-updated'],
+    subtasks: subtasks !== undefined,
+    // project: project.id,
+    // search,
+    // cc: undefined,
+    // comment: undefined,
+    // commentPred: undefined,
+    // custom,
+  };
+}
+
+class IssueSummaryView extends React.Component<DefaultChildProps<Props, Data>, undefined> {
+  private defaultColumns: string[];
+  private hotlist: Immutable.Set<number>;
+
+  constructor(props: DefaultChildProps<Props, Data>, context: any) {
+    super(props, context);
   //   this.query = new Immutable.Map(props.location.query || {});
-  //   this.hotlist = this.hotlistSet(props);
-  //   this.defaultColumns = ['updated', 'type', 'owner', 'state'];
-  // }
+    this.hotlist = this.hotlistSet(props);
+    this.defaultColumns = ['updated', 'type', 'owner', 'state'];
+  }
 
   // componentWillMount() {
   //   this.parseQuery();
@@ -47,7 +97,31 @@ class IssueSummaryView extends React.Component<Props, undefined> {
   //       || !equal(this.props.data.error, nextProps.data.error)
   //       || !equal(this.props.location, nextProps.location);
   // }
-  //
+
+  public render() {
+    if (this.props.data.error) {
+      return <ErrorDisplay error={this.props.data.error} />;
+    }
+    const { issues } = this.props.data;
+    const columns = (this.props.data && this.props.data.projectPrefs &&
+        this.props.data.projectPrefs.columns) || this.defaultColumns;
+    // return (<section className="kdt issue-list">
+    //   <FilterParams {...this.props} query={this.query.get('search')} />
+    //   <MassEdit {...this.props} issues={issues} />
+    // </section>);
+    return (
+      <section className="kdt issue-list">
+        <IssueList
+            {...this.props}
+            issues={issues}
+            labels={this.hotlist}
+            columns={columns}
+            loading={this.props.data.loading}
+        />
+      </section>
+    );
+  }
+
   // parseQuery() {
   //   // What this code does is update the list of terms from the current query params, and does
   //   // it in a way that preserves the order of the query terms.
@@ -70,55 +144,17 @@ class IssueSummaryView extends React.Component<Props, undefined> {
   //     this.props.setFilterTerms(new Immutable.List(terms));
   //   });
   // }
-  //
-  // hotlistSet(props) {
-  //   if (props.data && props.data.projectMembership) {
-  //     const labels = props.data.projectMembership.labels || [];
-  //     return new Immutable.Set(labels);
-  //   }
-  //   return Immutable.Set.of();
-  // }
 
-  public render() {
-    // if (this.props.data.error) {
-    //   return <ErrorDisplay error={this.props.data.error} />;
-    // }
-    // const { issues } = this.props.data;
-    // const columns = (this.props.data && this.props.data.projectMembership &&
-    //     this.props.data.projectMembership.columns) || this.defaultColumns;
-    // return (<section className="kdt issue-list">
-    //   <FilterParams {...this.props} query={this.query.get('search')} />
-    //   <MassEdit {...this.props} issues={issues} />
-    //   <IssueList
-    //       {...this.props}
-    //       issues={issues}
-    //       labels={this.hotlist}
-    //       columns={columns}
-    //       loading={this.props.data.loading} />
-    // </section>);
-    return (
-      <section className="kdt issue-list">
-        Issue List
-      </section>
-    );
+  private hotlistSet(props: DefaultChildProps<Props, Data>): Immutable.Set<number> {
+    if (props.data && props.data.projectPrefs) {
+      const labels = props.data.projectPrefs.labels || [];
+      return Immutable.Set<number>(labels);
+    }
+    return Immutable.Set();
   }
 }
 
 // IssueSummaryView.propTypes = {
-//   data: PropTypes.shape({
-//     error: PropTypes.shape({}),
-//     loading: PropTypes.bool,
-//     issues: PropTypes.arrayOf(PropTypes.shape({})),
-//     projectMembership: PropTypes.shape({
-//       columns: PropTypes.arrayOf(PropTypes.string.isRequired),
-//     }),
-//   }).isRequired,
-//   project: PropTypes.shape({
-//     id: PropTypes.string.isRequired,
-//     template: PropTypes.shape({
-//       types: PropTypes.arrayOf(PropTypes.shape({})),
-//     }),
-//   }).isRequired,
 //   location: PropTypes.shape({
 //     pathname: PropTypes.string.isRequired,
 //     query: PropTypes.shape({
@@ -133,81 +169,90 @@ class IssueSummaryView extends React.Component<Props, undefined> {
 //       reporter: PropTypes.string,
 //     }),
 //   }).isRequired,
-//   client: PropTypes.instanceOf(ApolloClient).isRequired,
 //   setFilterTerms: PropTypes.func.isRequired,
 // };
 //
 // IssueSummaryView.contextTypes = {
 //   profile: PropTypes.shape({}),
 // };
-//
-// function defaultStates(project) {
-//   // Default behavior is to show 'open' states.
-//   return project.workflow.states.filter(st => !st.closed).map(st => st.id);
-// }
-//
-// export default compose(
-//   graphql(IssueListQuery, {
-//     options: ({ project, location: { query } }) => {
-//       const {
-//         type, state,
-//         summary, summaryPred,
-//         description, descriptionPred,
-//         label, search,
-//         owner, reporter,
-//         sort, subtasks,
-//       } = query || {};
-//       // Handle custom search
-//       const custom = [];
-//       for (const key of Object.keys(query)) {
-//         if (key.startsWith('custom.')) {
-//           const customFieldName = key.slice(7);
-//           const customField = project.template.customFieldsById.get(customFieldName);
-//           if (customField) {
-//             if (customField.type === 'ENUM') {
-//               custom.push({
-//                 name: customFieldName,
-//                 values: query[key].split(','),
-//               });
-//             } else if (customField.type === 'TEXT') {
-//               custom.push({
-//                 name: customFieldName,
-//                 value: query[key],
-//               });
-//             }
-//           }
-//         }
-//       }
-//       return {
-//         variables: {
-//           project: project.id,
-//           search,
-//           type: type && type.split(','),
-//           state: (state && state !== 'open') ? state.split(',') : defaultStates(project),
-//           summary,
-//           summaryPred,
-//           description,
-//           descriptionPred,
-//           reporter,
-//           owner,
-//           cc: undefined,
-//           labels: label && label.split(','),
-//           comment: undefined,
-//           commentPred: undefined,
-//           custom,
-//           sort: [sort || '-updated'],
-//           subtasks: subtasks !== undefined,
-//         },
-//       };
-//     },
-//   }),
-//   connect(
-//     (state) => ({
-//       selection: state.issueSelection,
-//     }),
-//     dispatch => bindActionCreators({ setFilterTerms }, dispatch),
-//   ),
-//   withApollo,
-// )(IssueSummaryView);
 
-export default IssueSummaryView;
+function defaultStates(workflow: Workflow) {
+  // Default behavior is to show 'open' states.
+  return workflow.states.filter(st => !st.closed).map(st => st.id);
+}
+
+function findCustomField(template: Template, fieldName: string): FieldType | null {
+  for (const type of template.types) {
+    const field = type.fields.find(f => f.id === fieldName);
+    if (field) {
+      return field;
+    }
+  }
+  return null;
+}
+
+export default compose(
+  graphql(IssueListQuery, {
+    options: ({ project, template, workflow, location }: Props) => {
+      const query = qs.parse(location.search);
+      const {
+        type, state,
+        summary, summaryPred,
+        description, descriptionPred,
+        labels, search: search,
+        owner, reporter,
+        sort, subtasks,
+        ...other,
+      } = parseQueryParams(location.search, workflow);
+      // Handle custom search
+      const custom = [];
+      for (const key of Object.keys(other)) {
+        if (key.startsWith('custom.')) {
+          const customFieldName = key.slice(7);
+          const customField = findCustomField(template, customFieldName);
+          if (customField) {
+            if (customField.type === 'ENUM') {
+              custom.push({
+                name: customFieldName,
+                values: query[key].split(','),
+              });
+            } else if (customField.type === 'TEXT') {
+              custom.push({
+                name: customFieldName,
+                value: query[key],
+              });
+            }
+          }
+        }
+      }
+      return {
+        variables: {
+          project: project.id,
+          search,
+          type,
+          state,
+          summary,
+          summaryPred,
+          description,
+          descriptionPred,
+          reporter,
+          owner,
+          cc: undefined,
+          labels,
+          comment: undefined,
+          commentPred: undefined,
+          custom,
+          sort,
+          subtasks,
+        },
+      };
+    },
+  }),
+  connect<StateProps, {}, OwnProps>(
+    state => ({
+      selection: state.issueSelection,
+    }),
+    // dispatch => bindActionCreators({ setFilterTerms }, dispatch),
+  ),
+  withApollo,
+)(IssueSummaryView);

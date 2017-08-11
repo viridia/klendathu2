@@ -4,16 +4,16 @@ query issueListQuery(
     $type: [String!],
     $state: [String!],
     $summary: String,
-    $summaryPred: PREDICATE,
+    $summaryPred: Predicate,
     $description: String,
-    $descriptionPred: PREDICATE,
+    $descriptionPred: Predicate,
     $owner: [String!],
     $reporter: [String!],
     $cc: [String!],
     $labels: [Int!],
     $comment: String,
-    $commentPred: PREDICATE,
-    $custom: [CustomSearch!],
+    $commentPred: Predicate,
+    $custom: [CustomSearchInput!],
     $sort: [String!]) {
   issues(
       project: $project,
@@ -49,7 +49,7 @@ query issueListQuery(
     }
     parent
   }
-  projectMembership(project: $project) {
+  projectPrefs(project: $project) {
     labels
     columns
   }

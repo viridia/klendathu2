@@ -56,7 +56,7 @@ export const mutations = {
         user: context.user.id,
         project: args.project,
         labels: args.labels || args.labelsToAdd || [],
-        columns: args.columns || [],
+        columns: args.columns,
       }, { returnChanges: true }).run(context.conn);
       return (result as any).changes[0].new_val;
     } else {
@@ -113,9 +113,6 @@ export const types = {
     },
     filters: (prefs: ProjectPrefsRecord, _: any, context: Context) => {
       return prefs.filters ? prefs.filters : [];
-    },
-    columns: (prefs: ProjectPrefsRecord, _: any, context: Context) => {
-      return prefs.columns ? prefs.columns : [];
     },
   },
 };

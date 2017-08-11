@@ -533,6 +533,7 @@ export default class IssueCompose extends React.Component<Props, State> {
   private reset() {
     const { project, issue, workflow, template } = this.props;
     const concreteTypes = template.types.filter(t => !t.abstract);
+    // TODO: finish
     if (issue) {
       const linked = issue.linked || [];
       this.setState({
