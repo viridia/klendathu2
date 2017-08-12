@@ -82,6 +82,7 @@ export default class WorkflowActions extends React.Component<Props, State> {
       return false;
     }
     // Check if this action has a current state requirement.
+    // console.log(JSON.stringify(action, null, 2));
     if (action.require && action.require.state) {
       if (action.require.state.indexOf(state) < 0) {
         return false;

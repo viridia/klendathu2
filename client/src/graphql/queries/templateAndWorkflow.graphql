@@ -33,7 +33,7 @@ query templateAndWorkflowQuery($template: String!, $workflow: String!) {
       caption
       state
       owner
-      requirements {
+      require {
         state
       }
     }
