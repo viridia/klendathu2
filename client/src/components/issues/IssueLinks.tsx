@@ -11,7 +11,7 @@ import './IssueLinks.scss';
 interface Props {
   project: Project;
   links: Immutable.Iterable<number, Relation>;
-  onRemoveLink: (to: number) => void;
+  onRemoveLink?: (to: number) => void;
 }
 
 export default class IssueLinks extends React.Component<Props> {

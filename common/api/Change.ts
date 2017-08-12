@@ -31,7 +31,7 @@ export interface IntListChange {
 /** A change to a linked issue. */
 export interface LinkChange {
   /** ID of the issue being linked to. */
-  to: string;
+  to: number;
 
   /** Relationship before the change. */
   before?: Relation;
@@ -41,7 +41,7 @@ export interface LinkChange {
 }
 
 /** A change to a custom field. */
-interface CustomFieldChange {
+export interface CustomFieldChange {
   /** ID of the issue being linked to. */
   name: string;
 

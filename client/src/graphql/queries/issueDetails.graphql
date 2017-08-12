@@ -1,3 +1,5 @@
+#import "../fragments/issueContent.graphql"
+
 query issueDetailsQuery($project: ID!, $id: Int!) {
   issue(project: $project, id: $id) {
     ...issueContent
@@ -7,21 +9,23 @@ query issueDetailsQuery($project: ID!, $id: Int!) {
       type { before after }
       state { before after }
       summary { before after }
+      description { before after }
       owner { before after }
       cc { added removed }
       labels { added removed }
-      attachments {
-        added
-        removed
-        addedData {
-          id
-          filename
-        }
-        removedData {
-          id
-          filename
-        }
-      }
+      # TODO: finish
+      # attachments {
+      #   added
+      #   removed
+      #   addedData {
+      #     id
+      #     filename
+      #   }
+      #   removedData {
+      #     id
+      #     filename
+      #   }
+      # }
       custom { name before after }
       linked { to before after }
     }

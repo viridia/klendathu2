@@ -91,9 +91,9 @@ class ProjectView extends React.Component<DataProps, undefined> {
   }
 
   @autobind
-  private renderIssueDetails(props: RouteComponentProps<{}>) {
-    const { data: { project } } = this.props;
-    return (<IssueDetails {...props} project={project} />);
+  private renderIssueDetails(props: RouteComponentProps<{ id: string }>) {
+    const { data: { project }, support: { template, workflow } } = this.props;
+    return (<IssueDetails {...props} project={project} template={template} workflow={workflow} />);
   }
 
   @autobind

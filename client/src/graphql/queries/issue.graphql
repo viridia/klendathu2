@@ -1,3 +1,5 @@
+#import "../fragments/issueContent.graphql"
+
 query issueQuery($project: ID!, $id: Int!) {
   issue(project: $project, id: $id) {
     ...issueContent

@@ -33,7 +33,7 @@ class IssueEdit extends React.Component<DefaultChildProps<Props, Data>> {
   @autobind
   private onSave(issueId: number, issue: Partial<Issue>) {
     return updateIssue(this.props.project.id, issueId, issue).then((resp: any) => {
-      toastr.success(null, `Issue #${resp.data.updateIssue.id} updated.`);
+      toastr.success('', `Issue #${resp.data.updateIssue.id} updated.`);
       this.props.history.goBack();
     });
   }

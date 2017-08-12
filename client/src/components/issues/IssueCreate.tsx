@@ -25,7 +25,7 @@ export default class IssueCreate extends React.Component<Props, undefined> {
   @autobind
   private onSave(issueId: number, issue: Partial<Issue>): Promise<any> {
     return createIssue(this.props.project.id, issue as Issue).then((resp: any) => {
-      toastr.success(null, `Issue #${resp.data.newIssue.id} created.`);
+      toastr.success('', `Issue #${resp.data.newIssue.id} created.`);
     });
   }
 }
