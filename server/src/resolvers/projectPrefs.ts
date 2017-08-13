@@ -57,7 +57,7 @@ export const mutations = {
         user: context.user.id,
         project: args.project,
         labels: args.labels || args.labelsToAdd || [],
-        columns: args.columns,
+        columns: args.columns || null,
       }, { returnChanges: true }).run(context.conn);
       return (result as any).changes[0].new_val;
     } else {

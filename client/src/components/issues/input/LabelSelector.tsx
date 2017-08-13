@@ -5,7 +5,7 @@ import { Label, Project } from 'common/api';
 import * as React from 'react';
 import { withApollo } from 'react-apollo';
 import * as LabelSearchQuery from '../../../graphql/queries/labelSearch.graphql';
-import AutocompleteChips from '../../ac/AutocompleteChips';
+import AutocompleteChips, { SearchCallback } from '../../ac/AutocompleteChips';
 import Chip from '../../ac/Chip';
 import '../../ac/Chip.scss';
 import LabelDialog from '../../labels/LabelDialog';
@@ -55,9 +55,7 @@ class LabelSelector extends React.Component<Props, State> {
   }
 
   @autobind
-  private onSearchLabels(
-      token: string,
-      callback: (suggestion: Label[], suffixActions: any[]) => void) {
+  private onSearchLabels(token: string, callback: SearchCallback<Label>) {
     const newLabelOption = {
       name: <span>New&hellip;</span>,
       id: -1,

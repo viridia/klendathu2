@@ -12,7 +12,7 @@ import ErrorDisplay from '../debug/ErrorDisplay';
 import IssueCreate from '../issues/IssueCreate';
 import IssueDetails from '../issues/IssueDetails';
 import IssueEdit from '../issues/IssueEdit';
-import IssueSummaryView from '../issues/IssueSummaryView';
+import IssueListView from '../issues/IssueListView';
 import LabelList from '../labels/LabelList';
 import LeftNav from '../nav/LeftNav';
 
@@ -100,7 +100,7 @@ class ProjectView extends React.Component<DataProps, undefined> {
   private renderIssueList(props: RouteComponentProps<{}>) {
     const { data: { project }, support: { template, workflow } } = this.props;
     return (
-      <IssueSummaryView {...props} project={project} template={template} workflow={workflow} />
+      <IssueListView {...props} project={project} template={template} workflow={workflow} />
     );
   }
 

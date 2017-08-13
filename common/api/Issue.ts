@@ -2,7 +2,7 @@ import { Attachment } from './Attachment';
 import { Change } from './Change';
 import { Comment } from './Comment';
 import { IssueLink } from './IssueLink';
-import { Label } from './Label';
+// import { Label } from './Label';
 
 /** Data for a custom field. */
 export interface CustomField {
@@ -70,7 +70,7 @@ export interface Issue extends IssueBase {
   reporter: string;
 
   /** Labels associated with this issue (expanded). */
-  labelProps: Label[];
+  // labelProps: Label[];
 
   /** Details for the list of attachments. */
   attachments: Attachment[];

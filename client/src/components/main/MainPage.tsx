@@ -17,6 +17,7 @@ import DashboardView from '../dashboard/DashboardView';
 import ErrorDisplay from '../debug/ErrorDisplay';
 import GraphiQLPage from '../debug/GraphiQLPage';
 import Header from '../header/Header';
+import ProfileView from '../profile/ProfileView';
 import ProjectView from '../projects/ProjectView';
 import './MainPage.scss';
 
@@ -69,7 +70,7 @@ class MainPage extends React.Component<
         <Switch>
           <Route path="/gql" component={GraphiQLPage} />
           <Route path="/project/:project" component={ProjectView} />
-          <Route path="/profile" />
+          <Route path="/profile" component={ProfileView} />
           <Route path="/" exact={true} component={DashboardView} />
           <Route component={NotFound} />
         </Switch>

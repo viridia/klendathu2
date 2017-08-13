@@ -62,7 +62,7 @@ export default class AutoCompleteChips<S> extends React.Component<Props<S>, Stat
     this.timer = null;
   }
 
-  public omponentDidUpdate(prevProps: Props<S>, prevState: State<S>) {
+  public componentDidUpdate(prevProps: Props<S>, prevState: State<S>) {
     if (this.menu && !prevState.open && this.state.open) {
       this.menu.scrollIntoView(false);
     }

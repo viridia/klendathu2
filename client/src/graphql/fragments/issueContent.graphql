@@ -15,6 +15,7 @@ fragment issueContent on Issue {
     name
     value
   }
+  # TODO: finish
   # ownerData {
   #   username
   #   fullname
@@ -25,11 +26,11 @@ fragment issueContent on Issue {
   #   fullname
   #   photo
   # }
-  labelProps {
-    id
-    name
-    color
-  }
+  # labelProps {
+  #   id
+  #   name
+  #   color
+  # }
   attachments {
     id
     filename

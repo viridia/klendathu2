@@ -534,7 +534,6 @@ export default class IssueCompose extends React.Component<Props, State> {
   private reset() {
     const { project, issue, workflow, template } = this.props;
     const concreteTypes = template.types.filter(t => !t.abstract);
-    // TODO: finish
     if (issue) {
       const linked = issue.linked || [];
       this.setState({
@@ -550,7 +549,7 @@ export default class IssueCompose extends React.Component<Props, State> {
         custom: issue.custom
             ? Immutable.Map(issue.custom.map(custom => [custom.name, custom.value]))
             : Immutable.Map.of(),
-  //       labels: issue.labelProps,
+        labels: issue.labels,
         issueToLink: null,
         issueLinkMap: Immutable.OrderedMap<number, Relation>(
             linked.map(({ relation, to }) => ([to, relation] as [number, Relation]))),

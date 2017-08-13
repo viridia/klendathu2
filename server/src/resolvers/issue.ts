@@ -1,6 +1,6 @@
 import * as r from 'rethinkdb';
 import {
-  Attachment, CustomField, Issue, IssueInput, IssueLink, Label, Predicate, Relation, Role,
+  Attachment, CustomField, Issue, IssueInput, IssueLink, Predicate, Relation, Role,
 } from '../../../common/api';
 import { bucket } from '../actions/files';
 import Context from '../context/Context';
@@ -821,11 +821,11 @@ export const types = {
       }).orderBy(r.desc('at')).run(context.conn)
       .then(cursor => cursor.toArray());
     },
-    labelProps(issue: IssueRecord, _: any, context: Context): Promise<Label[]> {
-      return r.table('labels').getAll(...issue.labels.map(label => [issue.id[0], label]) as any)
-      .run(context.conn)
-      .then(cursor => cursor.toArray());
-    },
+    // labelProps(issue: IssueRecord, _: any, context: Context): Promise<Label[]> {
+    //   return r.table('labels').getAll(...issue.labels.map(label => [issue.id[0], label]) as any)
+    //   .run(context.conn)
+    //   .then(cursor => cursor.toArray());
+    // },
     attachments(issue: IssueRecord, _: any, context: Context): Promise<Attachment[]> {
       return Promise.all(issue.attachments.map(async id => {
         const { metadata } = await bucket.getMetadata(id);

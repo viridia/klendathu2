@@ -9,7 +9,7 @@ import { RouteComponentProps } from 'react-router-dom';
 // import equal from 'deep-equal';
 import ErrorDisplay from '../debug/ErrorDisplay';
 // import FilterParams from '../filters/filterParams.jsx';
-// import MassEdit from '../filters/massEdit.jsx';
+import MassEdit from '../massedit/MassEdit';
 import IssueList from './IssueList';
 // import { setFilterTerms } from '../../store/filter';
 // import { getFieldType } from '../filters/fieldTypes';
@@ -49,7 +49,7 @@ interface QueryParams {
 }
 
 function parseQueryParams(query: string, workflow: Workflow): QueryParams {
-  const { label, type, state, sort, subtasks, ...params } = qs.parse(query);
+  const { label, type, state, sort, subtasks, ...params } = qs.parse(query ? query.slice(1) : '');
   return {
     ...params,
     type: type && type.split(','),
@@ -66,7 +66,29 @@ function parseQueryParams(query: string, workflow: Workflow): QueryParams {
   };
 }
 
-class IssueSummaryView extends React.Component<DefaultChildProps<Props, Data>, undefined> {
+// IssueListView.propTypes = {
+//   location: PropTypes.shape({
+//     pathname: PropTypes.string.isRequired,
+//     query: PropTypes.shape({
+//       type: PropTypes.string,
+//       state: PropTypes.string,
+//       summary: PropTypes.string,
+//       summaryPred: PropTypes.string,
+//       description: PropTypes.string,
+//       descriptionPred: PropTypes.string,
+//       labels: PropTypes.string,
+//       owner: PropTypes.string,
+//       reporter: PropTypes.string,
+//     }),
+//   }).isRequired,
+//   setFilterTerms: PropTypes.func.isRequired,
+// };
+//
+// IssueListView.contextTypes = {
+//   profile: PropTypes.shape({}),
+// };
+
+class IssueListView extends React.Component<DefaultChildProps<Props, Data>, undefined> {
   private defaultColumns: string[];
   private hotlist: Immutable.Set<number>;
 
@@ -80,16 +102,16 @@ class IssueSummaryView extends React.Component<DefaultChildProps<Props, Data>, u
   // componentWillMount() {
   //   this.parseQuery();
   // }
-  //
-  // componentWillReceiveProps(nextProps) {
-  //   const query = new Immutable.Map(nextProps.location.query || {});
-  //   if (!Immutable.is(this.query, query)) {
-  //     this.query = query;
-  //     this.parseQuery();
-  //   }
-  //   this.hotlist = this.hotlistSet(nextProps);
-  // }
-  //
+
+  public componentWillReceiveProps(nextProps: DefaultChildProps<Props, Data>) {
+    // const query = new Immutable.Map(nextProps.location.query || {});
+    // if (!Immutable.is(this.query, query)) {
+    //   this.query = query;
+    //   this.parseQuery();
+    // }
+    this.hotlist = this.hotlistSet(nextProps);
+  }
+
   // shouldComponentUpdate(nextProps) {
   //   return this.props.data.issues !== nextProps.data.issues
   //       || this.props.data.loading !== nextProps.data.loading
@@ -107,10 +129,10 @@ class IssueSummaryView extends React.Component<DefaultChildProps<Props, Data>, u
         this.props.data.projectPrefs.columns) || this.defaultColumns;
     // return (<section className="kdt issue-list">
     //   <FilterParams {...this.props} query={this.query.get('search')} />
-    //   <MassEdit {...this.props} issues={issues} />
     // </section>);
     return (
       <section className="kdt issue-list">
+        <MassEdit {...this.props} issues={issues} />
         <IssueList
             {...this.props}
             issues={issues}
@@ -153,28 +175,6 @@ class IssueSummaryView extends React.Component<DefaultChildProps<Props, Data>, u
     return Immutable.Set();
   }
 }
-
-// IssueSummaryView.propTypes = {
-//   location: PropTypes.shape({
-//     pathname: PropTypes.string.isRequired,
-//     query: PropTypes.shape({
-//       type: PropTypes.string,
-//       state: PropTypes.string,
-//       summary: PropTypes.string,
-//       summaryPred: PropTypes.string,
-//       description: PropTypes.string,
-//       descriptionPred: PropTypes.string,
-//       labels: PropTypes.string,
-//       owner: PropTypes.string,
-//       reporter: PropTypes.string,
-//     }),
-//   }).isRequired,
-//   setFilterTerms: PropTypes.func.isRequired,
-// };
-//
-// IssueSummaryView.contextTypes = {
-//   profile: PropTypes.shape({}),
-// };
 
 function defaultStates(workflow: Workflow) {
   // Default behavior is to show 'open' states.
@@ -255,4 +255,4 @@ export default compose(
     // dispatch => bindActionCreators({ setFilterTerms }, dispatch),
   ),
   withApollo,
-)(IssueSummaryView);
+)(IssueListView);

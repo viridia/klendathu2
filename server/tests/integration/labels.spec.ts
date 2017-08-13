@@ -149,5 +149,39 @@ describe('Labels', function () {
         ensure(resp.body.data.labels[0].creator).equals('test-user');
       });
     });
+
+    it('labels (token)', async function () {
+      await graphqlRequest(labelsQuery, {
+        project: this.project.id,
+        token: 'test',
+      }).then(resp => {
+        ensure(resp.body.data.labels).exists();
+        ensure(resp.body.data.labels).hasLength(1);
+        ensure(resp.body.data.labels[0].id).equals(labelIndex);
+        ensure(resp.body.data.labels[0].name).equals('test-label-3');
+        ensure(resp.body.data.labels[0].color).equals('#ffff00');
+        ensure(resp.body.data.labels[0].creator).equals('test-user');
+      });
+
+      await graphqlRequest(labelsQuery, {
+        project: this.project.id,
+        token: '3',
+      }).then(resp => {
+        ensure(resp.body.data.labels).exists();
+        ensure(resp.body.data.labels).hasLength(1);
+        ensure(resp.body.data.labels[0].id).equals(labelIndex);
+        ensure(resp.body.data.labels[0].name).equals('test-label-3');
+        ensure(resp.body.data.labels[0].color).equals('#ffff00');
+        ensure(resp.body.data.labels[0].creator).equals('test-user');
+      });
+
+      await graphqlRequest(labelsQuery, {
+        project: this.project.id,
+        token: 'nomatch',
+      }).then(resp => {
+        ensure(resp.body.data.labels).exists();
+        ensure(resp.body.data.labels).hasLength(0);
+      });
+    });
   });
 });

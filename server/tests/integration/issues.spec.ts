@@ -152,11 +152,6 @@ const issuesQuery = `query IssuesQuery(
   //   name
   //   value
   // }
-  // labelProps {
-  //   id
-  //   name
-  //   color
-  // }
   // attachmentsData {
   //   id
   //   filename

@@ -59,7 +59,7 @@ describe('ProjectPrefs', function () {
       }).then(resp => {
         ensure(resp.body.data.setProjectPrefs).exists();
         ensure(resp.body.data.setProjectPrefs.labels).containsAllOf(1, 2, 3).inOrder();
-        ensure(resp.body.data.setProjectPrefs.columns).isDeeplyEqualTo([]);
+        ensure(resp.body.data.setProjectPrefs.columns).isNull();
         ensure(resp.body.data.setProjectPrefs.filters).isDeeplyEqualTo([]);
       });
 
@@ -69,7 +69,7 @@ describe('ProjectPrefs', function () {
       }).then(resp => {
         ensure(resp.body.data.setProjectPrefs).exists();
         ensure(resp.body.data.setProjectPrefs.labels).containsAllOf(11, 12, 13).inOrder();
-        ensure(resp.body.data.setProjectPrefs.columns).isDeeplyEqualTo([]);
+        ensure(resp.body.data.setProjectPrefs.columns).isNull();
         ensure(resp.body.data.setProjectPrefs.filters).isDeeplyEqualTo([]);
       });
     });
@@ -81,7 +81,7 @@ describe('ProjectPrefs', function () {
       }).then(resp => {
         ensure(resp.body.data.setProjectPrefs).exists();
         ensure(resp.body.data.setProjectPrefs.labels).containsAllOf(11, 12, 13).inOrder();
-        ensure(resp.body.data.setProjectPrefs.columns).isDeeplyEqualTo([]);
+        ensure(resp.body.data.setProjectPrefs.columns).isNull();
         ensure(resp.body.data.setProjectPrefs.filters).isDeeplyEqualTo([]);
       });
 
@@ -91,7 +91,7 @@ describe('ProjectPrefs', function () {
       }).then(resp => {
         ensure(resp.body.data.setProjectPrefs).exists();
         ensure(resp.body.data.setProjectPrefs.labels).containsAllOf(11, 12, 13, 1).inOrder();
-        ensure(resp.body.data.setProjectPrefs.columns).isDeeplyEqualTo([]);
+        ensure(resp.body.data.setProjectPrefs.columns).isNull();
         ensure(resp.body.data.setProjectPrefs.filters).isDeeplyEqualTo([]);
       });
     });
@@ -103,7 +103,7 @@ describe('ProjectPrefs', function () {
       }).then(resp => {
         ensure(resp.body.data.setProjectPrefs).exists();
         ensure(resp.body.data.setProjectPrefs.labels).containsAllOf(11, 12, 13).inOrder();
-        ensure(resp.body.data.setProjectPrefs.columns).isDeeplyEqualTo([]);
+        ensure(resp.body.data.setProjectPrefs.columns).isNull();
         ensure(resp.body.data.setProjectPrefs.filters).isDeeplyEqualTo([]);
       });
 
@@ -113,7 +113,7 @@ describe('ProjectPrefs', function () {
       }).then(resp => {
         ensure(resp.body.data.setProjectPrefs).exists();
         ensure(resp.body.data.setProjectPrefs.labels).containsAllOf(11).inOrder();
-        ensure(resp.body.data.setProjectPrefs.columns).isDeeplyEqualTo([]);
+        ensure(resp.body.data.setProjectPrefs.columns).isNull();
         ensure(resp.body.data.setProjectPrefs.filters).isDeeplyEqualTo([]);
       });
     });
@@ -126,7 +126,7 @@ describe('ProjectPrefs', function () {
       }).then(resp => {
         ensure(resp.body.data.projectPrefs).exists();
         ensure(resp.body.data.projectPrefs.labels).isDeeplyEqualTo([]);
-        ensure(resp.body.data.projectPrefs.columns).isDeeplyEqualTo([]);
+        ensure(resp.body.data.projectPrefs.columns).isNull();
         ensure(resp.body.data.projectPrefs.filters).isDeeplyEqualTo([]);
       });
     });

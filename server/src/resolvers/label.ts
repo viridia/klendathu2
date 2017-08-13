@@ -30,8 +30,7 @@ export const queries = {
       Promise<LabelRecord[]> {
     let query = r.table('labels').filter((r.row('id') as any).nth(0).eq(args.project));
     if (args.token) {
-      const pattern = `\\b${escapeRegExp(args.token)}`;
-      query = query.filter({ name: { $regex: pattern, $options: 'i' } });
+      query = query.filter((r.row('name') as any).match(`(?i)\\b${escapeRegExp(args.token)}`));
     }
     return query.run(context.conn).then(cursor => cursor.toArray());
   },

@@ -54,17 +54,26 @@ interface ColumnRendererMap {
 }
 
 export type IssueIdSet = Immutable.Set<number>;
+interface QueryParams { [param: string]: string; }
+
+function parseQuery(search?: string): QueryParams {
+  if (search) {
+    return qs.parse(search.slice(1));
+  } else {
+    return {};
+  }
+}
 
 class IssueList extends React.Component<Props> {
   private columnRenderers: ColumnRendererMap;
   private selectAll: HTMLInputElement;
   private issueIdSet: IssueIdSet;
   private issueIds: number[];
-  private query: { [param: string]: string };
+  private query: QueryParams;
 
   constructor(props: Props) {
     super(props);
-    this.query = qs.parse(props.location.search);
+    this.query = parseQuery(props.location.search);
     this.createColumnRenderers(props.template);
     this.buildIssueIdList(props);
   }
@@ -74,7 +83,7 @@ class IssueList extends React.Component<Props> {
   }
 
   public componentWillReceiveProps(nextProps: Props) {
-    this.query = qs.parse(nextProps.location.search);
+    this.query = parseQuery(nextProps.location.search);
     this.createColumnRenderers(nextProps.template);
     this.buildIssueIdList(nextProps);
   }
@@ -98,7 +107,7 @@ class IssueList extends React.Component<Props> {
     const { issues, loading } = this.props;
     if (!issues || issues.length === 0) {
       if (loading) {
-        return <div className="card report" />;
+        return null;
       }
       return (
         <div className="card report">
@@ -253,7 +262,7 @@ class IssueList extends React.Component<Props> {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <MenuItem
-                      className={classNames({ checked: this.query.subtasks !== undefined })}
+                      className={classNames({ checked: !!this.query.subtasks })}
                       onClick={this.onToggleSubtasks}
                   >
                     Show Subtasks
@@ -300,12 +309,14 @@ class IssueList extends React.Component<Props> {
     if (this.query.subtasks === undefined) {
       history.replace({
         ...this.props.location,
-        search: qs.stringify({ ...this.query, subtasks: null }),
+        search: qs.stringify({ ...this.query, subtasks: true }),
       });
     } else {
+      // Remove 'subtasks' parameter from query.
+      const { subtasks, ...newQuery } = this.query;
       history.replace({
         ...this.props.location,
-        search: qs.stringify({ ...this.query, subtasks: undefined }),
+        search: qs.stringify({ ...newQuery }),
       });
     }
   }

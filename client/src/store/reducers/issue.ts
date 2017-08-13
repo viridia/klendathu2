@@ -34,6 +34,7 @@ export function deleteIssue(project: string, id: number) {
     mutation: DeleteIssueMutation,
     variables: { project, id },
     refetchQueries: ['issueDetailsQuery'],
+    // TODO: finish
     // updateQueries: {
     //   issueListQuery: (previousQueryResult, { mutationResult }) => {
     //     return {
