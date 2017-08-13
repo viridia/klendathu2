@@ -1,21 +1,16 @@
+import Axios from 'axios';
 import autobind from 'bind-decorator';
-// import axios from 'axios';
+import { History } from 'history';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
-// import { withApollo } from 'react-apollo';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-// import { browserHistory } from 'react-router';
 import { LinkContainer } from 'react-router-bootstrap';
 
-// TODO: implement
-// interface Props {
-//   data?: {};
-//   // client: React.PropTypes.instanceOf(ApolloClient).isRequired,
-//   // client?: any;
-//
-// }
+interface Props {
+  history: History;
+}
 
-class UserMenuButton extends React.Component<undefined, undefined> {
+export default class UserMenuButton extends React.Component<Props, undefined> {
   public static contextTypes = {
     profile: PropTypes.shape({}),
   };
@@ -42,13 +37,9 @@ class UserMenuButton extends React.Component<undefined, undefined> {
   @autobind
   private onSignOut(e: React.MouseEvent<{}>): void {
     e.preventDefault();
-    // TODO: finish
-    // axios.post('logout').then(() => {
-    //   this.props.client.resetStore();
-    //   browserHistory.push({ pathname: '/login' });
-    // });
+    Axios.post('/api/logout').then(() => {
+      localStorage.removeItem('token');
+      this.props.history.push({ pathname: '/login' });
+    });
   }
 }
-
-// export default withApollo(UserMenuButton);
-export default UserMenuButton;

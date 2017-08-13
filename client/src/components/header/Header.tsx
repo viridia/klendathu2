@@ -1,4 +1,4 @@
-import { Location } from 'history';
+import { History, Location } from 'history';
 import * as React from 'react';
 import { Route } from 'react-router-dom';
 import './Header.scss';
@@ -8,6 +8,7 @@ import UserMenuButton from './UserMenuButton';
 
 interface Props {
   location: Location;
+  history: History;
 }
 
 function Header(props: Props) {
@@ -20,7 +21,7 @@ function Header(props: Props) {
       </span>
       <Route path="/project/:project" component={NewIssueButton} />
       <SignInLink {...props} />
-      <UserMenuButton />
+      <UserMenuButton history={props.history} />
     </header>
   );
 }

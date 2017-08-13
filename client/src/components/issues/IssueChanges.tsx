@@ -124,14 +124,14 @@ function Change({ change, project }: { change: Change, project: Project }) {
           (<li className="field-change" key={l}>
             removed label <LabelName label={l} project={project.id} key={l} />
           </li>))}
-        {change.attachments && change.attachments.addedData && change.attachments.addedData.map(a =>
-          (<li className="field-change" key={a.id}>
-            attached file <span className="attachment">{a.filename}</span>
+        {change.attachments && change.attachments.added && change.attachments.added.map(a =>
+          (<li className="field-change" key={a}>
+            attached file <span className="attachment" />
           </li>))}
-        {change.attachments && change.attachments.removedData &&
-            change.attachments.removedData.map(a =>
-          (<li className="field-change" key={a.id}>
-            removed file <span className="attachment">{a.filename}</span>
+        {change.attachments && change.attachments.removed &&
+            change.attachments.removed.map(a =>
+          (<li className="field-change" key={a}>
+            removed file <span className="attachment" />
           </li>))}
         {change.linked && change.linked.map(linkChange)}
         {change.custom && change.custom.map(customChange)}

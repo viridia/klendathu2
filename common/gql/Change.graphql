@@ -25,15 +25,6 @@ type IntListChange {
   removed: [Int!]
 }
 
-# Represents a change to the list of attachments
-type AttachmentsChange {
-  # List of attachments that were added.
-  added: [Attachment!]
-
-  # List of attachments that were removed.
-  removed: [Attachment!]
-}
-
 # Represents a change to a custom field
 type CustomFieldChange {
   # Field name.
@@ -88,7 +79,7 @@ type Change {
   labels: IntListChange
 
   # Change to the list of attachments.
-  attachments: AttachmentsChange
+  attachments: StringListChange
 
   # Changes to custom fields
   custom: [CustomFieldChange!]

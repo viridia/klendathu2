@@ -1,5 +1,5 @@
 import autobind from 'bind-decorator';
-import { Issue, Project, Template, Workflow } from 'common/api';
+import { IssueInput, Project, Template, Workflow } from 'common/api';
 import * as React from 'react';
 import { toastr } from 'react-redux-toastr';
 import { RouteComponentProps } from 'react-router-dom';
@@ -23,8 +23,8 @@ export default class IssueCreate extends React.Component<Props, undefined> {
   }
 
   @autobind
-  private onSave(issueId: number, issue: Partial<Issue>): Promise<any> {
-    return createIssue(this.props.project.id, issue as Issue).then((resp: any) => {
+  private onSave(issueId: number, issue: IssueInput): Promise<any> {
+    return createIssue(this.props.project.id, issue).then((resp: any) => {
       toastr.success('', `Issue #${resp.data.newIssue.id} created.`);
     });
   }

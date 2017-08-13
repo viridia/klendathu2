@@ -13,13 +13,7 @@ export interface CustomField {
 }
 
 /** An issue. */
-export interface Issue {
-  /** Unique id of this issue. */
-  id: number;
-
-  /** ID of the project this issue belongs to. */
-  project: string;
-
+export interface IssueBase {
   /** Issue type (defined by template). */
   type: string;
 
@@ -32,33 +26,14 @@ export interface Issue {
   /** Detailed description of the issue. */
   description: string;
 
-  /** Username of user that originally reported this issue. */
-  reporter: string;
-
   /** Username of current owner of this issue. */
   owner: string;
 
   /** Users who wish to be informed when this issue is updated. */
   cc: string[];
 
-  /** Date and time when the issue was created. */
-  created: Date;
-
-  /** Date and time when the issue was last changed. */
-  updated: Date;
-
   /** Labels associated with this issue. */
   labels: number[];
-
-  /** Labels associated with this issue (expanded). */
-  labelProps: Label[];
-
-      // resolve(issue, args, context, options) {
-      //   if (issue.labels.length === 0) {
-      //     return [];
-      //   }
-      //   return options.rootValue.labelsById({ project: issue.project, idList: issue.labels });
-      // },
 
   /** List of issues linked to this one. */
   linked: IssueLink[];
@@ -80,21 +55,38 @@ export interface Issue {
   /** List of comments on this issue. */
   comments: Comment[];
 
-  /** List of attachments for this issue, as URLs. */
-  attachments: string[];
-
-  /** Details for the list of attachments. */
-  attachmentProps: Attachment[];
-      // resolve(issue, args, context, options) {
-      //   if (!issue.attachments || issue.attachments.length === 0) {
-      //     return [];
-      //   }
-      //   return options.rootValue.attachmentsById({ idList: issue.attachments });
-      // },
-
   /** Whether this issue should be visible to non-members of the project. */
   isPublic?: boolean;
+}
+
+export interface Issue extends IssueBase {
+  /** Unique id of this issue. */
+  id: number;
+
+  /** ID of the project this issue belongs to. */
+  project: string;
+
+  /** Username of user that originally reported this issue. */
+  reporter: string;
+
+  /** Labels associated with this issue (expanded). */
+  labelProps: Label[];
+
+  /** Details for the list of attachments. */
+  attachments: Attachment[];
 
   /** History of changes for this issue. */
   changes?: Change[];
+
+  /** Date and time when the issue was created. */
+  created: Date;
+
+  /** Date and time when the issue was last changed. */
+  updated: Date;
+}
+
+/** An issue. */
+export interface IssueInput extends IssueBase {
+  /** Details for the list of attachments. */
+  attachments: string[];
 }

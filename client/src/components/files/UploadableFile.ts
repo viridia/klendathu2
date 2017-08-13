@@ -29,16 +29,16 @@ export default class UploadableFile implements Attachment {
   public upload(onProgress: (progressEvent: any) => void) {
     const formData = new FormData();
     formData.append('attachment', this.file);
-    return Axios.post('file', formData, {
+    return Axios.post('/api/file', formData, {
       onUploadProgress: onProgress,
+      headers: {
+        authorization: `JWT ${localStorage.getItem('token')}`,
+      },
     }).then(resp => {
       this.id = resp.data.id;
       this.url = resp.data.url;
       this.thumbnail = resp.data.thumb;
       return resp.data;
-    }, error => {
-      console.error('post file error:', error);
-      return null;
     });
   }
 }

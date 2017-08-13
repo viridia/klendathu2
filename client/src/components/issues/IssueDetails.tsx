@@ -18,13 +18,13 @@ import { DefaultChildProps, graphql } from 'react-apollo';
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
-// import ShowAttachments from '../files/showAttachments.jsx';
 import { addComment, deleteIssue, updateIssue } from '../../store/reducers/issue';
 import ConfirmDialog from '../common/ConfirmDialog';
 import LabelName from '../common/LabelName';
 import RelativeDate from '../common/RelativeDate';
 import UserName from '../common/UserName';
 import ErrorDisplay from '../debug/ErrorDisplay';
+import ShowAttachments from '../files/ShowAttachments';
 import CommentEdit from './input/CommentEdit';
 import IssueChanges from './IssueChanges';
 import IssueLinks from './IssueLinks';
@@ -117,7 +117,7 @@ class IssueDetails extends React.Component<DefaultChildProps<Props, Data>, State
       comments = [],
       changes = [],
       custom = [],
-    //   attachmentsData = [],
+      attachments = [],
     } = issue;
     const linked = Immutable.OrderedMap<number, Relation>(
         issue.linked.map(({ relation, to }) => ([to, relation] as [number, Relation])));
@@ -232,14 +232,12 @@ class IssueDetails extends React.Component<DefaultChildProps<Props, Data>, State
                       </td>
                     </tr>
                   )}
-                  {/*
-                  {attachmentsData.length > 0 && (
+                  {attachments.length > 0 && (
                     <tr>
                       <th className="header">Attachments:</th>
-                      <td><ShowAttachments attachments={attachmentsData} /></td>
+                      <td><ShowAttachments attachments={attachments} /></td>
                     </tr>
                   )}
-                  */}
                   {linked.size > 0 && <tr>
                     <th className="header linked">Linked Issues:</th>
                     <td>

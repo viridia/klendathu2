@@ -1,7 +1,8 @@
 import * as r from 'rethinkdb';
 import {
-  CustomField, Issue, IssueLink, Label, Predicate, Relation, Role,
+  Attachment, CustomField, Issue, IssueInput, IssueLink, Label, Predicate, Relation, Role,
 } from '../../../common/api';
+import { bucket } from '../actions/files';
 import Context from '../context/Context';
 import { escapeRegExp } from '../db/helpers';
 import {
@@ -290,7 +291,7 @@ export const queries = {
 export const mutations = {
   async newIssue(
       _: any,
-      args: { project: string, input: Issue },
+      args: { project: string, input: IssueInput },
       context: Context,
   ): Promise<IssueRecord> {
     const { project, role } = await getProjectAndRole(context, args.project, undefined, true);
@@ -404,7 +405,7 @@ export const mutations = {
 
   async updateIssue(
       _: any,
-      args: { project: string, id: number, input: Issue },
+      args: { project: string, id: number, input: IssueInput },
       context: Context,
   ): Promise<IssueRecord> {
     const { project, role } = await getProjectAndRole(context, args.project, undefined, true);
@@ -825,6 +826,18 @@ export const types = {
       .run(context.conn)
       .then(cursor => cursor.toArray());
     },
-    // changes
+    attachments(issue: IssueRecord, _: any, context: Context): Promise<Attachment[]> {
+      return Promise.all(issue.attachments.map(async id => {
+        const { metadata } = await bucket.getMetadata(id);
+        return {
+          id,
+          filename: metadata.filename,
+          type: metadata.contentType,
+          url: `/api/file/${id}/${metadata.filename}`,
+          thumbnail: metadata.thumb && `/api/file/${metadata.thumb}/${metadata.filename}`,
+        };
+      }));
+    },
+    // TODO: parent - look through relationships if requested
   },
 };

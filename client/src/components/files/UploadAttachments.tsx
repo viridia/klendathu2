@@ -25,17 +25,10 @@ export default class UploadAttachments extends React.Component<Props, State> {
     };
   }
 
-  public setFiles(fileList: Iterable<File>) {
+  public setFiles(fileList: Attachment[]) {
     let files = this.state.files;
-    for (const f of fileList) {
-      const attachment: Attachment = {
-        filename: f.name,
-        type: f.type,
-        id: null,
-        url: null,
-        thumbnail: null,
-      };
-      files = files.set(attachment.filename, attachment);
+    for (const a of fileList) {
+      files = files.set(a.filename, a);
     }
     this.setState({ files });
   }

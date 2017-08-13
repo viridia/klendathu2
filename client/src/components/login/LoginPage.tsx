@@ -22,8 +22,9 @@ interface State {
 }
 
 class LoginPage extends React.Component<Props, State> {
-  constructor() {
-    super();
+  constructor(props: Props) {
+    super(props);
+    props.client.resetStore();
     this.state = {
       userName: '',
       userNameError: null,
@@ -43,7 +44,7 @@ class LoginPage extends React.Component<Props, State> {
     }
     return (
       <div className="kdt page">
-        <Header location={this.props.location} />
+        <Header location={this.props.location} history={this.props.history} />
         <div className="login-content">
           <div className="login-spacer-before" />
           <div className="login card">

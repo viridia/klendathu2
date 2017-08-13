@@ -252,6 +252,7 @@ export default function (apiRouter: express.Router, conn: r.Connection) {
   apiRouter.post('/logout', (req, res) => {
     // TODO: call passport.authenticate
     // TODO: is this even meaningful?
+    logger.info('Logging out:', req.user);
     if (req.user) {
       req.logOut();
     }

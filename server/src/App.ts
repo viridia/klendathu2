@@ -8,6 +8,7 @@ import * as path from 'path';
 import * as r from 'rethinkdb';
 import * as url from 'url';
 import auth from './actions/auth';
+import files from './actions/files';
 import Context from './context/Context';
 import { ensureDbsExist, ensureIndicesExist, ensureTablesExist } from './db/helpers';
 import { logger } from './logger';
@@ -65,7 +66,7 @@ export default class App {
     });
     this.conn.use(process.env.DB_NAME);
     this.middleware();
-    this.routes();
+    await this.routes();
   }
 
   /** Install needed middleware. */
@@ -77,7 +78,7 @@ export default class App {
     this.express.use(passport.initialize());
   }
 
-  private routes() {
+  private async routes() {
     // Static files
     this.express.use('/fonts', express.static(path.join(__dirname, '../client/media/fonts')));
     this.express.use('/favicon', express.static(path.join(__dirname, '../client/media/favicon')));
@@ -88,6 +89,7 @@ export default class App {
 
     // Application routes
     auth(this.apiRouter, this.conn);
+    await files(this.apiRouter, this.conn);
 
     this.apiRouter.get('/version', (req, res) => {
       res.json({ version: process.env.npm_package_version });

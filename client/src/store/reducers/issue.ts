@@ -1,4 +1,4 @@
-import { Issue } from 'common/api';
+import { IssueInput } from 'common/api';
 import apollo from '../apollo';
 
 import * as AddCommentMutation from '../../graphql/mutations/addComment.graphql';
@@ -6,7 +6,7 @@ import * as DeleteIssueMutation from '../../graphql/mutations/deleteIssue.graphq
 import * as NewIssueMutation from '../../graphql/mutations/newIssue.graphql';
 import * as UpdateIssueMutation from '../../graphql/mutations/updateIssue.graphql';
 
-export function createIssue(project: string, input: Issue) {
+export function createIssue(project: string, input: IssueInput) {
   return apollo.mutate({
     mutation: NewIssueMutation,
     variables: { project, input },
@@ -14,7 +14,7 @@ export function createIssue(project: string, input: Issue) {
   });
 }
 
-export function updateIssue(project: string, id: number, input: Partial<Issue>) {
+export function updateIssue(project: string, id: number, input: Partial<IssueInput>) {
   return apollo.mutate({
     mutation: UpdateIssueMutation,
     variables: { id, project, input },

@@ -4,6 +4,7 @@ import { Attachment } from 'common/api';
 import CloseIcon from 'icons/ic_close_black_24px.svg';
 import * as React from 'react';
 import { ProgressBar } from 'react-bootstrap';
+import { toastr } from 'react-redux-toastr';
 import FileIcon from './FileIcon';
 import UploadableFile from './UploadableFile';
 
@@ -15,16 +16,16 @@ interface Props {
 interface State {
   progress: number;
   loaded: boolean;
+  style: string;
 }
 
 /** React component that renders a single attachment to be uploaded. */
 export default class AttachmentPreview extends React.Component<Props, State> {
   constructor(props: Props, context: any) {
     super(props, context);
-    // this.onProgress = this.onProgress.bind(this);
-    // this.onRemove = this.onRemove.bind(this);
     this.state = {
       progress: 0,
+      style: 'success',
       loaded: !!props.attachment.url,
     };
   }
@@ -35,12 +36,17 @@ export default class AttachmentPreview extends React.Component<Props, State> {
         if (data) {
           this.setState({ loaded: true });
         }
+      }, error => {
+        this.setState({ style: 'danger' });
+        toastr.error('Upload failed', '');
+        console.error('post file error:', error);
       });
     }
   }
 
   public render() {
     const { type, filename, url, thumbnail } = this.props.attachment;
+    const { progress, style } = this.state;
     return (
       <div
           className={classNames('issue-attachment', { loaded: this.state.loaded })}
@@ -51,7 +57,7 @@ export default class AttachmentPreview extends React.Component<Props, State> {
           <FileIcon type={type} filename={filename} url={url} thumbnail={thumbnail} />
         </div>
         <div className="name">{filename}</div>
-        <ProgressBar striped={true} bsStyle="success" now={this.state.progress} />
+        <ProgressBar striped={true} bsStyle={style} now={progress} />
       </div>
     );
   }

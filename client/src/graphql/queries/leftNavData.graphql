@@ -1,6 +1,5 @@
 query leftNavQuery($project: ID!) {
   projectPrefs(project: $project) {
-    labels
     labelProps {
       id
       name

@@ -61,7 +61,7 @@ class SignUpPage extends React.Component<Props, State> {
         username.length > 0 && email.length > 0 && password.length > 0 && password2.length > 0;
     return (
       <div className="kdt page">
-        <Header location={this.props.location} />
+        <Header location={this.props.location} history={this.props.history} />
         <div className="login-content">
           <div className="login-spacer-before" />
           <div className="login card">

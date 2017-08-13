@@ -1,4 +1,4 @@
-import { Attachment } from './Attachment';
+// import { Attachment } from './Attachment';
 import { Relation } from './Relation';
 
 /** A change to a scalar field. */
@@ -82,19 +82,7 @@ export interface Change {
   labels?: IntListChange;
 
   /** Changes to the issue attachment list. */
-  attachments?: {
-    /** List of attachments that were added to the issue. */
-    added?: string[];
-
-    /** Details about the attachments that were added to the issue. */
-    addedData: Attachment[];
-
-    /** List of attachments that were removed from the issue. */
-    removed?: string[];
-
-    /** Details about the attachments that were removed from the issue. */
-    removedData: Attachment[];
-  };
+  attachments?: ListChange;
 
   /** Changes to the list of custom fields. */
   custom?: CustomFieldChange[];

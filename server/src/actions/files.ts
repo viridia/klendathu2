@@ -1,12 +1,12 @@
-const logger = require('../common/logger');
-const multer = require('multer');
-const mongo = require('mongodb');
-const sharp = require('sharp');
-const fs = require('fs');
-// const Grid = require('gridfs-stream');
+import * as express from 'express';
+import * as fs from 'fs';
+import * as multer from 'multer';
+import * as passport from 'passport';
+import * as r from 'rethinkdb';
+import * as sharp from 'sharp';
+import { logger } from '../logger';
 
-const { ObjectId } = mongo;
-const upload = multer({ dest: 'uploads/' });
+const ReGrid = require('rethinkdb-regrid');
 
 function shouldCreateThumbnail(type: string) {
   switch (type) {
@@ -19,82 +19,110 @@ function shouldCreateThumbnail(type: string) {
   }
 }
 
-// module.exports = function (app, apiRouter) {
-//   const gfs = Grid(app.db, mongo); // eslint-disable-line
-//
-//   // Upload attachments.
-//   apiRouter.post('/file', upload.single('attachment'), (req, res) => {
-//     if (!req.user) {
-//       logger.error('Unauthorized file upload.');
-//       res.status(401).send({ err: 'unauthorized' });
-//       return;
-//     }
-//
-//     // logger.info('post/file', req.file);
-//     if (shouldCreateThumbnail(req.file.mimetype)) {
-//       // Create two images: a full-sized one and a thumbnail.
-//       const transformer = sharp().resize(70).max();
-//       const wsThumb = gfs.createWriteStream({
-//         filename: req.file.originalname,
-//         mode: 'w',
-//         content_type: req.file.mimetype,
-//         metadata: {
-//           mark: true, // For garbage collection.
-//         },
-//       });
-//       fs.createReadStream(req.file.path).pipe(transformer).pipe(wsThumb);
-//       wsThumb.on('close', () => {
-//         const wsFull = gfs.createWriteStream({
-//           filename: req.file.originalname,
-//           mode: 'w',
-//           content_type: req.file.mimetype,
-//           metadata: {
-//             mark: true, // For garbage collection.
-//             thumb: wsThumb.id,
-//           },
-//         });
-//         fs.createReadStream(req.file.path).pipe(wsFull);
-//         wsFull.on('close', () => {
-//           // Delete the temp file.
-//           fs.unlink(req.file.path, () => {
-//             res.json({
-//               name: wsFull.name,
-//               id: wsFull.id,
-//               url: `/api/file/${wsFull.id}/${wsFull.name}`,
-//               thumb: `/api/file/${wsThumb.id}/${wsFull.name}`,
-//             });
-//           });
-//         });
-//       });
-//     } else {
-//       // For non-image attachments.
-//       const ws = gfs.createWriteStream({
-//         filename: req.file.originalname,
-//         mode: 'w',
-//         content_type: req.file.mimetype,
-//         metadata: {
-//           mark: true, // For garbage collection.
-//         },
-//       });
-//       fs.createReadStream(req.file.path).pipe(ws);
-//       ws.on('close', () => {
-//         // Delete the temp file.
-//         fs.unlink(req.file.path, () => {
-//           res.json({
-//             name: ws.name,
-//             id: ws.id,
-//             url: `/api/file/${ws.id}/${ws.name}`,
-//           });
-//         });
-//       });
-//     }
-//   });
-//
-//   apiRouter.get('/file/:id/:name', (req, res) => {
-//     const rs = gfs.createReadStream({
-//       _id: new ObjectId(req.params.id),
-//     });
-//     res.set('Content-Type', rs.content_type);
-//     rs.pipe(res);
-//   });
-// };
+export const bucket = ReGrid({ db: process.env.DB_NAME });
+
+export default function (apiRouter: express.Router, conn: r.Connection): Promise<any> {
+  const upload = multer({ dest: 'uploads/' });
+
+  // Upload attachments.
+  apiRouter.post('/file',
+      passport.authenticate('jwt', { session: false }),
+      upload.single('attachment'),
+  (req, res) => {
+    if (!(req as any).user) {
+      logger.error('Unauthorized file upload.');
+      res.status(401).send({ err: 'unauthorized' });
+      return;
+    }
+    logger.info('Uploading:', req.file.originalname, req.file.mimetype);
+
+    r.uuid().run(conn).then(id => {
+      if (shouldCreateThumbnail(req.file.mimetype)) {
+        // Create two images: a full-sized one and a thumbnail.
+        const transformer = sharp().resize(70, 70).max().withoutEnlargement();
+
+        // Open a write stream to ReGrid
+        const wsThumb = bucket.upload(`${id}-thumb`, {
+          metadata: {
+            filename: req.file.originalname,
+            contentType: req.file.mimetype,
+            mark: true, // For garbage collection.
+          },
+        });
+        fs.createReadStream(req.file.path).pipe(transformer).pipe(wsThumb);
+        wsThumb.on('error', (e: any) => {
+          logger.error(e);
+          fs.unlink(req.file.path, () => {
+            res.status(500).json({ err: 'upload' });
+          });
+        });
+        wsThumb.on('finish', async () => {
+          const thumbInfo = await bucket.getFilename(`${id}-thumb`);
+          const wsFull = bucket.upload(id, {
+            metadata: {
+              filename: req.file.originalname,
+              thumb: thumbInfo.id,
+              contentType: req.file.mimetype,
+              mark: true, // For garbage collection.
+            },
+          });
+          fs.createReadStream(req.file.path).pipe(wsFull);
+          wsFull.on('error', (e: any) => {
+            logger.error(e);
+            fs.unlink(req.file.path, () => {
+              res.status(500).json({ err: 'upload' });
+            });
+          });
+          wsFull.on('finish', async () => {
+            const fileInfo = await bucket.getFilename(id);
+            // Delete the temp file.
+            fs.unlink(req.file.path, () => {
+              res.json({
+                name: req.file.originalname,
+                id: fileInfo.id,
+                url: `/api/file/${fileInfo.id}/${req.file.originalname}`,
+                thumb: `/api/file/${thumbInfo.id}/${req.file.originalname}`,
+              });
+            });
+          });
+        });
+      } else {
+        // For non-image attachments.
+        const ws = bucket.upload(id, {
+          metadata: {
+            filename: req.file.originalname,
+            contentType: req.file.mimetype,
+            mark: true, // For garbage collection.
+          },
+        });
+        fs.createReadStream(req.file.path).pipe(ws);
+        ws.on('error', (e: any) => {
+          logger.error(e);
+          fs.unlink(req.file.path, () => {
+            res.status(500).json({ err: 'upload' });
+          });
+        });
+        ws.on('finish', async () => {
+          // Delete the temp file.
+          const fileInfo = await bucket.getFilename(`${id}`);
+          fs.unlink(req.file.path, () => {
+            res.json({
+              name: req.file.originalname,
+              id: fileInfo.id,
+              url: `/api/file/${fileInfo.id}/${req.file.originalname}`,
+            });
+          });
+        });
+      }
+    });
+  });
+
+  apiRouter.get('/file/:id/:name', async (req, res) => {
+    const record = await bucket.getMetadata(req.params.id);
+    const rs = bucket.downloadId(req.params.id);
+    res.set('Content-Type', record.metadata.contentType);
+    rs.pipe(res);
+  });
+
+  return bucket.initBucket();
+}

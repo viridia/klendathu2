@@ -14,9 +14,9 @@ query issueDetailsQuery($project: ID!, $id: Int!) {
       cc { added removed }
       labels { added removed }
       # TODO: finish
-      # attachments {
-      #   added
-      #   removed
+      attachments {
+        added
+        removed
       #   addedData {
       #     id
       #     filename
@@ -25,7 +25,7 @@ query issueDetailsQuery($project: ID!, $id: Int!) {
       #     id
       #     filename
       #   }
-      # }
+      }
       custom { name before after }
       linked { to before after }
     }

@@ -61,7 +61,7 @@ input IssueInput {
   comments: [CommentInput!]
 
   # List of attachments for this issue
-  attachments: [AttachmentInput!]
+  attachments: [String!]
 
   # Whether this issue should be visible to non-members of the project.
   isPublic: Boolean

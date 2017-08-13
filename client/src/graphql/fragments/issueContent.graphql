@@ -30,13 +30,13 @@ fragment issueContent on Issue {
     name
     color
   }
-  # attachmentsData {
-  #   id
-  #   filename
-  #   url
-  #   thumb
-  #   type
-  # }
+  attachments {
+    id
+    filename
+    url
+    thumbnail
+    type
+  }
   comments {
     author
     body

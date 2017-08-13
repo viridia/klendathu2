@@ -6,6 +6,7 @@ import {
   NotFound,
   Unauthorized,
 } from '../errors';
+import { selectedFields } from './helpers';
 import { getProjectAndRole } from './role';
 
 export const queries = {
@@ -101,10 +102,18 @@ export const types = {
     labelProps: (
         prefs: ProjectPrefsRecord,
         _: any,
-        context: Context): Promise<LabelRecord[]> | LabelRecord[] => {
+        context: Context,
+        options: any): Promise<LabelRecord[]> | Array<Partial<LabelRecord>> => {
       if (!prefs.labels) {
         return [];
       }
+      // See if we selected any fields other than id. If not, then no need for a database lookup.
+      const fields = selectedFields(options);
+      fields.delete('id');
+      if (fields.size === 0) {
+        return prefs.labels.map(l => ({ id: [prefs.project, l] as any }));
+      }
+      // Fill in the rest of the data.
       return r.table('labels')
           .getAll(...prefs.labels.map(l => [prefs.project, l]) as any)
           .orderBy(r.asc('name'))

@@ -1,7 +1,7 @@
 export { Attachment } from './Attachment';
 export { Change, CustomFieldChange, LinkChange } from './Change';
 export { Comment } from './Comment';
-export { CustomField, Issue } from './Issue';
+export { CustomField, Issue, IssueInput } from './Issue';
 export { IssueLink } from './IssueLink';
 export { Label } from './Label';
 export { Membership } from './Membership';

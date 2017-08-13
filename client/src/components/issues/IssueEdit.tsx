@@ -1,5 +1,5 @@
 import autobind from 'bind-decorator';
-import { Issue, Project, Template, Workflow } from 'common/api';
+import { Issue, IssueInput, Project, Template, Workflow } from 'common/api';
 import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
 import { toastr } from 'react-redux-toastr';
@@ -31,7 +31,7 @@ class IssueEdit extends React.Component<DefaultChildProps<Props, Data>> {
   }
 
   @autobind
-  private onSave(issueId: number, issue: Partial<Issue>) {
+  private onSave(issueId: number, issue: Partial<IssueInput>) {
     return updateIssue(this.props.project.id, issueId, issue).then((resp: any) => {
       toastr.success('', `Issue #${resp.data.updateIssue.id} updated.`);
       this.props.history.goBack();

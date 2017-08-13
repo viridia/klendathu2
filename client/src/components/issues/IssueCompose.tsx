@@ -3,6 +3,7 @@ import {
   DataType,
   FieldType,
   Issue,
+  IssueInput,
   IssueType,
   Project,
   Relation,
@@ -37,7 +38,7 @@ type IssueLinkMap = Immutable.OrderedMap<number, Relation>;
 
 interface Props extends RouteComponentProps<{}> {
   issue?: Issue;
-  onSave: (issueId: number, issue: Partial<Issue>) => Promise<any>;
+  onSave: (issueId: number, issue: IssueInput) => Promise<any>;
   project: Project;
   template: Template;
   workflow: Workflow;
@@ -494,7 +495,7 @@ export default class IssueCompose extends React.Component<Props, State> {
 
   @autobind
   private onCreate() {
-    const issue: Partial<Issue> = {
+    const issue: IssueInput = {
       state: this.state.issueState,
       type: this.state.type,
       summary: this.state.summary,
@@ -542,6 +543,8 @@ export default class IssueCompose extends React.Component<Props, State> {
         type: issue.type,
         summary: issue.summary,
         description: issue.description,
+        // TODO: finish
+        // owner: issue.owner,
   //       owner: issue.ownerData,
   //       cc: issue.ccData,
         custom: issue.custom
@@ -555,7 +558,7 @@ export default class IssueCompose extends React.Component<Props, State> {
         comments: issue.comments,
         isPublic: !!issue.isPublic,
       });
-  //     this.attachments.setFiles(issue.attachmentsData || []);
+      this.attachments.setFiles(issue.attachments || []);
     } else {
       const { start = ['new'] } = workflow;
       this.setState({

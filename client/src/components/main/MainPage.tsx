@@ -53,14 +53,19 @@ class MainPage extends React.Component<
   }
 
   public render(): any {
-    const { location, data: { error } } = this.props;
+    const { location, history, data: { error } } = this.props;
     if (error) {
       return <ErrorDisplay error={error} />;
     }
     return (
       <div className="kdt page">
-        <ReduxToastr position="bottom-left" />
-        <Header location={location} />
+        <ReduxToastr
+            position="bottom-left"
+            timeOut={7000}
+            transitionIn="fadeIn"
+            transitionOut="fadeOut"
+        />
+        <Header location={location} history={history} />
         <Switch>
           <Route path="/gql" component={GraphiQLPage} />
           <Route path="/project/:project" component={ProjectView} />
