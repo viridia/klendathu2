@@ -15,6 +15,7 @@ import IssueEdit from '../issues/IssueEdit';
 import IssueListView from '../issues/IssueListView';
 import LabelList from '../labels/LabelList';
 import LeftNav from '../nav/LeftNav';
+import ProjectSettings from './settings/ProjectSettings';
 
 import * as ProjectQuery from '../../graphql/queries/project.graphql';
 import * as TemplateAndWorkflowQuery from '../../graphql/queries/templateAndWorkflow.graphql';
@@ -64,7 +65,8 @@ class ProjectView extends React.Component<DataProps, undefined> {
           <Route path="/project/:project/issues/:id" render={this.renderIssueDetails} />
           <Route path="/project/:project/issues" exact={true} render={this.renderIssueList} />
           <Route path="/project/:project/labels" render={this.renderLabelList} />
-          <Route path="/project/:project/settings" />
+          <Route path="/project/:project/settings/:tab" render={this.renderProjectSettings} />
+          <Route path="/project/:project/settings" render={this.renderProjectSettings} />
           <Route path="/project/:project" />
         </Switch>
       </div>
@@ -108,6 +110,13 @@ class ProjectView extends React.Component<DataProps, undefined> {
   private renderLabelList(props: RouteComponentProps<{}>) {
     const { data: { project } } = this.props;
     return (<LabelList {...props} project={project} />);
+  }
+
+  @autobind
+  private renderProjectSettings(props: RouteComponentProps<{}>) {
+    const { data: { project }, support: { template, workflow } } = this.props;
+    return (
+      <ProjectSettings {...props} project={project} template={template} workflow={workflow} />);
   }
 }
 

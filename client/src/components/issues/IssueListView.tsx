@@ -88,6 +88,7 @@ function parseQueryParams(query: string, workflow: Workflow): QueryParams {
 //   profile: PropTypes.shape({}),
 // };
 
+// TODO: finish
 class IssueListView extends React.Component<DefaultChildProps<Props, Data>, undefined> {
   private defaultColumns: string[];
   private hotlist: Immutable.Set<number>;
