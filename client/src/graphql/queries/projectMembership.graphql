@@ -2,6 +2,6 @@ query projectMembershipQuery($project: ID!) {
   projectMembership(project: $project) {
     user
     role
-    inheritedRole
+    # inheritedRole
   }
 }

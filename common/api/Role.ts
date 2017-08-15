@@ -8,9 +8,15 @@ export enum Role {
   ADMINISTRATOR = 100,
 }
 
-/** Return the list of [level, name] pairs in sorted order. */
-// export function roles() {
-//   const result = Object.keys(Role).map(name => [Role[name], name]);
-//   result.sort();
-//   return result;
-// }
+// tslint:disable:no-namespace
+export namespace Role {
+  export const values = [
+    0,
+    10,
+    25,
+    40,
+    55,
+    70,
+    100,
+  ];
+}

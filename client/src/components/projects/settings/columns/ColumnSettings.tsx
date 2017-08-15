@@ -6,12 +6,12 @@ import * as React from 'react';
 import { DefaultChildProps, graphql } from 'react-apollo';
 import { Button } from 'react-bootstrap';
 import { toastr } from 'react-redux-toastr';
-import { setProjectPrefs } from '../../../store/reducers/projectPrefs';
+import { setProjectPrefs } from '../../../../store/reducers/projectPrefs';
 import { Column } from './Column';
 import ColumnList from './ColumnList';
 import './ColumnSettings.scss';
 
-import * as ProjectPrefsQuery from '../../../graphql/queries/projectPrefs.graphql';
+import * as ProjectPrefsQuery from '../../../../graphql/queries/projectPrefs.graphql';
 
 interface Props {
   project: Project;

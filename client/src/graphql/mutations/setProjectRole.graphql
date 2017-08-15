@@ -1,0 +1,10 @@
+#import "../fragments/membershipContent.graphql"
+
+mutation setProjectRole($project: ID!, $user: ID!, $role: Int!) {
+  setProjectRole(
+      project: $project,
+      user: $user,
+      role: $role) {
+    ...membershipContent
+  }
+}

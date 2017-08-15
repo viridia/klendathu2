@@ -3,11 +3,11 @@ import { Project, Role, Template, Workflow } from 'common/api';
 import * as React from 'react';
 import { Tab, Tabs } from 'react-bootstrap';
 import { RouteComponentProps } from 'react-router-dom';
-// import ProjectInfoEdit from '../projects/ProjectInfoEdit';
-// import ProjectMemberList from '../projects/ProjectMemberList.jsx';
+import ColumnSettings from './columns/ColumnSettings';
+import ProjectMemberList from './members/ProjectMemberList';
+import ProjectInfoEdit from './ProjectInfoEdit';
 // import ProjectTemplateEdit from '../projects/ProjectTemplateEdit.jsx';
 // import WorkflowEdit from '../workflow/workflowEdit.jsx';
-import ColumnSettings from './ColumnSettings';
 import './settings.scss';
 
 interface Props extends RouteComponentProps<{ tab?: string }> {
@@ -23,7 +23,6 @@ export default class ProjectSettings extends React.Component<Props> {
     if (!project) {
       return <section className="kdt project-settings" />;
     }
-    console.debug(match.params);
     const activeKey = match.params.tab || 'info';
     return (
       <section className="kdt project-settings">
@@ -35,13 +34,13 @@ export default class ProjectSettings extends React.Component<Props> {
             id="project-panel"
         >
           <Tab eventKey="info" title="Project Info">
-            {/* <ProjectInfoEdit {...this.props} /> */}
+            <ProjectInfoEdit {...this.props} />
           </Tab>
           <Tab eventKey="columns" title="Columns">
             <ColumnSettings {...this.props} />
           </Tab>
           <Tab eventKey="members" title="Members">
-            {/* <ProjectMemberList {...this.props} /> */}
+            <ProjectMemberList {...this.props} />
           </Tab>
           {project.role >= Role.MANAGER && (<Tab eventKey="templates" title="Issue Templates">
             {/* <ProjectTemplateEdit {...this.props} /> */}
